@@ -40,6 +40,84 @@ class GameObject(pygame.sprite.Sprite):
         self.m_health = profile["health"]               # Initialize object health
         self.m_team_num = profile["team_num"]           # Initialize team number
 
+    # Position getter function
+    @property
+    def position(self):
+        """
+        Getter for PROPERTY position.
 
-    def get_pos(self):
-        print(self.m_pos_x, " and ", self.m_pos_y)
+        INPUT:
+        - NONE
+        OUTPUT:
+        a tuple of position x and y
+        """
+        print("I am at: ", self.m_pos_x, " and ", self.m_pos_y)
+        return self.m_pos_x, self.m_pos_y
+
+    # Position setter function 
+    @position.setter
+    def position(self, pos):
+        """
+        Setter for PROPERTY position
+
+        INPUT:
+        - pos: A tuple containing updated x and y position
+        OUTPUT:
+        - NONE
+        """
+        self.m_pos_x, self.m_pos_y = pos
+
+    # Velocity getter function
+    @property
+    def velocity(self):
+        """
+        Getter for PROPERTY velocity
+
+        INPUT:
+        - NONE
+        OUTPUT:
+        a tuple of velocity x and y
+        """
+        print("My velocity is: ", self.m_vel_x, " and ", self.m_vel_y)
+        return self.m_vel_x, self.m_vel_y
+    
+    # Velocity getter function
+    @velocity.setter
+    def velocity(self, vel):
+        """
+        Setter for PROPERTY velocity
+
+        INPUT:
+        - vel: A tuple containing updated x and y velocity
+        OUTPUT:
+        - NONE
+        """
+        self.m_vel_x, self.m_vel_y = vel
+
+
+    # Health getter function
+    @property
+    def health(self):
+        """
+        Getter for PROPERTY health.
+
+        INPUT:
+        - NONE
+        OUTPUT:
+        - health value
+        """
+        print("Game Object current health: ", self.m_health)
+        return self.m_health
+
+    # Position setter function 
+    @health.setter
+    def health(self, damage):
+        """
+        Setter for PROPERTY health
+
+        INPUT:
+        - damage: damage dealt to the object 
+        OUTPUT:
+        - NONE
+        """
+        self.m_health -= damage

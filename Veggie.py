@@ -22,8 +22,8 @@ class Veggie(GameObject):
         self.m_type = veggie_type
 
 
-    def print(self):
-        print(self.m_pos_x, " and ", self.m_pos_y)
+    def whoami(self):
+        print("I am ", self.m_type, " and I have ", self.m_health)
 
 
 
