@@ -25,6 +25,29 @@ class Veggie(GameObject):
     def whoami(self):
         print("I am ", self.m_type, " and I have ", self.m_health)
 
+    # Veggie type getter function
+    @property
+    def veggie_type(self):
+        """
+        Getter for PROPERTY veggie_type.
 
+        INPUT:
+        - NONE
+        OUTPUT:
+        - veggie_type
+        """
+        print("Current veggie type: ", self.m_type)
+        return self.m_type
 
+    # Veggie type setter function 
+    @veggie_type.setter
+    def veggie_type(self, new_veggie_type):
+        """
+        Setter for PROPERTY veggie type
 
+        INPUT:
+        - new_veggie_type: new veggie type
+        OUTPUT:
+        - NONE
+        """
+        self.m_type = new_veggie_type

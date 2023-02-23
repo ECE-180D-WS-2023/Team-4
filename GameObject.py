@@ -109,15 +109,43 @@ class GameObject(pygame.sprite.Sprite):
         print("Game Object current health: ", self.m_health)
         return self.m_health
 
-    # Position setter function 
+    # Health setter function 
     @health.setter
-    def health(self, damage):
+    def health(self, new_health):
         """
         Setter for PROPERTY health
 
         INPUT:
-        - damage: damage dealt to the object 
+        - new_health: new health value
         OUTPUT:
         - NONE
         """
-        self.m_health -= damage
+        self.m_health = new_health
+
+
+    # Team number getter function
+    @property
+    def team_num(self):
+        """
+        Getter for PROPERTY team number.
+
+        INPUT:
+        - NONE
+        OUTPUT:
+        - team number value
+        """
+        print("Current team number: ", self.m_team_num)
+        return self.m_team_num
+
+    # Team number setter function 
+    @team_num.setter
+    def team_num(self, new_team_num):
+        """
+        Setter for PROPERTY team number
+
+        INPUT:
+        - new team number: new team number
+        OUTPUT:
+        - NONE
+        """
+        self.m_team_num = new_team_num
