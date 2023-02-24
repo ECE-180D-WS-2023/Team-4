@@ -4,7 +4,7 @@ from Constants import *
 
 
 class Player(GameObject):
-    def __init__(self, role, state=PLAYER_WALKING, **profile):
+    def __init__(self, role, name, state=PLAYER_WALKING, **profile):
         """
         INPUT:
         - role: player_role
@@ -28,8 +28,37 @@ class Player(GameObject):
         self.m_role = role                                                         # Initialize player role
         self.m_state = state                                                       # Initialize player state
         self.m_backpack = {'potato':0, 'carrot':0, 'cabbage':0, 'pumpkin':0}       # Initialize player backpack
-        self.m_weight = role
+        self.m_weight = role                                                       # Initialize player weight
+        self.m_name = name                                                         # Initialize player name
 
+    # player name getter function
+    @property
+    def name(self):
+        """
+        Getter for PROPERTY name
+
+        INPUT:
+        - NONE
+        OUTPUT:
+        a string of player name
+        """
+        
+        print("My name is: ", self.m_name)
+        return self.m_name
+    
+    # player name setter function
+    @name.setter
+    def name(self, new_name):
+        """
+        Setter for PROPERTY name
+
+        INPUT:
+        - new_name: a new player name
+        OUTPUT:
+        - NONE
+        """
+        self.m_name = new_name
+    
     # Velocity getter function
     @property
     def velocity(self):

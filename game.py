@@ -1,92 +1,105 @@
-import pygame
-# from GameObject import GameObject
-from Veggie import Veggie
-from Base import Base
-from Player import Player
+import pygame, sys
+from button import Button
 from Constants import *
 
-if __name__ == "__main__":
-    """
-    Object creation/properties convention
-    Veggie:
-        - parent properties
-                - position (tuple)
-                - velocity (tuple)
-                - health (scalar)
-                - team_num (scalar)
-        - child properties
-                - veggie_type (scalar)
+pygame.init()          # Start game
 
-    Base:
-        - parent properties
-                - position (tuple)
-                - velocity (tuple)
-                - health (scalar)
-                - team_num (scalar)
+SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Veggie Wars")
 
-    Player:
-        - parent properties
-                - position (tuple)
-                - velocity (tuple)
-                - health (scalar)
-                - team_num (scalar)
-        - child properties
-                - player_state (scalar)
-                - player_role (scalar)
-    """
+BG = pygame.image.load("assets/Background.png")
 
-    # Object creation
-    veggie1 = Veggie(pos_x = 3, pos_y = 4, vel_x = 0, vel_y = 1, health = 3, team_num = 1, veggie_type="pumpkin")
-    base1 = Base(pos_x = 50, pos_y = 0, vel_x = 0, vel_y = 0, health = 100, team_num = 1)
-    player1 = Player(pos_x = 30, pos_y = 0, vel_x = 0, vel_y = 0, health = 10, team_num = 1, role = PLAYER_ENGINEER, state = PLAYER_WALKING)
+def get_font(size):
+    return pygame.font.Font("assets/font.ttf", size)
 
-    # Veggie parent properties test
-    assert veggie1.position == (3, 4)
-    new_pos = (7,9)
-    veggie1.position = new_pos
-    assert veggie1.position == (7, 9)
+def play():
+    while True:
+        PLAY_MOUSE_POS = pygame.mouse.get_pos()
 
-    # Base parent properties test
-    assert base1.position == (50, 0)
-    damage = -5
-    base1.health = base1.health + damage
-    assert base1.health == 95
-    new_team_number = 2
-    assert base1.team_num == 1
-    base1.team_num = new_team_number
-    assert base1.team_num == 2
+        SCREEN.fill("black")
 
-    # Veggie child properties test
-    assert veggie1.veggie_type == "pumpkin"
-    veggie1.veggie_type = "carrot"
-    assert veggie1.veggie_type == "carrot"
+        PLAY_TEXT = get_font(45).render("This is the PLAY screen.", True, "White")
+        PLAY_RECT = PLAY_TEXT.get_rect(center=(640, 260))
+        SCREEN.blit(PLAY_TEXT, PLAY_RECT)
 
+        PLAY_BACK = Button(image=None, pos=(640, 460), 
+                            text_input="BACK", font=get_font(75), base_color="White", hovering_color="Green")
 
-    # Player child properties test
-    player1.harvest("carrot")
-    player1.display_backpack()
-    curr_backpack = player1.display_backpack()  # current backpack information
-    assert curr_backpack["carrot"] == 0         # the player cannot pick up carrot because the player is not in harvesting mode
-    player1.player_state = PLAYER_HARVESTING    # switch player state
-    player1.harvest("carrot")                   # pick up carrot successfully
-    assert curr_backpack["carrot"] == 1
-    assert curr_backpack["cabbage"] == 0
-    player1.harvest("carrot")
-    player1.harvest("carrot")
-    player1.harvest("carrot")
-    player1.harvest("cabbage")
-    player1.harvest("carrot")
-    assert curr_backpack["carrot"] == 5
-    assert curr_backpack["cabbage"] == 1
-    player1.harvest("carrot")
-    assert curr_backpack["carrot"] == 5
-    player1.display_backpack()
+        PLAY_BACK.changeColor(PLAY_MOUSE_POS)
+        PLAY_BACK.update(SCREEN)
 
-    # Player alive test
-    assert player1.alive == True
-    damage = -11
-    player1.health = player1.health + damage
-    assert player1.alive == False
-    del player1
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
+                    main_menu()
+
+        pygame.display.update()
     
-    print("Everything passed")
+def options():
+    while True:
+        OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.fill("white")
+
+        OPTIONS_TEXT = get_font(45).render("This is the OPTIONS screen.", True, "Black")
+        OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 260))
+        SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
+
+        OPTIONS_BACK = Button(image=None, pos=(640, 460), 
+                            text_input="BACK", font=get_font(75), base_color="Black", hovering_color="Green")
+
+        OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
+        OPTIONS_BACK.update(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
+                    main_menu()
+
+        pygame.display.update()
+
+def main_menu():
+    while True:
+        SCREEN.blit(BG, (0, 0))
+
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+        MENU_TEXT = get_font(100).render("MAIN MENU", True, "#b68f40")
+        MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
+
+        PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(640, 250), 
+                            text_input="PLAY", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
+        OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 400), 
+                            text_input="OPTIONS", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
+        QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(640, 550), 
+                            text_input="QUIT", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
+
+        SCREEN.blit(MENU_TEXT, MENU_RECT)
+
+        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
+            button.changeColor(MENU_MOUSE_POS)
+            button.update(SCREEN)
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    play()
+                if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    options()
+                if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    pygame.quit()
+                    sys.exit()
+
+        pygame.display.update()
+
+main_menu()
+
