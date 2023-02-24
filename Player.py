@@ -12,6 +12,10 @@ from pygame.locals import (
     K_q,
     KEYDOWN,
     QUIT,
+    K_TAB,
+    K_0,
+    K_1,
+    K_2
 )
 
 class Player(GameObject):
@@ -39,7 +43,7 @@ class Player(GameObject):
         super().__init__(**profile)
         self.m_role = role                                                         # Initialize player role
         self.m_state = state                                                       # Initialize player state
-        self.m_backpack = {'potato':0, 'carrot':0, 'cabbage':0, 'pumpkin':0}       # Initialize player backpack
+        self.m_backpack = {"potato":0, "carrot":0, "cabbage":0, "pumpkin":0}       # Initialize player backpack
         self.m_weight = role                                                       # Initialize player weight
         self.m_name = name                                                         # Initialize player name
 
@@ -199,6 +203,16 @@ class Player(GameObject):
     def update(self):
         self.rect.center = (self.m_pos_x, self.m_pos_y)
 
+    def switch_state(self, pressed_key):
+        if pressed_key[K_0]:
+            self.player_state = PLAYER_WALKING
+            print("Walking!")
+        if pressed_key[K_1]:
+            self.player_state = PLAYER_HARVESTING
+            print("Harvesting!")
+        if pressed_key[K_2]:
+            self.player_state = PLAYER_SHOOTING
+            print("Shooting!")
     
     def attack(self, item):
         """
@@ -223,6 +237,7 @@ class Player(GameObject):
         """
         Display player backpack
         """
+
         print(self.m_backpack)
         return self.m_backpack
 

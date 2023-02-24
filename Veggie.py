@@ -19,7 +19,9 @@ from pygame.locals import (
 class Veggie(GameObject):
     def __init__(self, veggie_type, **profile):
         super().__init__(**profile)
-        self.m_type = veggie_type
+        self.m_type = veggie_type               # Type of veggie
+        self.m_harvest_time = veggie_dict[veggie_type] / 2   # Harvest_time = damage / 2
+        
 
 
     def whoami(self):

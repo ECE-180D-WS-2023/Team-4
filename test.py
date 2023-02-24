@@ -4,6 +4,22 @@ from Veggie import Veggie
 from Base import Base
 from Player import Player
 from Constants import *
+from pygame.locals import (
+    K_UP,
+    K_DOWN,
+    K_LEFT,
+    K_RIGHT,
+    K_RETURN,
+    K_SPACE,
+    K_ESCAPE,
+    K_q,
+    KEYDOWN,
+    QUIT,
+    K_TAB,
+    K_0,
+    K_1,
+    K_2
+)
 
 if __name__ == "__main__":
     """
@@ -37,7 +53,7 @@ if __name__ == "__main__":
 
     # Object creation
     player1_dict = {"pos_x": 30, "pos_y": 0, "vel_x":0, "vel_y":0, "health":10, "team_num":1, "name":"Bruce", "role": PLAYER_ENGINEER, "state":PLAYER_WALKING}
-    veggie1 = Veggie(pos_x = 3, pos_y = 4, vel_x = 0, vel_y = 1, health = 3, team_num = 1, veggie_type="pumpkin")
+    veggie1 = Veggie(pos_x = 3, pos_y = 4, vel_x = 0, vel_y = 1, health = 3, team_num = 1, veggie_type = "pumpkin")
     base1 = Base(pos_x = 50, pos_y = 0, vel_x = 0, vel_y = 0, health = 100, team_num = 1)
     #player1 = Player(pos_x = 30, pos_y = 0, vel_x = 0, vel_y = 0, health = 10, team_num = 1, name="Bruce" ,role = PLAYER_ENGINEER, state = PLAYER_WALKING)
     player1 = Player(**player1_dict)

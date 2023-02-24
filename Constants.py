@@ -13,6 +13,8 @@ VEGGIE_POTATO = 5
 VEGGIE_CARROT = 7
 VEGGIE_CABBAGE = 10
 VEGGIE_PUMPKIN = 15
+veggie_dict = {"carrot": VEGGIE_CARROT, "cabbage": VEGGIE_CABBAGE,
+               "potato": VEGGIE_POTATO, "pumpkin": VEGGIE_PUMPKIN}
 
 # Veggie weights
 

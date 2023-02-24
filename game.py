@@ -1,6 +1,7 @@
 import pygame, sys
 from button import Button
 from Player import Player
+from Veggie import Veggie
 from Constants import *
 
 pygame.init()          # Start game
@@ -10,6 +11,7 @@ pygame.display.set_caption("Veggie Wars")
 
 # Initialize sprite groups
 all_sprites = pygame.sprite.Group()
+harvestables = pygame.sprite.Group()
 
 BG = pygame.image.load("assets/Background.png")
 
@@ -19,6 +21,8 @@ def get_font(size):
 def redraw_screen(screen):
     screen.fill((0, 0, 0))
     for sprite in all_sprites:
+        screen.blit(sprite.surf, sprite.rect)
+    for sprite in harvestables:
         screen.blit(sprite.surf, sprite.rect)
 
 def play():
@@ -48,27 +52,58 @@ def play():
         pygame.display.update()
 
 def tutorials():
-    # Creates a dummy player
+    """
+    MODE: TUTORIALS
+
+    Only one player can move around.
+    """
+    # Create a dummy player
     player1_dict = {"pos_x": 30, "pos_y": 40, "vel_x":5, "vel_y":5, "health":10,
-                        "team_num":1, "name":"Bruce", "role": PLAYER_ENGINEER, "state":PLAYER_WALKING}
-    player = Player(**player1_dict)           # Initialize player
+                    "team_num":1, "name":"Bruce", "role": PLAYER_ENGINEER, "state":PLAYER_WALKING}
+    player = Player(**player1_dict)              # Initialize player
+
+    # Create a veggie randomly
+    veggie1_dict = {"pos_x": 420, "pos_y": 470, "vel_x":3, "vel_y":3, "health":10,
+                    "team_num":3, "veggie_type": "cabbage"}
+    veggie = Veggie(**veggie1_dict)              # Initialize veggie
+
+    all_sprites.add([player])                    # Add player to sprite group
+    harvestables.add([veggie])                   # Add veggie to harvestable group
 
     while True:
         TUTORIALS_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.fill("black")
         
-        all_sprites.add([player])                 # Add player to sprite group
+
         pressed_keys = pygame.key.get_pressed()   # Keyboard input
+        
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
-        player.move(pressed_keys)
+        player.move(pressed_keys)                 # moving players
+        # player.display_backpack(pressed_keys)     # display backpack
+        player.switch_state(pressed_keys)         # switch player states
 
+        # Refresh screen
         redraw_screen(SCREEN)
+
+        if pygame.sprite.spritecollideany(player, harvestables):
+            # the harvestable glows and it takes time to harvest that veggie
+            # veggie is destroyed after harvested
+            if player.player_state != PLAYER_HARVESTING:
+                pass
+            else:
+                # has to be right on top of the veggie
+                veggie.kill()
+                break
+            
+            # player.backpack + 1
+
+            
 
         pygame.display.flip()
     
