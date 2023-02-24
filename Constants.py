@@ -1,3 +1,4 @@
+# Arena Parameters
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 PLAYER_WIDTH = 20
@@ -29,5 +30,9 @@ PLAYER_FARMER = 4
 PLAYER_SOLDIER = 5
 PLAYER_TRAVELER = 6
 
+# Game object team assignment
 TEAM1 = 1
 TEAM2 = 2
+
+# Game Flow
+GAME_ON = 1
