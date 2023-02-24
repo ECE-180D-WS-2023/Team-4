@@ -16,6 +16,7 @@ class Player(GameObject):
             - PLAYER_WALKING(const.): 0
             - PLAYER_HARVESTING(const.): 1
             - PLAYER_SHOOTING(const.): 2
+        - name: name
         - **profile: kwargs containing attribute values
             - pos_x: position in x axis
             - pos_y: position in y axis
@@ -91,7 +92,7 @@ class Player(GameObject):
     @property
     def player_state(self):
         """
-        Getter function for player state
+        Getter for PROPERTY player_state
 
         INPUT:
         - NONE
@@ -118,7 +119,7 @@ class Player(GameObject):
     @property
     def player_role(self):
         """
-        Getter function for player role
+        Getter function for PROPERTY player_role
 
         INPUT:
         - NONE
@@ -158,6 +159,25 @@ class Player(GameObject):
             # make veggie disapper in the arena and map
         else:
             print("sorry backpack full")
+    
+    def attack(self, item):
+        """
+        ##########################################
+        UNDER CONSTRUCTION!!!
+        ##########################################
+
+        Attack using an item in the player backpack (only when player is in SHOOTING mode)
+
+        if the player's backpack is empty, then you cannot shoot.
+        
+        """
+        if (self.m_state != PLAYER_SHOOTING):
+            print("Player not in shooting mode")
+        elif self.m_backpack.get(item) >= 1:
+            self.m_backpack[item] -= 1
+        else:
+            # This should never be executed, since we won't display veggies that you don't have.
+            print("sorry no ammo")
     
     def display_backpack(self):
         """
