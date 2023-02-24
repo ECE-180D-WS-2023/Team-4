@@ -2,11 +2,12 @@ import pygame
 # from GameObject import GameObject
 from Veggie import Veggie
 from Base import Base
+from Player import Player
 from Constants import *
 
 if __name__ == "__main__":
     """
-    Object creation convention
+    Object creation/properties convention
     Veggie:
         - parent properties
                 - position (tuple)
@@ -15,17 +16,29 @@ if __name__ == "__main__":
                 - team_num (scalar)
         - child properties
                 - veggie_type (scalar)
+
     Base:
         - parent properties
                 - position (tuple)
                 - velocity (tuple)
                 - health (scalar)
                 - team_num (scalar)
+
+    Player:
+        - parent properties
+                - position (tuple)
+                - velocity (tuple)
+                - health (scalar)
+                - team_num (scalar)
+        - child properties
+                - player_state (scalar)
+                - player_role (scalar)
     """
 
     # Object creation
     veggie1 = Veggie(pos_x = 3, pos_y = 4, vel_x = 0, vel_y = 1, health = 3, team_num = 1, veggie_type="pumpkin")
     base1 = Base(pos_x = 50, pos_y = 0, vel_x = 0, vel_y = 0, health = 100, team_num = 1)
+    player1 = Player(pos_x = 30, pos_y = 0, vel_x = 0, vel_y = 0, health = 10, team_num = 1, role = PLAYER_ENGINEER, state = PLAYER_WALKING)
 
     # Veggie parent properties test
     assert veggie1.position == (3, 4)
@@ -47,5 +60,27 @@ if __name__ == "__main__":
     assert veggie1.veggie_type == "pumpkin"
     veggie1.veggie_type = "carrot"
     assert veggie1.veggie_type == "carrot"
+
+
+    # Player child properties test
+    player1.harvest("carrot")
+    player1.display_backpack()
+    curr_backpack = player1.display_backpack()  # current backpack information
+    assert curr_backpack["carrot"] == 0         # the player cannot pick up carrot because the player is not in harvesting mode
+    player1.player_state = PLAYER_HARVESTING    # switch player state
+    player1.harvest("carrot")                   # pick up carrot successfully
+    assert curr_backpack["carrot"] == 1
+    assert curr_backpack["cabbage"] == 0
+    player1.harvest("carrot")
+    player1.harvest("carrot")
+    player1.harvest("carrot")
+    player1.harvest("cabbage")
+    player1.harvest("carrot")
+    assert curr_backpack["carrot"] == 5
+    assert curr_backpack["cabbage"] == 1
+    player1.harvest("carrot")
+    assert curr_backpack["carrot"] == 5
+    player1.display_backpack()
+
     
     print("Everything passed")

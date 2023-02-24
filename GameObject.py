@@ -81,7 +81,7 @@ class GameObject(pygame.sprite.Sprite):
         print("My velocity is: ", self.m_vel_x, " and ", self.m_vel_y)
         return self.m_vel_x, self.m_vel_y
     
-    # Velocity getter function
+    # Velocity setter function
     @velocity.setter
     def velocity(self, vel):
         """
