@@ -2,6 +2,7 @@ import pygame, sys
 from button import Button
 from Player import Player
 from Veggie import Veggie
+from Base import Base
 from Constants import *
 
 pygame.init()          # Start game
@@ -10,8 +11,9 @@ SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Veggie Wars")
 
 # Initialize sprite groups
-all_sprites = pygame.sprite.Group()
+players = pygame.sprite.Group()
 harvestables = pygame.sprite.Group()
+bases = pygame.sprite.Group()
 
 BG = pygame.image.load("assets/Background.png")
 
@@ -20,9 +22,11 @@ def get_font(size):
 
 def redraw_screen(screen):
     screen.fill((0, 0, 0))
-    for sprite in all_sprites:
+    for sprite in players:
         screen.blit(sprite.surf, sprite.rect)
     for sprite in harvestables:
+        screen.blit(sprite.surf, sprite.rect)
+    for sprite in bases:
         screen.blit(sprite.surf, sprite.rect)
 
 def play():
@@ -57,20 +61,27 @@ def tutorials():
 
     Only one player can move around.
     """
-    # Create a dummy player
-    player1_dict = {"pos_x": 30, "pos_y": 40, "vel_x":5, "vel_y":5, "health":10,
+    # Initialize player
+    player1_dict = {"pos_x": 30, "pos_y": 40, "vel_x":2, "vel_y":2, "health":10,
                     "team_num":1, "name":"Bruce", "role": PLAYER_ENGINEER, "state":PLAYER_WALKING}
-    player = Player(**player1_dict)              # Initialize player
+    player1 = Player(**player1_dict)
 
-    # Create a veggie randomly
-    veggie1_dict = {"pos_x": 420, "pos_y": 470, "vel_x":3, "vel_y":3, "health":10,
+    # Initialize veggie
+    veggie1_dict = {"pos_x": 420, "pos_y": 270, "vel_x":3, "vel_y":3, "health":10,
                     "team_num":3, "veggie_type": "cabbage"}
-    veggie = Veggie(**veggie1_dict)              # Initialize veggie
+    veggie1 = Veggie(**veggie1_dict)              
 
-    all_sprites.add([player])                    # Add player to sprite group
-    harvestables.add([veggie])                   # Add veggie to harvestable group
+    # Initialize base
+    base1_dict = {"pos_x": 420, "pos_y": 680, "vel_x":3, "vel_y":3, "health":10,
+                  "team_num":1, "shield":10}
+    base1 = Base(**base1_dict)
 
-    while True:
+    players.add([player1])                        # Add player1 to players group
+    harvestables.add([veggie1])                   # Add veggie1 to harvestable group
+    bases.add([base1])                            # Add base1 to bases group
+
+    running = True
+    while running:
         TUTORIALS_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.fill("black")
@@ -84,22 +95,22 @@ def tutorials():
                 pygame.quit()
                 sys.exit()
 
-        player.move(pressed_keys)                 # moving players
-        # player.display_backpack(pressed_keys)     # display backpack
-        player.switch_state(pressed_keys)         # switch player states
+        player1.move(pressed_keys)                 # moving players
+        # player.display_backpack(pressed_keys)    # display backpack
+        player1.switch_state(pressed_keys)         # switch player states
 
         # Refresh screen
         redraw_screen(SCREEN)
 
-        if pygame.sprite.spritecollideany(player, harvestables):
+        if pygame.sprite.collide_circle(player1, veggie1):
             # the harvestable glows and it takes time to harvest that veggie
             # veggie is destroyed after harvested
-            if player.player_state != PLAYER_HARVESTING:
+            if player1.player_state != PLAYER_HARVESTING:
                 pass
             else:
                 # has to be right on top of the veggie
-                veggie.kill()
-                break
+                veggie1.kill()
+                running = False
             
             # player.backpack + 1
 
