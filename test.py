@@ -67,9 +67,9 @@ if __name__ == "__main__":
     assert veggie1.veggie_type == "carrot"
 
     # Player parent properties test
-    assert player1.name == "Bruce"
-    player1.name = "Hector"
-    assert player1.name == "Hector"
+    assert player1.name == "Bruce"              # Initialize player name
+    player1.name = "Hector"                     # Modify name
+    assert player1.name == "Hector"             # Check name
 
     # Player child properties test
     player1.harvest("carrot")
