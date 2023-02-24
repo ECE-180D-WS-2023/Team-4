@@ -148,10 +148,10 @@ def main():
                         fire_shot()
 
         # TODO: export to separate function that creates updates all *local* sprites
-        player.update(pressed_keys)
+        player.move(pressed_keys)
         shots.update()
 
-        redraw_screen()
+        redraw_screen(screen)
 
         # Add collision logic
         if pygame.sprite.spritecollideany(player, shots):

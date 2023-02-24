@@ -1,5 +1,6 @@
 import pygame, sys
 from button import Button
+from Player import Player
 from Constants import *
 
 pygame.init()          # Start game
@@ -7,10 +8,18 @@ pygame.init()          # Start game
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Veggie Wars")
 
+# Initialize sprite groups
+all_sprites = pygame.sprite.Group()
+
 BG = pygame.image.load("assets/Background.png")
 
 def get_font(size):
     return pygame.font.Font("assets/font.ttf", size)
+
+def redraw_screen(screen):
+    screen.fill((0, 0, 0))
+    for sprite in all_sprites:
+        screen.blit(sprite.surf, sprite.rect)
 
 def play():
     while True:
@@ -39,30 +48,29 @@ def play():
         pygame.display.update()
 
 def tutorials():
+    # Creates a dummy player
+    player1_dict = {"pos_x": 30, "pos_y": 40, "vel_x":5, "vel_y":5, "health":10,
+                        "team_num":1, "name":"Bruce", "role": PLAYER_ENGINEER, "state":PLAYER_WALKING}
+    player = Player(**player1_dict)           # Initialize player
+
     while True:
         TUTORIALS_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.fill("white")
-
-        TUTORIALS_TEXT = get_font(45).render("This is the TUTORIALS screen.", True, "Black")
-        TUTORIALS_RECT = TUTORIALS_TEXT.get_rect(center=(640, 260))
-        SCREEN.blit(TUTORIALS_TEXT, TUTORIALS_RECT)
-
-        TUTORIALS_BACK = Button(image=None, pos=(640, 460), 
-                            text_input="BACK", font=get_font(75), base_color="Black", hovering_color="Green")
-
-        TUTORIALS_BACK.changeColor(TUTORIALS_MOUSE_POS)
-        TUTORIALS_BACK.update(SCREEN)
+        SCREEN.fill("black")
+        
+        all_sprites.add([player])                 # Add player to sprite group
+        pressed_keys = pygame.key.get_pressed()   # Keyboard input
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if TUTORIALS_BACK.checkForInput(TUTORIALS_MOUSE_POS):
-                    main_menu()
 
-        pygame.display.update()
+        player.move(pressed_keys)
+
+        redraw_screen(SCREEN)
+
+        pygame.display.flip()
     
 def options():
     while True:

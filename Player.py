@@ -1,7 +1,18 @@
 import pygame
 from GameObject import GameObject
 from Constants import *
-
+from pygame.locals import (
+    K_UP,
+    K_DOWN,
+    K_LEFT,
+    K_RIGHT,
+    K_RETURN,
+    K_SPACE,
+    K_ESCAPE,
+    K_q,
+    KEYDOWN,
+    QUIT,
+)
 
 class Player(GameObject):
     def __init__(self, role, name, state=PLAYER_WALKING, **profile):
@@ -159,6 +170,35 @@ class Player(GameObject):
             # make veggie disapper in the arena and map
         else:
             print("sorry backpack full")
+
+
+    def move(self, pressed_keys):
+        if self.m_state == PLAYER_WALKING:
+            # Movement
+            if pressed_keys[K_UP]:
+                self.m_pos_y -= self.m_vel_y
+            if pressed_keys[K_DOWN]:
+                self.m_pos_y += self.m_vel_y
+            if pressed_keys[K_LEFT]:
+                self.m_pos_x -= self.m_vel_x
+            if pressed_keys[K_RIGHT]:
+                self.m_pos_x += self.m_vel_x
+
+            # Don't allow player to move off screen
+            if self.rect.left < 0:
+                self.m_pos_x = PLAYER_WIDTH/2
+            if self.rect.right > SCREEN_WIDTH:
+                self.m_pos_x = SCREEN_WIDTH-PLAYER_WIDTH
+            if self.rect.top <= 0:
+                self.m_pos_y = PLAYER_HEIGHT
+            if self.rect.bottom >= SCREEN_HEIGHT:
+                self.m_pos_y = SCREEN_HEIGHT-PLAYER_HEIGHT
+            
+            self.update()
+        
+    def update(self):
+        self.rect.center = (self.m_pos_x, self.m_pos_y)
+
     
     def attack(self, item):
         """

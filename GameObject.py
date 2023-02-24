@@ -1,17 +1,6 @@
 import pygame
 from Constants import *
-from pygame.locals import (
-    K_UP,
-    K_DOWN,
-    K_LEFT,
-    K_RIGHT,
-    K_RETURN,
-    K_SPACE,
-    K_ESCAPE,
-    K_q,
-    KEYDOWN,
-    QUIT,
-)
+
 
 
 class GameObject(pygame.sprite.Sprite):
