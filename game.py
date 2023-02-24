@@ -82,5 +82,11 @@ if __name__ == "__main__":
     assert curr_backpack["carrot"] == 5
     player1.display_backpack()
 
+    # Player alive test
+    assert player1.alive == True
+    damage = -11
+    player1.health = player1.health + damage
+    assert player1.alive == False
+    del player1
     
     print("Everything passed")

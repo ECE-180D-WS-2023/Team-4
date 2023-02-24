@@ -38,8 +38,23 @@ class GameObject(pygame.sprite.Sprite):
         self.m_vel_x = profile["vel_x"]                 # Initialize x velocity
         self.m_vel_y = profile["vel_y"]                 # Initialize y velocity
         self.m_health = profile["health"]               # Initialize object health
+        self.m_alive = profile["health"] > 0            # Initialize boolean for alive/death
         self.m_team_num = profile["team_num"]           # Initialize team number
 
+    # Alive getter function
+    @property
+    def alive(self):
+        """
+        Getter for PROPERTY alive.
+
+        INPUT:
+        - NONE
+        OUTPUT:
+        if the game object is still alive
+        """
+        print("Am I alive? ", self.m_alive)
+        return self.m_alive
+    
     # Position getter function
     @property
     def position(self):
@@ -121,6 +136,7 @@ class GameObject(pygame.sprite.Sprite):
         - NONE
         """
         self.m_health = new_health
+        self.m_alive = self.m_health > 0
 
 
     # Team number getter function
