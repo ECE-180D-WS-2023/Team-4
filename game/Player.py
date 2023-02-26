@@ -1,6 +1,6 @@
 import pygame
 from GameObject import GameObject
-from Constants import *
+from constants import *
 from pygame.locals import (
     K_UP,
     K_DOWN,

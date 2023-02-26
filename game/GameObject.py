@@ -1,7 +1,5 @@
 import pygame
-from Constants import *
-
-
+from constants import *
 
 class GameObject(pygame.sprite.Sprite):
     def __init__(self, **profile):
