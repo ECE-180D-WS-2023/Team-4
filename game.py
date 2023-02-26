@@ -4,6 +4,7 @@ from Player import Player
 from Veggie import Veggie
 from Base import Base
 from Constants import *
+import time
 
 pygame.init()          # Start game
 
@@ -71,14 +72,20 @@ def tutorials():
                     "team_num":3, "veggie_type": "cabbage"}
     veggie1 = Veggie(**veggie1_dict)              
 
-    # Initialize base
+    # Initialize base 1
     base1_dict = {"pos_x": 420, "pos_y": 680, "vel_x":3, "vel_y":3, "health":10,
                   "team_num":1, "shield":10}
     base1 = Base(**base1_dict)
 
+    # Initialize base 2
+    base2_dict = {"pos_x": 420, "pos_y": 50, "vel_x":3, "vel_y":3, "health":20,
+                  "team_num":2, "shield":10}
+    base2 = Base(**base2_dict)
+
+
     players.add([player1])                        # Add player1 to players group
     harvestables.add([veggie1])                   # Add veggie1 to harvestable group
-    bases.add([base1])                            # Add base1 to bases group
+    bases.add([base1, base2])                            # Add base1 to bases group
 
     running = True
     while running:
@@ -113,9 +120,30 @@ def tutorials():
                 running = False
             
             # player.backpack + 1
+        
+        if pygame.sprite.collide_rect(player1, base2):
+            # if the base has health
+                # if the base is immune
+                    # record time and pass
+                # else
+                    # take damage and reset immune time
+            if base2.immune_time <= 0:
+                base2.immune_time = pygame.time.get_ticks()
+                pass
+            elif base2.health > 0:
+                hit_time = pygame.time.get_ticks()
+                damage = 10
+                base2.health = base2.health - damage
+                print("current base health: ", base2.health)
+                
+            else:
+                base2.kill()
+                running = False
 
             
 
+            
+            
         pygame.display.flip()
     
 def options():
