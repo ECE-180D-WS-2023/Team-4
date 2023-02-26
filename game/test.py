@@ -4,22 +4,6 @@ from Veggie import Veggie
 from Base import Base
 from Player import Player
 from constants import *
-from pygame.locals import (
-    K_UP,
-    K_DOWN,
-    K_LEFT,
-    K_RIGHT,
-    K_RETURN,
-    K_SPACE,
-    K_ESCAPE,
-    K_q,
-    KEYDOWN,
-    QUIT,
-    K_TAB,
-    K_0,
-    K_1,
-    K_2
-)
 
 if __name__ == "__main__":
     """
@@ -52,11 +36,11 @@ if __name__ == "__main__":
     """
 
     # Object creation
-    player1_dict = {"pos_x": 30, "pos_y": 0, "vel_x":0, "vel_y":0, "health":10, "team_num":1, "name":"Bruce", "role": PLAYER_ENGINEER, "state":PLAYER_WALKING}
-    veggie1 = Veggie(pos_x = 3, pos_y = 4, vel_x = 0, vel_y = 1, health = 3, team_num = 1, veggie_type = "pumpkin")
-    base1 = Base(pos_x = 50, pos_y = 0, vel_x = 0, vel_y = 0, health = 100, team_num = 1)
+    # player1_dict = {(30, 0), (0, 0), team_num = 1, name = "Bruce", role =  PLAYER_ENGINEER, state = PLAYER_WALKING,  health = 10}
+    veggie1 = Veggie((3, 4), (0, 1), damage = 3, team_num = 1, veggie_type = "pumpkin")
+    base1 = Base((50, 0), (0, 0), health = 100, team_num = 1)
     #player1 = Player(pos_x = 30, pos_y = 0, vel_x = 0, vel_y = 0, health = 10, team_num = 1, name="Bruce" ,role = PLAYER_ENGINEER, state = PLAYER_WALKING)
-    player1 = Player(**player1_dict)
+    player1 = Player((30, 0), (0, 0), team_num = 1, name = "Bruce", role =  PLAYER_ENGINEER, state = PLAYER_WALKING,  health = 10)
 
     # Veggie parent properties test
     assert veggie1.position == (3, 4)
@@ -110,10 +94,12 @@ if __name__ == "__main__":
     player1.display_backpack()
 
     # Player alive test
-    assert player1.alive == True
+    assert player1.is_alive() == True
+    print("meow", str(player1.health))
     damage = -11
     player1.health = player1.health + damage
-    assert player1.alive == False
+    print("meow", str(player1.health))
+    assert player1.is_alive() == False
     del player1
     
     print("Everything passed")

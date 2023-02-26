@@ -1,25 +1,10 @@
-import pygame
 from GameObject import GameObject
 from constants import *
-from pygame.locals import (
-    K_UP,
-    K_DOWN,
-    K_LEFT,
-    K_RIGHT,
-    K_RETURN,
-    K_SPACE,
-    K_ESCAPE,
-    K_q,
-    KEYDOWN,
-    QUIT,
-    K_TAB,
-    K_0,
-    K_1,
-    K_2
-)
+from typing import List, Set, Dict, Tuple
 
 class Player(GameObject):
-    def __init__(self, role, name, state=PLAYER_WALKING, **profile):
+    # TODO: remove role attribute in favor of subclasses
+    def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
         """
         INPUT:
         - role: player_role
@@ -40,107 +25,43 @@ class Player(GameObject):
             - health: object health/damage
             - team_num: object team number
         """
-        super().__init__(**profile)
+        super().__init__((PLAYER_WIDTH, PLAYER_HEIGHT), pos, vel, team_num)
         self.m_role = role                                                         # Initialize player role
         self.m_state = state                                                       # Initialize player state
         self.m_backpack = {"potato":0, "carrot":0, "cabbage":0, "pumpkin":0}       # Initialize player backpack
         self.m_weight = role                                                       # Initialize player weight
         self.m_name = name                                                         # Initialize player name
+        self.m_health = health                                                         # Initialize player health
 
-    # player name getter function
     @property
-    def name(self):
-        """
-        Getter for PROPERTY name
-
-        INPUT:
-        - NONE
-        OUTPUT:
-        a string of player name
-        """
-        
+    def name(self) -> str:
         print("My name is: ", self.m_name)
         return self.m_name
     
-    # player name setter function
     @name.setter
-    def name(self, new_name):
-        """
-        Setter for PROPERTY name
-
-        INPUT:
-        - new_name: a new player name
-        OUTPUT:
-        - NONE
-        """
+    def name(self, new_name: str) -> None:
         self.m_name = new_name
     
-    # Velocity getter function
     @property
-    def velocity(self):
-        """
-        Getter for PROPERTY velocity
-
-        INPUT:
-        - NONE
-        OUTPUT:
-        a tuple of velocity x and y
-        """
-        
-        print("My velocity is: ", self.m_vel_x , " and ", self.m_vel_y)
-        return self.m_vel_x, self.m_vel_y
-    
-    # Velocity setter function
-    @velocity.setter
-    def velocity(self, vel):
-        """
-        Setter for PROPERTY velocity
-
-        INPUT:
-        - vel: A tuple containing updated x and y velocity
-        OUTPUT:
-        - NONE
-        """
-        self.m_vel_x, self.m_vel_y = vel
-    
-    # Getter method for player state
-    @property
-    def player_state(self):
-        """
-        Getter for PROPERTY player_state
-
-        INPUT:
-        - NONE
-        OUTPUT:
-        - player state
-        """
+    def player_state(self) -> int:
         print("Current player state: ", self.m_state)
         return self.m_state
     
-    # Setter method for player state
     @player_state.setter
-    def player_state(self, new_player_state):
-        """
-        Setter for PROPERTY player_state
-
-        INPUT:
-        - new_player_state: new player state
-        OUTPUT:
-        - NONE
-        """
+    def player_state(self, new_player_state: int) -> None:
         self.m_state = new_player_state
 
-    # Getter method for player state
+    @property
+    def health(self) -> int:
+        print("Current base shield: ", self.m_health)
+        return self.m_health
+
+    @health.setter
+    def health(self, new_health: int) -> None:
+        self.m_health = new_health
+
     @property
     def player_role(self):
-        """
-        Getter function for PROPERTY player_role
-
-        INPUT:
-        - NONE
-        OUTPUT:
-        - player role
-        """
         print("Current player role: ", self.m_role)
         return self.m_role
     
@@ -156,6 +77,9 @@ class Player(GameObject):
     #     - NONE
     #     """
     #     self.m_role = new_player_role
+
+    def is_alive(self):
+        return self.health > 0
 
 
     def harvest(self, item):
@@ -234,12 +158,5 @@ class Player(GameObject):
             print("sorry no ammo")
     
     def display_backpack(self):
-        """
-        Display player backpack
-        """
-
         print(self.m_backpack)
         return self.m_backpack
-
-
-        

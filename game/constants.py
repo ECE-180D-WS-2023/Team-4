@@ -1,12 +1,33 @@
+from pygame.locals import (
+    K_UP,
+    K_DOWN,
+    K_LEFT,
+    K_RIGHT,
+    K_RETURN,
+    K_SPACE,
+    K_ESCAPE,
+    K_q,
+    KEYDOWN,
+    QUIT,
+    K_TAB,
+    K_0,
+    K_1,
+    K_2
+)
+
 # Arena Parameters
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
-PLAYER_WIDTH = 20
-PLAYER_HEIGHT = 20
+PLAYER_WIDTH = 32
+PLAYER_HEIGHT = 32
 SLINGSHOT_WIDTH = 50
 SLINGSHOT_HEIGHT = 50
 SHOT_WIDTH = 5
 SHOT_HEIGHT = 10
+VEGGIE_WIDTH = 16
+VEGGIE_HEIGHT = 16
+BASE_WIDTH = 64
+BASE_HEIGHT = 64
 
 # Veggie damage
 VEGGIE_POTATO = 5
