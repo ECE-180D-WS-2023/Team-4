@@ -105,9 +105,12 @@ def tutorials():
         # player.display_backpack(pressed_keys)    # display backpack
         player1.switch_state(pressed_keys)         # switch player states
 
-        # Refresh screen
+        # Refresh screen and display objects
         redraw_screen(SCREEN)
-        player1.move(pressed_keys, SCREEN)                 # moving players
+        player1.move(pressed_keys, SCREEN)         # moving players
+        veggie1.draw(None, SCREEN)                 
+        base1.draw(None, SCREEN)
+        base2.draw(None, SCREEN)
 
         if pygame.sprite.collide_circle(player1, veggie1):
             # the harvestable glows and it takes time to harvest that veggie
