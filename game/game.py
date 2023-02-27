@@ -3,7 +3,7 @@ from button import Button
 from Player import Player
 from Veggie import Veggie
 from Base import Base
-from Constants import *
+from constants import *
 import time
 
 pygame.init()          # Start game
@@ -65,22 +65,22 @@ def tutorials():
     # Initialize player
     player1_dict = {"pos_x": 30, "pos_y": 40, "vel_x":2, "vel_y":2, "health":10,
                     "team_num":1, "name":"Bruce", "role": PLAYER_ENGINEER, "state":PLAYER_WALKING}
-    player1 = Player(**player1_dict)
+    player1 = Player((30, 40), (2, 2), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
 
     # Initialize veggie
     veggie1_dict = {"pos_x": 420, "pos_y": 270, "vel_x":3, "vel_y":3, "health":10,
                     "team_num":3, "veggie_type": "cabbage"}
-    veggie1 = Veggie(**veggie1_dict)              
+    veggie1 = Veggie((420, 270), (3, 3), 3, "cabbage", 10)              
 
     # Initialize base 1
     base1_dict = {"pos_x": 420, "pos_y": 680, "vel_x":3, "vel_y":3, "health":10,
                   "team_num":1, "shield":10}
-    base1 = Base(**base1_dict)
+    base1 = Base((420, 680), (3, 3), 1, 10, 10)
 
     # Initialize base 2
     base2_dict = {"pos_x": 420, "pos_y": 50, "vel_x":3, "vel_y":3, "health":20,
                   "team_num":2, "shield":10}
-    base2 = Base(**base2_dict)
+    base2 = Base((420, 50), (3, 3), 2, 20, 10)
 
 
     players.add([player1])                        # Add player1 to players group
@@ -91,7 +91,7 @@ def tutorials():
     while running:
         TUTORIALS_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.fill("black")
+        SCREEN.fill("white")
         
 
         pressed_keys = pygame.key.get_pressed()   # Keyboard input
@@ -102,12 +102,12 @@ def tutorials():
                 pygame.quit()
                 sys.exit()
 
-        player1.move(pressed_keys)                 # moving players
         # player.display_backpack(pressed_keys)    # display backpack
         player1.switch_state(pressed_keys)         # switch player states
 
         # Refresh screen
         redraw_screen(SCREEN)
+        player1.move(pressed_keys, SCREEN)                 # moving players
 
         if pygame.sprite.collide_circle(player1, veggie1):
             # the harvestable glows and it takes time to harvest that veggie
