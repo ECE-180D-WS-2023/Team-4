@@ -33,21 +33,25 @@ class GameObject(pygame.sprite.Sprite):
         self.last_update = pygame.time.get_ticks()
         self.animation_cooldown = 170
 
-    def draw_action(self, action, screen):
-        self.frame_row = action # action
+    def draw(self, action, screen):
+        if action != None:
+            self.frame_row = action
 
-        # update animation
-        self.current_time = pygame.time.get_ticks()
-        if self.current_time - self.last_update >= self.animation_cooldown:
-            self.frame_col += 1
-            self.last_update = self.current_time
-            if self.frame_col >= len(self.animation_list[self.frame_row]):
-                self.frame_col = 0
+            # Update frame
+            self.current_time = pygame.time.get_ticks()
+            if self.current_time - self.last_update >= self.animation_cooldown:
+                self.frame_col += 1
+                self.last_update = self.current_time
+                if self.frame_col >= len(self.animation_list[self.frame_row]):
+                    self.frame_col = 0
 
+        # Draw frame on screen
         screen.blit(self.animation_list[self.frame_row][self.frame_col], self.rect.center)
 
-    def draw_idle(self, screen):
-        screen.blit(self.animation_list[self.frame_row][self.frame_col], self.rect.center)
+
+    def update(self, action, screen):
+        self.rect.center = (self.m_pos_x, self.m_pos_y)
+        self.draw(action, screen)
 
     @property
     def position(self):

@@ -37,16 +37,16 @@ class Player(GameObject):
     def name(self) -> str:
         print("My name is: ", self.m_name)
         return self.m_name
-    
+
     @name.setter
     def name(self, new_name: str) -> None:
         self.m_name = new_name
-    
+
     @property
     def player_state(self) -> int:
         print("Current player state: ", self.m_state)
         return self.m_state
-    
+
     @player_state.setter
     def player_state(self, new_player_state: int) -> None:
         self.m_state = new_player_state
@@ -64,7 +64,7 @@ class Player(GameObject):
     def player_role(self):
         print("Current player role: ", self.m_role)
         return self.m_role
-    
+
     # Setter method for player role
     # @player_role.setter
     # def player_role(self, new_player_role):
@@ -102,26 +102,19 @@ class Player(GameObject):
 
     def move(self, pressed_keys, screen):
         if self.m_state == PLAYER_WALKING:
-            pressed = False
-            # Movement
+            actions = []
             if pressed_keys[K_UP]:
                 self.m_pos_y -= self.m_vel_y
-                self.draw_action(3, screen)
-                pressed = True
+                actions.append(3)
             if pressed_keys[K_DOWN]:
                 self.m_pos_y += self.m_vel_y
-                self.draw_action(0, screen)
-                pressed = True
+                actions.append(0)
             if pressed_keys[K_LEFT]:
                 self.m_pos_x -= self.m_vel_x
-                self.draw_action(1, screen)
-                pressed = True
+                actions.append(1)
             if pressed_keys[K_RIGHT]:
                 self.m_pos_x += self.m_vel_x
-                self.draw_action(2, screen)
-                pressed = True
-            if pressed == False:
-                self.draw_idle(screen)
+                actions.append(2)
 
             # Don't allow player to move off screen
             if self.rect.left < 0:
@@ -132,11 +125,9 @@ class Player(GameObject):
                 self.m_pos_y = PLAYER_HEIGHT
             if self.rect.bottom >= SCREEN_HEIGHT:
                 self.m_pos_y = SCREEN_HEIGHT-PLAYER_HEIGHT
-            
-            self.update()
-        
-    def update(self):
-        self.rect.center = (self.m_pos_x, self.m_pos_y)
+
+            action = actions[-1] if (len(actions) > 0) else None
+            self.update(action, screen)
 
     def switch_state(self, pressed_key):
         if pressed_key[K_0]:
@@ -148,7 +139,7 @@ class Player(GameObject):
         if pressed_key[K_2]:
             self.player_state = PLAYER_SHOOTING
             print("Shooting!")
-    
+
     def attack(self, item):
         """
         ##########################################
@@ -158,7 +149,7 @@ class Player(GameObject):
         Attack using an item in the player backpack (only when player is in SHOOTING mode)
 
         if the player's backpack is empty, then you cannot shoot.
-        
+
         """
         if (self.m_state != PLAYER_SHOOTING):
             print("Player not in shooting mode")
@@ -167,7 +158,7 @@ class Player(GameObject):
         else:
             # This should never be executed, since we won't display veggies that you don't have.
             print("sorry no ammo")
-    
+
     def display_backpack(self):
         print(self.m_backpack)
         return self.m_backpack
@@ -175,16 +166,16 @@ class Player(GameObject):
 class Engineer(Player):
     def __init__(self):
         pass
-        
-        
+
+
 class Traveler(Player):
     def __init__(self):
         pass
-        
+
 class Soldier(Player):
     def __init__(self):
         pass
-        
+
 class Farmer(Player):
     def __init__(self):
         pass
