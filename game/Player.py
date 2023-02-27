@@ -128,6 +128,8 @@ class Player(GameObject):
 
             action = actions[-1] if (len(actions) > 0) else None
             self.update(action, screen)
+        else:
+            self.update(None, screen)
 
     def switch_state(self, pressed_key):
         if pressed_key[K_0]:
