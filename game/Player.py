@@ -106,19 +106,19 @@ class Player(GameObject):
             # Movement
             if pressed_keys[K_UP]:
                 self.m_pos_y -= self.m_vel_y
-                self.draw_action(1, screen)
+                self.draw_action(3, screen)
                 pressed = True
             if pressed_keys[K_DOWN]:
                 self.m_pos_y += self.m_vel_y
-                self.draw_action(2, screen)
+                self.draw_action(0, screen)
                 pressed = True
             if pressed_keys[K_LEFT]:
                 self.m_pos_x -= self.m_vel_x
-                self.draw_action(3, screen)
+                self.draw_action(1, screen)
                 pressed = True
             if pressed_keys[K_RIGHT]:
                 self.m_pos_x += self.m_vel_x
-                self.draw_action(0, screen)
+                self.draw_action(2, screen)
                 pressed = True
             if pressed == False:
                 self.draw_idle(screen)
