@@ -65,22 +65,8 @@ class Player(GameObject):
         print("Current player role: ", self.m_role)
         return self.m_role
 
-    # Setter method for player role
-    # @player_role.setter
-    # def player_role(self, new_player_role):
-    #     """
-    #     Setter for PROPERTY player_role
-
-    #     INPUT:
-    #     - new_player_role: new player role
-    #     OUTPUT:
-    #     - NONE
-    #     """
-    #     self.m_role = new_player_role
-
     def is_alive(self):
         return self.health > 0
-
 
     def harvest(self, item):
         """
@@ -100,36 +86,69 @@ class Player(GameObject):
             print("sorry backpack full")
 
 
+    # TODO: use this instead of move
+    # def update(self, pressed_keys, screen):
+    #     if self.m_state != PLAYER_WALKING:
+    #         super().update(screen)
+    #         return
+    #
+    #     actions = []
+    #     if pressed_keys[K_UP]:
+    #         self.m_pos_y -= self.m_vel_y
+    #         actions.append(3)
+    #     if pressed_keys[K_DOWN]:
+    #         self.m_pos_y += self.m_vel_y
+    #         actions.append(0)
+    #     if pressed_keys[K_LEFT]:
+    #         self.m_pos_x -= self.m_vel_x
+    #         actions.append(1)
+    #     if pressed_keys[K_RIGHT]:
+    #         self.m_pos_x += self.m_vel_x
+    #         actions.append(2)
+    #
+    #     # Don't allow player to move off screen
+    #     if self.rect.left < 0:
+    #         self.m_pos_x = PLAYER_WIDTH/2
+    #     if self.rect.right > SCREEN_WIDTH:
+    #         self.m_pos_x = SCREEN_WIDTH-PLAYER_WIDTH
+    #     if self.rect.top <= 0:
+    #         self.m_pos_y = PLAYER_HEIGHT
+    #     if self.rect.bottom >= SCREEN_HEIGHT:
+    #         self.m_pos_y = SCREEN_HEIGHT-PLAYER_HEIGHT
+    #
+    #     action = actions[-1] if (len(actions) > 0) else None
+    #     self.update(action, screen)
+
     def move(self, pressed_keys, screen):
-        if self.m_state == PLAYER_WALKING:
-            actions = []
-            if pressed_keys[K_UP]:
-                self.m_pos_y -= self.m_vel_y
-                actions.append(3)
-            if pressed_keys[K_DOWN]:
-                self.m_pos_y += self.m_vel_y
-                actions.append(0)
-            if pressed_keys[K_LEFT]:
-                self.m_pos_x -= self.m_vel_x
-                actions.append(1)
-            if pressed_keys[K_RIGHT]:
-                self.m_pos_x += self.m_vel_x
-                actions.append(2)
-
-            # Don't allow player to move off screen
-            if self.rect.left < 0:
-                self.m_pos_x = PLAYER_WIDTH/2
-            if self.rect.right > SCREEN_WIDTH:
-                self.m_pos_x = SCREEN_WIDTH-PLAYER_WIDTH
-            if self.rect.top <= 0:
-                self.m_pos_y = PLAYER_HEIGHT
-            if self.rect.bottom >= SCREEN_HEIGHT:
-                self.m_pos_y = SCREEN_HEIGHT-PLAYER_HEIGHT
-
-            action = actions[-1] if (len(actions) > 0) else None
-            self.update(action, screen)
-        else:
+        if self.m_state != PLAYER_WALKING:
             self.update(None, screen)
+
+        actions = []
+        if pressed_keys[K_UP]:
+            self.m_pos_y -= self.m_vel_y
+            actions.append(3)
+        if pressed_keys[K_DOWN]:
+            self.m_pos_y += self.m_vel_y
+            actions.append(0)
+        if pressed_keys[K_LEFT]:
+            self.m_pos_x -= self.m_vel_x
+            actions.append(1)
+        if pressed_keys[K_RIGHT]:
+            self.m_pos_x += self.m_vel_x
+            actions.append(2)
+
+        # Don't allow player to move off screen
+        if self.rect.left < 0:
+            self.m_pos_x = PLAYER_WIDTH/2
+        if self.rect.right > SCREEN_WIDTH:
+            self.m_pos_x = SCREEN_WIDTH-PLAYER_WIDTH
+        if self.rect.top <= 0:
+            self.m_pos_y = PLAYER_HEIGHT
+        if self.rect.bottom >= SCREEN_HEIGHT:
+            self.m_pos_y = SCREEN_HEIGHT-PLAYER_HEIGHT
+
+        action = actions[-1] if (len(actions) > 0) else None
+        self.update(action, screen)
 
     def switch_state(self, pressed_key):
         if pressed_key[K_0]:

@@ -1,3 +1,5 @@
+import pygame
+
 from pygame.locals import (
     K_UP,
     K_DOWN,
@@ -16,8 +18,8 @@ from pygame.locals import (
 )
 
 # Arena Parameters
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
+SCREEN_WIDTH = 2560
+SCREEN_HEIGHT = 1660
 PLAYER_WIDTH = 32
 PLAYER_HEIGHT = 32
 SLINGSHOT_WIDTH = 50

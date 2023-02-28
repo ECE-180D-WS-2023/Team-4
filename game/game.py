@@ -8,7 +8,9 @@ import time
 
 pygame.init()          # Start game
 
-SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+# https://stackoverflow.com/questions/73758038/pygame-wrong-resolution-on-macos
+SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN | pygame.SCALED)
+
 pygame.display.set_caption("Veggie Wars")
 
 # Initialize sprite groups
@@ -40,7 +42,7 @@ def play():
         PLAY_RECT = PLAY_TEXT.get_rect(center=(640, 260))
         SCREEN.blit(PLAY_TEXT, PLAY_RECT)
 
-        PLAY_BACK = Button(image=None, pos=(640, 460), 
+        PLAY_BACK = Button(image=None, pos=(640, 460),
                             text_input="BACK", font=get_font(75), base_color="White", hovering_color="Green")
 
         PLAY_BACK.changeColor(PLAY_MOUSE_POS)
@@ -62,24 +64,9 @@ def tutorials():
 
     Only one player can move around.
     """
-    # Initialize player
-    player1_dict = {"pos_x": 30, "pos_y": 40, "vel_x":2, "vel_y":2, "health":10,
-                    "team_num":1, "name":"Bruce", "role": PLAYER_ENGINEER, "state":PLAYER_WALKING}
     player1 = Player((30, 40), (2, 2), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
-
-    # Initialize veggie
-    veggie1_dict = {"pos_x": 420, "pos_y": 270, "vel_x":3, "vel_y":3, "health":10,
-                    "team_num":3, "veggie_type": "cabbage"}
-    veggie1 = Veggie((420, 270), (3, 3), 3, "cabbage", 10)              
-
-    # Initialize base 1
-    base1_dict = {"pos_x": 420, "pos_y": 680, "vel_x":3, "vel_y":3, "health":10,
-                  "team_num":1, "shield":10}
+    veggie1 = Veggie((420, 270), (3, 3), 3, "cabbage", 10)
     base1 = Base((420, 680), (3, 3), 1, 10, 10)
-
-    # Initialize base 2
-    base2_dict = {"pos_x": 420, "pos_y": 50, "vel_x":3, "vel_y":3, "health":20,
-                  "team_num":2, "shield":10}
     base2 = Base((420, 50), (3, 3), 2, 20, 10)
 
 
@@ -92,10 +79,10 @@ def tutorials():
         TUTORIALS_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.fill("white")
-        
+
 
         pressed_keys = pygame.key.get_pressed()   # Keyboard input
-        
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -108,9 +95,9 @@ def tutorials():
         # Refresh screen and display objects
         redraw_screen(SCREEN)
         player1.move(pressed_keys, SCREEN)         # moving players
-        veggie1.draw(None, SCREEN)                 
-        base1.draw(None, SCREEN)
-        base2.draw(None, SCREEN)
+        veggie1.draw(SCREEN)
+        base1.draw(SCREEN)
+        base2.draw(SCREEN)
 
         if pygame.sprite.collide_circle(player1, veggie1):
             # the harvestable glows and it takes time to harvest that veggie
@@ -121,9 +108,9 @@ def tutorials():
                 # has to be right on top of the veggie
                 veggie1.kill()
                 running = False
-            
+
             # player.backpack + 1
-        
+
         if pygame.sprite.collide_rect(player1, base2):
             # if the base has health
                 # if the base is immune
@@ -138,17 +125,17 @@ def tutorials():
                 damage = 10
                 base2.health = base2.health - damage
                 print("current base health: ", base2.health)
-                
+
             else:
                 base2.kill()
                 running = False
 
-            
 
-            
-            
+
+
+
         pygame.display.flip()
-    
+
 def options():
     while True:
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
@@ -159,7 +146,7 @@ def options():
         OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 260))
         SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
 
-        OPTIONS_BACK = Button(image=None, pos=(640, 460), 
+        OPTIONS_BACK = Button(image=None, pos=(640, 460),
                             text_input="BACK", font=get_font(75), base_color="Black", hovering_color="Green")
 
         OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
@@ -187,13 +174,13 @@ def main_menu():
         MENU_RECT = MENU_TEXT.get_rect(center=(640, 80))
 
         # Initialize buttons
-        PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(640, 230), 
+        PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(640, 230),
                             text_input="PLAY", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
-        OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 380), 
+        OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 380),
                             text_input="OPTIONS", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
         TUTORIALS_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 530),
                             text_input="TUTORIALS", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(640, 650), 
+        QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(640, 650),
                             text_input="QUIT", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
 
         SCREEN.blit(MENU_TEXT, MENU_RECT)
@@ -202,7 +189,7 @@ def main_menu():
         for button in [PLAY_BUTTON, OPTIONS_BUTTON, TUTORIALS_BUTTON, QUIT_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
             button.update(SCREEN)
-        
+
         # event after clicking
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

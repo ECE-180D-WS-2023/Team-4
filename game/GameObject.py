@@ -33,7 +33,7 @@ class GameObject(pygame.sprite.Sprite):
         self.last_update = pygame.time.get_ticks()
         self.animation_cooldown = 170
 
-    def draw(self, action, screen):
+    def draw(self, screen, action=None):
         if action != None:
             self.frame_row = action
 
@@ -49,9 +49,9 @@ class GameObject(pygame.sprite.Sprite):
         screen.blit(self.animation_list[self.frame_row][self.frame_col], self.rect.center)
 
 
-    def update(self, action, screen):
+    def update(self, screen, action=None):
         self.rect.center = (self.m_pos_x, self.m_pos_y)
-        self.draw(action, screen)
+        self.draw(screen, action)
 
     @property
     def position(self):
