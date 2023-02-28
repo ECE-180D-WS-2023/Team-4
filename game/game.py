@@ -94,10 +94,10 @@ def tutorials():
 
         # Refresh screen and display objects
         redraw_screen(SCREEN)
-        player1.move(pressed_keys, SCREEN)         # moving players
-        veggie1.draw(SCREEN)
-        base1.draw(SCREEN)
-        base2.draw(SCREEN)
+        player1.update(pressed_keys, SCREEN)         # moving players
+        veggie1.update(SCREEN)
+        base1.update(SCREEN)
+        base2.update(SCREEN)
 
         if pygame.sprite.collide_circle(player1, veggie1):
             # the harvestable glows and it takes time to harvest that veggie
