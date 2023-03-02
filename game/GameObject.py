@@ -7,8 +7,9 @@ from Spritesheet import SpriteSheet
 from typing import List, Set, Dict, Tuple
 from constants import *
 
+# TODO: clean up the animation logic
 class GameObject(pygame.sprite.Sprite):
-    def __init__(self, shape: Tuple[int, int], pos: Tuple[int, int], vel: Tuple[int, int], team_num: int, img='assets/engineer.png', animation_steps=[3, 3, 3, 3]) -> None:
+    def __init__(self, shape: Tuple[int, int], pos: Tuple[int, int], vel: Tuple[int, int], team_num: int, img='assets/engineer.png', animation_steps=[3, 3, 3, 3], frame_size=(32, 32)) -> None:
         super().__init__() # initialize sprite class
 
         # Attribute Initialization
@@ -25,7 +26,8 @@ class GameObject(pygame.sprite.Sprite):
         self.surf = pygame.Surface(shape)
         self.rect = self.surf.get_rect()
         self.rect.center = pos
-        self.animation_list = SpriteSheet(img).get_animation_list(self.animation_steps)
+        self.frame_size = frame_size
+        self.animation_list = SpriteSheet(img).get_animation_list(self.animation_steps, self.frame_size)
 
         # use in draw functions
         self.frame_col = 0 # frame
