@@ -94,9 +94,7 @@ class Player(GameObject):
             self.player_state = PLAYER_WALKING
         elif pygame.sprite.collide_rect(self, slingshot):
             self.m_mounted = True
-            # self.rect.center = (SCREEN_WIDTH/2, SCREEN_HEIGHT-50)
-            self.m_pos_x = slingshot.m_pos_x
-            self.m_pos_y = slingshot.m_pos_y
+            self.position = slingshot.position
             self.player_state = PLAYER_SHOOTING
 
     def update(self, js_action, screen):

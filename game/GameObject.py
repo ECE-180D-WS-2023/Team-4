@@ -26,8 +26,7 @@ class GameObject(pygame.sprite.Sprite):
         self.surf = pygame.Surface(shape)
         self.rect = self.surf.get_rect()
         self.rect.center = pos
-        self.frame_size = frame_size
-        self.animation_list = SpriteSheet(img).get_animation_list(self.animation_steps, self.frame_size)
+        self.animation_list = SpriteSheet(img).get_animation_list(self.animation_steps, shape)
 
         # use in draw functions
         self.frame_col = 0 # frame
@@ -48,7 +47,7 @@ class GameObject(pygame.sprite.Sprite):
                     self.frame_col = 0
 
         # Draw frame on screen
-        screen.blit(self.animation_list[self.frame_row][self.frame_col], self.rect.center)
+        screen.blit(self.animation_list[self.frame_row][self.frame_col], self.rect)
 
 
     def update(self, screen, action=None):

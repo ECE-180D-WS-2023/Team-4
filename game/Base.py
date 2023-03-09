@@ -3,7 +3,7 @@ from constants import *
 
 class Base(GameObject):
     def __init__(self, pos, vel, team_num, health=100, shield=0):
-        super().__init__((BASE_WIDTH, BASE_HEIGHT), pos, vel, team_num, img="assets/base.png", frame_size=(93, 100))
+        super().__init__((BASE_WIDTH, BASE_HEIGHT), pos, vel, team_num, img="assets/base.png")
         self.m_shield = shield
         self.m_health = health
         self.m_immune_time = 0
