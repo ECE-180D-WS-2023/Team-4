@@ -3,6 +3,7 @@ from button import Button
 from Player import Player
 from Veggie import Veggie
 from Base import Base
+from Slingshot import Slingshot
 from constants import *
 import time
 
@@ -75,9 +76,10 @@ def tutorials():
     veggie1 = Veggie((420, 270), (3, 3), 3, "carrot", 10)
     base1 = Base((420, 680), (3, 3), 1, 10, 10)
     base2 = Base((420, 50), (3, 3), 2, 20, 10)
+    slingshot1 = Slingshot((500, 500), (0, 0), 1)
 
 
-    all_sprites.add([veggie1, base1, base2])
+    all_sprites.add([veggie1, base1, base2, slingshot1])
     players.add([player1])                        # Add player1 to players group
     harvestables.add([veggie1])                   # Add veggie1 to harvestable group
     bases.add([base1, base2])                            # Add base1 to bases group
@@ -97,6 +99,9 @@ def tutorials():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            elif event.type == KEYDOWN:
+                if event.key == K_RETURN:
+                    player1.toggle_mount(slingshot1)
             
 
         x_speed = round(pygame.joystick.Joystick(0).get_axis(0))
