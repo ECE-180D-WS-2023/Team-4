@@ -1,5 +1,6 @@
 from GameObject import GameObject
 from constants import *
+import pygame
 
 class Veggie(GameObject):
     def __init__(self, pos, vel, team_num: int, veggie_type: str, damage: int, ) -> None:
@@ -7,6 +8,19 @@ class Veggie(GameObject):
         self.m_type = veggie_type
         self.m_damage = damage
         self.m_harvest_time = veggie_dict[veggie_type] / 2
+        
+    def update(self, screen, action=None):
+        self.m_pos_x -= self.m_vel_x
+        self.m_pos_y -= self.m_vel_y
+        self.rect.center = (self.m_pos_x, self.m_pos_y)
+        self.draw(screen, action)
+
+        if (self.rect.left < 0 
+            or self.rect.right > SCREEN_WIDTH 
+            or self.rect.top <= 0
+            or self.rect.bottom >= SCREEN_HEIGHT):
+            self.kill()
+            print("this object is killed")
 
     # TODO: remove this test
     def whoami(self):
