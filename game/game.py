@@ -25,6 +25,7 @@ all_sprites = pygame.sprite.Group()
 players = pygame.sprite.Group()
 harvestables = pygame.sprite.Group()
 bases = pygame.sprite.Group()
+shots = pygame.sprite.Group()
 
 BG = pygame.image.load("assets/Background.png")
 
@@ -32,7 +33,6 @@ def get_font(size):
     return pygame.font.Font("assets/font.ttf", size)
 
 def redraw_screen(screen):
-    screen.fill((0, 0, 0))
     for sprite in players:
         screen.blit(sprite.surf, sprite.rect)
     for sprite in harvestables:
@@ -73,7 +73,7 @@ def tutorials():
     Only one player can move around.
     """
     player1 = Player((30, 40), (2, 2), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
-    veggie1 = Veggie((420, 270), (3, 3), 3, "carrot", 10)
+    veggie1 = Veggie((420, 270), (0, 0), 3, "carrot", 10)
     base1 = Base((420, 680), (3, 3), 1, 10, 10)
     base2 = Base((420, 50), (3, 3), 2, 20, 10)
     slingshot1 = Slingshot((500, 500), (0, 0), 1)
@@ -85,10 +85,11 @@ def tutorials():
     bases.add([base1, base2])                            # Add base1 to bases group
 
     running = True
+    TUTORIALS_BG = pygame.image.load("assets/wallpaper.jpg")
     while running:
         TUTORIALS_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.fill("white")
+        SCREEN.fill("black")
 
 
         pressed_keys = pygame.key.get_pressed()   # Keyboard input
@@ -102,6 +103,12 @@ def tutorials():
             elif event.type == KEYDOWN:
                 if event.key == K_RETURN:
                     player1.toggle_mount(slingshot1)
+            elif event.type == pygame.JOYBUTTONDOWN:
+                if pygame.joystick.Joystick(0).get_button(0):
+                    player1.attack("carrot")
+                    temp_veggie = Veggie((420, 470), (0, 0.5), 1, "carrot", 10)
+                    all_sprites.add([temp_veggie])
+                    shots.add([temp_veggie])
             
 
         x_speed = round(pygame.joystick.Joystick(0).get_axis(0))
@@ -128,9 +135,6 @@ def tutorials():
                 veggie1.kill()
                 
 
-
-            # player.backpack + 1
-
         if pygame.sprite.collide_rect(player1, base2):
             # if the base has health
                 # if the base is immune
@@ -149,10 +153,11 @@ def tutorials():
             else:
                 base2.kill()
                 running = False
-
-
-
-
+        
+        # After all collision detection, if the sprite (in Group: Shots)
+        # is out of bounds, we kill that sprite
+        
+            
 
         pygame.display.flip()
 

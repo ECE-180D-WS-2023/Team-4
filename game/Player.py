@@ -107,16 +107,16 @@ class Player(GameObject):
         
         actions = []
         x_action, y_action = js_action
-        if y_action == -1:
+        if y_action == -1:     # Up
             self.m_pos_y -= self.m_vel_y
             actions.append(3)
-        if y_action == 1:
+        if y_action == 1:      # Down
             self.m_pos_y += self.m_vel_y
             actions.append(0)
-        if x_action == -1:
+        if x_action == -1:     # Left
             self.m_pos_x -= self.m_vel_x
             actions.append(1)
-        if x_action == 1:
+        if x_action == 1:      # Right
             self.m_pos_x += self.m_vel_x
             actions.append(2)
 
@@ -159,6 +159,7 @@ class Player(GameObject):
             print("Player not in shooting mode")
         elif self.m_backpack.get(item) >= 1:
             self.m_backpack[item] -= 1
+            self.display_backpack()
         else:
             # This should never be executed, since we won't display veggies that you don't have.
             print("sorry no ammo")
