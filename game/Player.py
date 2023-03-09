@@ -98,7 +98,6 @@ class Player(GameObject):
             self.m_pos_x = slingshot.m_pos_x
             self.m_pos_y = slingshot.m_pos_y
             self.player_state = PLAYER_SHOOTING
-        print(self.m_mounted)
 
     def update(self, js_action, screen):
         if self.m_state != PLAYER_WALKING:
@@ -160,9 +159,11 @@ class Player(GameObject):
         elif self.m_backpack.get(item) >= 1:
             self.m_backpack[item] -= 1
             self.display_backpack()
+            return True
         else:
             # This should never be executed, since we won't display veggies that you don't have.
             print("sorry no ammo")
+            return False
 
     def display_backpack(self):
         print(self.m_backpack)

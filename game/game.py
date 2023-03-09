@@ -100,15 +100,17 @@ def tutorials():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            # Mount Slingshot
             elif event.type == KEYDOWN:
                 if event.key == K_RETURN:
                     player1.toggle_mount(slingshot1)
+            # Attack
             elif event.type == pygame.JOYBUTTONDOWN:
                 if pygame.joystick.Joystick(0).get_button(0):
-                    player1.attack("carrot")
-                    temp_veggie = Veggie((420, 470), (0, 0.5), 1, "carrot", 10)
-                    all_sprites.add([temp_veggie])
-                    shots.add([temp_veggie])
+                    if player1.attack("carrot"):
+                        temp_veggie = Veggie(player1.position, (0, 0.5), 1, "carrot", 10)
+                        all_sprites.add([temp_veggie])
+                        shots.add([temp_veggie])
             
 
         x_speed = round(pygame.joystick.Joystick(0).get_axis(0))
