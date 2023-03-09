@@ -56,7 +56,6 @@ class GameObject(pygame.sprite.Sprite):
 
     @property
     def position(self):
-        print("I am at: ", self.m_pos_x, " and ", self.m_pos_y)
         return self.m_pos_x, self.m_pos_y
 
     @position.setter
