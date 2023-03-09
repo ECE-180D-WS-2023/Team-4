@@ -20,12 +20,19 @@ def calculate_angle(a,b,c):
 
 # Video Feed
 cap = cv.VideoCapture(0)
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 # Setup mediapipe instance
 with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
     while cap.isOpened():
         ret, frame = cap.read()
+<<<<<<< Updated upstream
 
+=======
+        
+>>>>>>> Stashed changes
         # recolor image to RGB
         image = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
         image.flags.writeable = False
@@ -42,6 +49,7 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
             landmarks = results.pose_landmarks.landmark
             
             if cv.waitKey(1) & 0xFF == ord('r'):
+<<<<<<< Updated upstream
                 left_elbow_zero = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x, landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].z]
                 left_shoulder_zero = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x, landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].z]
                 print('hello')
@@ -50,14 +58,31 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
             right_shoulder = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x, landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].z]
             left_shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x, landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].z]
             left_elbow = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x, landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].z]
+=======
+                left_elbow_zero = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x, landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
+                left_shoulder_zero = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x, landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
+                print('hello')
+            
+            # get coordinates
+            right_shoulder = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x, landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
+            left_shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x, landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
+            left_elbow = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x, landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
+>>>>>>> Stashed changes
 
             # calculate angles
             angle = calculate_angle(right_shoulder, left_shoulder, left_elbow)
             angle2 = calculate_angle(left_elbow_zero, left_shoulder_zero, left_elbow)
 
             # visualize angle
+<<<<<<< Updated upstream
             cv.putText(image, str(angle), tuple(np.multiply(left_shoulder, [960, 540]).astype(int)), cv.FONT_HERSHEY_SIMPLEX, 2, (255,255,0), 2, cv.LINE_AA)
             # cv.putText(image, str(angle2), tuple(np.multiply(left_shoulder - 200, [960, 540]).astype(int)), cv.FONT_HERSHEY_SIMPLEX, 2, (255,255,0), 2, cv.LINE_AA)
+=======
+            # cv.putText(image, str(angle), tuple(np.multiply(left_shoulder, [960, 540]).astype(int)), cv.FONT_HERSHEY_SIMPLEX, 2, (255,255,0), 2, cv.LINE_AA)
+            # cv.putText(image, str(angle2), tuple(np.multiply(left_shoulder, [960, 540]).astype(int)), cv.FONT_HERSHEY_SIMPLEX, 2, (255,255,0), 2, cv.LINE_AA)
+            cv.putText(image, str(angle2), (960,540), cv.FONT_HERSHEY_SIMPLEX, 2, (255,255,0), 2, cv.LINE_AA)
+            
+>>>>>>> Stashed changes
         except:
             pass
 
@@ -66,7 +91,12 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
                                 mp_drawing.DrawingSpec(color=(240,236,120), thickness=2, circle_radius=2),
                                 mp_drawing.DrawingSpec(color=(172,14,240), thickness=3, circle_radius=2))
 
+<<<<<<< Updated upstream
         cv.imshow('Mediapipe Feed', image)
+=======
+        cv.imshow('Mediapipe Feed', image) #(1920x1080)
+        # print(cv.getWindowImageRect("Mediapipe Feed"))
+>>>>>>> Stashed changes
 
         if cv.waitKey(1) & 0xFF == ord('q'):
             break
