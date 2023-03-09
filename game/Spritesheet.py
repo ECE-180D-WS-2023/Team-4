@@ -35,7 +35,7 @@ class SpriteSheet():
         for row in range(len(animation_steps)):
             temp_img_list = []
             for col in range(animation_steps[row]): 
-                temp_img_list.append(self.get_image(col, row, frame_size[0], frame_size[1], 2, BLACK))
+                temp_img_list.append(self.get_image(col, row, frame_size[0], frame_size[1], 1, BLACK))
             animation_list.append(temp_img_list)
         
         return animation_list
