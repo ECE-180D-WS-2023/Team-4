@@ -9,7 +9,7 @@ from constants import *
 
 # TODO: clean up the animation logic
 class GameObject(pygame.sprite.Sprite):
-    def __init__(self, shape: Tuple[int, int], pos: Tuple[int, int], vel: Tuple[int, int], team_num: int, img='assets/pixel_veggies1.png', animation_steps=[1], frame_size=(32, 32)) -> None:
+    def __init__(self, shape: Tuple[int, int], pos: Tuple[int, int], vel: Tuple[int, int], team_num: int, img='assets/pixel_veggies1.png', animation_steps=[32], frame_size=(32, 32)) -> None:
         super().__init__() # initialize sprite class
 
         # Attribute Initialization

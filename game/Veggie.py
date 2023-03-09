@@ -3,10 +3,11 @@ from constants import *
 
 class Veggie(GameObject):
     def __init__(self, pos, vel, team_num: int, veggie_type: str, damage: int) -> None:
-        super().__init__((VEGGIE_WIDTH, VEGGIE_HEIGHT), pos, vel, team_num)
+        super().__init__((VEGGIE_WIDTH, VEGGIE_HEIGHT), pos, vel, team_num, img='assets/pixel_veggies1.png')
         self.m_type = veggie_type
         self.m_damage = damage
         self.m_harvest_time = veggie_dict[veggie_type] / 2
+        
         
 
     # TODO: remove this test

@@ -82,6 +82,7 @@ class Player(GameObject):
             print("You successfully added ", item)
             self.m_backpack[item] += 1
             # make veggie disapper in the arena and map
+            self.display_backpack()
         else:
             print("sorry backpack full")
 

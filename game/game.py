@@ -14,6 +14,7 @@ SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREE
 pygame.display.set_caption("Veggie Wars")
 
 # Initialize sprite groups
+all_sprites = pygame.sprite.Group()
 players = pygame.sprite.Group()
 harvestables = pygame.sprite.Group()
 bases = pygame.sprite.Group()
@@ -65,11 +66,12 @@ def tutorials():
     Only one player can move around.
     """
     player1 = Player((30, 40), (2, 2), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
-    veggie1 = Veggie((420, 270), (3, 3), 3, "cabbage", 10)
+    veggie1 = Veggie((420, 270), (3, 3), 3, "carrot", 10)
     base1 = Base((420, 680), (3, 3), 1, 10, 10)
     base2 = Base((420, 50), (3, 3), 2, 20, 10)
 
 
+    all_sprites.add([veggie1, base1, base2])
     players.add([player1])                        # Add player1 to players group
     harvestables.add([veggie1])                   # Add veggie1 to harvestable group
     bases.add([base1, base2])                            # Add base1 to bases group
@@ -95,19 +97,21 @@ def tutorials():
         # Refresh screen and display objects
         redraw_screen(SCREEN)
         player1.update(pressed_keys, SCREEN)         # moving players
-        veggie1.update(SCREEN)
-        base1.update(SCREEN)
-        base2.update(SCREEN)
+        for sprite in all_sprites:
+            sprite.update(SCREEN)
+        
 
-        if pygame.sprite.collide_circle(player1, veggie1):
+        if pygame.sprite.spritecollideany(player1, harvestables):
             # the harvestable glows and it takes time to harvest that veggie
             # veggie is destroyed after harvested
             if player1.player_state != PLAYER_HARVESTING:
                 pass
             else:
                 # has to be right on top of the veggie
+                player1.harvest(veggie1.m_type)
                 veggie1.kill()
-                running = False
+                
+
 
             # player.backpack + 1
 
