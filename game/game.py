@@ -74,8 +74,8 @@ def tutorials():
     """
     player1 = Player((30, 40), (2, 2), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
     veggie1 = Veggie((420, 270), (0, 0), 3, "carrot", 10)
-    base1 = Base((420, 680), (3, 3), 1, 10, 10)
-    base2 = Base((420, 50), (3, 3), 2, 20, 10)
+    base1 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4)), (3, 3), 1, 10, 10)
+    base2 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4)), (3, 3), 2, 20, 10)
     slingshot1 = Slingshot((500, 500), (0, 0), 1)
 
 
@@ -85,11 +85,11 @@ def tutorials():
     bases.add([base1, base2])                            # Add base1 to bases group
 
     running = True
-    TUTORIALS_BG = pygame.image.load("assets/wallpaper.jpg")
+    TUTORIALS_BG = pygame.image.load("assets/grass.png")
     while running:
         TUTORIALS_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.fill("black")
+        SCREEN.blit(TUTORIALS_BG, (0, 0))
 
 
         pressed_keys = pygame.key.get_pressed()   # Keyboard input
