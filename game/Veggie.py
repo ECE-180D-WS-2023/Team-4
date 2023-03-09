@@ -2,13 +2,11 @@ from GameObject import GameObject
 from constants import *
 
 class Veggie(GameObject):
-    def __init__(self, pos, vel, team_num: int, veggie_type: str, damage: int) -> None:
-        super().__init__((VEGGIE_WIDTH, VEGGIE_HEIGHT), pos, vel, team_num, img='assets/pixel_veggies1.png')
+    def __init__(self, pos, vel, team_num: int, veggie_type: str, damage: int, ) -> None:
+        super().__init__((VEGGIE_WIDTH, VEGGIE_HEIGHT), pos, vel, team_num, img='assets/veggies/veggies.png')
         self.m_type = veggie_type
         self.m_damage = damage
         self.m_harvest_time = veggie_dict[veggie_type] / 2
-        
-        
 
     # TODO: remove this test
     def whoami(self):
@@ -31,3 +29,20 @@ class Veggie(GameObject):
     @damage.setter
     def damage(self, new_damage: int) -> None:
         self.damage = new_damage
+
+class Carrot(Veggie):
+    # def __init__(self, pos, vel, team_num: int, veggie_type: str, damage: int) -> None:
+    #     super().__init__(pos, vel, team_num, veggie_type, damage)
+    ...
+
+class Mushroom(Veggie):
+    def __init__(self):
+        pass
+
+class Cabbage(Veggie):
+    def __init__(self):
+        pass
+
+class Potato(Veggie):
+    def __init__(self):
+        pass
