@@ -11,7 +11,7 @@ def calculate_angle(a,b,c):
     c = np.array(c) # end
 
     radians = np.arctan2(c[1]-b[1], c[0]-b[0]) - np.arctan2(a[1]-b[1], a[0]-b[0])
-    angle = radians*180.0/np.pi
+    angle = radians*180.0//np.pi
 
     # if angle > 180.0: # for pressing button situation the angle is between -90 to 90? or do we do 0 to 180 and have 90 has the starting
     #     angle = 360-angle
@@ -57,8 +57,10 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
             print(angle)
 
             # visualize angle
-            cv.putText(image, "x", tuple(np.multiply(mid, [1920, 1080]).astype(int)), cv.FONT_HERSHEY_SIMPLEX, 1, (255,255,0), 2, cv.LINE_AA)
-            cv.putText(image, "o", (960,200), cv.FONT_HERSHEY_SIMPLEX, 2, (255,255,0), 2, cv.LINE_AA)
+            cv.putText(image, "x", tuple(np.multiply(mid, [1920, 1080]).astype(int)), cv.FONT_HERSHEY_SIMPLEX, 3, (255,255,0), 3, cv.LINE_AA)
+            cv.putText(image, "o", (960,200), cv.FONT_HERSHEY_SIMPLEX, 3, (255,255,0), 3, cv.LINE_AA)
+            cv.line(image, (960,200), tuple(np.multiply(mid, [1920, 1080]).astype(int)), (255,255,0), 3)
+            cv.line(image, tuple(np.multiply(right_wrist, [1920, 1080]).astype(int)), tuple(np.multiply(mid, [1920, 1080]).astype(int)), (255,255,0), 3)
             cv.putText(image, str(angle), (960,540), cv.FONT_HERSHEY_SIMPLEX, 2, (255,255,0), 2, cv.LINE_AA)
             
         except:
