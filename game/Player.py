@@ -87,22 +87,23 @@ class Player(GameObject):
             print("sorry backpack full")
 
 
-    def update(self, pressed_keys, screen):
+    def update(self, js_action, screen):
         if self.m_state != PLAYER_WALKING:
             super().update(screen)
             return
-
+        
         actions = []
-        if pressed_keys[K_UP]:
+        x_action, y_action = js_action
+        if y_action == -1:
             self.m_pos_y -= self.m_vel_y
             actions.append(3)
-        if pressed_keys[K_DOWN]:
+        if y_action == 1:
             self.m_pos_y += self.m_vel_y
             actions.append(0)
-        if pressed_keys[K_LEFT]:
+        if x_action == -1:
             self.m_pos_x -= self.m_vel_x
             actions.append(1)
-        if pressed_keys[K_RIGHT]:
+        if x_action == 1:
             self.m_pos_x += self.m_vel_x
             actions.append(2)
 

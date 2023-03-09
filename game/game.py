@@ -8,6 +8,12 @@ import time
 
 pygame.init()          # Start game
 
+# Joystick configuration
+pygame.joystick.init()
+joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
+print(joysticks)
+
+
 # https://stackoverflow.com/questions/73758038/pygame-wrong-resolution-on-macos
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN | pygame.SCALED)
 
@@ -84,19 +90,24 @@ def tutorials():
 
 
         pressed_keys = pygame.key.get_pressed()   # Keyboard input
-
+        
 
         for event in pygame.event.get():
+            # Quit Game
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            
+
+        x_speed = round(pygame.joystick.Joystick(0).get_axis(0))
+        y_speed = round(pygame.joystick.Joystick(0).get_axis(1))
 
         # player.display_backpack(pressed_keys)    # display backpack
         player1.switch_state(pressed_keys)         # switch player states
 
         # Refresh screen and display objects
         redraw_screen(SCREEN)
-        player1.update(pressed_keys, SCREEN)         # moving players
+        player1.update([x_speed, y_speed], SCREEN)         # moving players
         for sprite in all_sprites:
             sprite.update(SCREEN)
         
