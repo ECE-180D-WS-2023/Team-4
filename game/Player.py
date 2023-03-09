@@ -1,6 +1,7 @@
 from GameObject import GameObject
 from constants import *
 from typing import List, Set, Dict, Tuple
+import pygame
 
 class Player(GameObject):
     # TODO: remove role attribute in favor of subclasses
@@ -32,6 +33,7 @@ class Player(GameObject):
         self.m_weight = role                                                       # Initialize player weight
         self.m_name = name                                                         # Initialize player name
         self.m_health = health                                                     # Initialize player health
+        self.m_mounted = False
 
     @property
     def name(self) -> str:
@@ -86,6 +88,17 @@ class Player(GameObject):
         else:
             print("sorry backpack full")
 
+    def toggle_mount(self, slingshot):
+        if self.m_mounted:
+            self.m_mounted = False
+            self.player_state = PLAYER_WALKING
+        elif pygame.sprite.collide_rect(self, slingshot):
+            self.m_mounted = True
+            # self.rect.center = (SCREEN_WIDTH/2, SCREEN_HEIGHT-50)
+            self.m_pos_x = slingshot.m_pos_x
+            self.m_pos_y = slingshot.m_pos_y
+            self.player_state = PLAYER_SHOOTING
+        print(self.m_mounted)
 
     def update(self, js_action, screen):
         if self.m_state != PLAYER_WALKING:
