@@ -25,13 +25,13 @@ class Player(GameObject):
             - health: object health/damage
             - team_num: object team number
         """
-        super().__init__((PLAYER_WIDTH, PLAYER_HEIGHT), pos, vel, team_num, img='assets/engineer.png', animation_steps=[3,3,3,3])
+        super().__init__((PLAYER_WIDTH, PLAYER_HEIGHT), pos, vel, team_num, img='assets/players/engineer.png', animation_steps=[3,3,3,3])
         self.m_role = role                                                         # Initialize player role
         self.m_state = state                                                       # Initialize player state
         self.m_backpack = {"potato":0, "carrot":0, "cabbage":0, "pumpkin":0}       # Initialize player backpack
         self.m_weight = role                                                       # Initialize player weight
         self.m_name = name                                                         # Initialize player name
-        self.m_health = health                                                         # Initialize player health
+        self.m_health = health                                                     # Initialize player health
 
     @property
     def name(self) -> str:
