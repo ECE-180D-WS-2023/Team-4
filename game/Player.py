@@ -98,7 +98,6 @@ class Player(GameObject):
             self.m_pos_x = slingshot.m_pos_x
             self.m_pos_y = slingshot.m_pos_y
             self.player_state = PLAYER_SHOOTING
-        print(self.m_mounted)
 
     def update(self, js_action, screen):
         if self.m_state != PLAYER_WALKING:

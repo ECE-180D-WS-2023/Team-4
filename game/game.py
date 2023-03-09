@@ -100,9 +100,11 @@ def tutorials():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            # Mount Slingshot
             elif event.type == KEYDOWN:
                 if event.key == K_RETURN:
                     player1.toggle_mount(slingshot1)
+            # Attack
             elif event.type == pygame.JOYBUTTONDOWN:
                 if pygame.joystick.Joystick(0).get_button(0):
                     if player1.attack("carrot"):
