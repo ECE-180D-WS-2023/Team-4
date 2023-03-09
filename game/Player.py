@@ -98,37 +98,54 @@ class Player(GameObject):
             self.player_state = PLAYER_SHOOTING
 
     def update(self, js_action, screen):
-        if self.m_state != PLAYER_WALKING:
+        x_action, y_action = js_action
+
+        if self.m_state == PLAYER_HARVESTING:
             super().update(screen)
             return
         
-        actions = []
-        x_action, y_action = js_action
-        if y_action == -1:     # Up
-            self.m_pos_y -= self.m_vel_y
-            actions.append(3)
-        if y_action == 1:      # Down
-            self.m_pos_y += self.m_vel_y
-            actions.append(0)
-        if x_action == -1:     # Left
-            self.m_pos_x -= self.m_vel_x
-            actions.append(1)
-        if x_action == 1:      # Right
-            self.m_pos_x += self.m_vel_x
-            actions.append(2)
+        elif self.m_state == PLAYER_WALKING:
+            actions = []
 
-        # Don't allow player to move off screen
-        if self.rect.left < 0:
-            self.m_pos_x = PLAYER_WIDTH/2
-        if self.rect.right > SCREEN_WIDTH:
-            self.m_pos_x = SCREEN_WIDTH-PLAYER_WIDTH
-        if self.rect.top <= 0:
-            self.m_pos_y = PLAYER_HEIGHT
-        if self.rect.bottom >= SCREEN_HEIGHT:
-            self.m_pos_y = SCREEN_HEIGHT-PLAYER_HEIGHT
+            if y_action == -1:     # Up
+                self.m_pos_y -= self.m_vel_y
+                actions.append(3)
+            if y_action == 1:      # Down
+                self.m_pos_y += self.m_vel_y
+                actions.append(0)
+            if x_action == -1:     # Left
+                self.m_pos_x -= self.m_vel_x
+                actions.append(1)
+            if x_action == 1:      # Right
+                self.m_pos_x += self.m_vel_x
+                actions.append(2)
 
-        action = actions[-1] if (len(actions) > 0) else None
-        super().update(screen, action)
+            # Don't allow player to move off screen
+            if self.rect.left < 0:
+                self.m_pos_x = PLAYER_WIDTH/2
+            if self.rect.right > SCREEN_WIDTH:
+                self.m_pos_x = SCREEN_WIDTH-PLAYER_WIDTH
+            if self.rect.top <= 0:
+                self.m_pos_y = PLAYER_HEIGHT
+            if self.rect.bottom >= SCREEN_HEIGHT:
+                self.m_pos_y = SCREEN_HEIGHT-PLAYER_HEIGHT
+
+            action = actions[-1] if (len(actions) > 0) else None
+            super().update(screen, action)
+        
+        elif self.m_state == PLAYER_SHOOTING:
+            color = (255,0,0)
+            aim_surf = pygame.Surface((10,60)) # dimensions for aiming rect
+            aim_surf.fill(color)
+            aimer = aim_surf.get_rect()
+            aimer.center = (self.position[0] + 32, self.position[1] - 30)
+            print(x_action)
+            screen.blit(pygame.transform.rotate(aim_surf, x_action), aimer)
+            super().update(screen)
+            return
+
+        
+        
 
     def switch_state(self, pressed_key):
         if pressed_key[K_0]:

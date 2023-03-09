@@ -112,9 +112,13 @@ def tutorials():
                         all_sprites.add([temp_veggie])
                         shots.add([temp_veggie])
             
-
-        x_speed = round(pygame.joystick.Joystick(0).get_axis(0))
-        y_speed = round(pygame.joystick.Joystick(0).get_axis(1))
+        # Joystick reading
+        if player1.player_state == PLAYER_WALKING:
+            x_speed = round(pygame.joystick.Joystick(0).get_axis(0))
+            y_speed = round(pygame.joystick.Joystick(0).get_axis(1))
+        elif player1.player_state == PLAYER_SHOOTING:
+            x_speed += round(pygame.joystick.Joystick(0).get_axis(0))
+            y_speed = 0
 
         # player.display_backpack(pressed_keys)    # display backpack
         player1.switch_state(pressed_keys)         # switch player states
@@ -156,11 +160,6 @@ def tutorials():
                 base2.kill()
                 running = False
         
-        # After all collision detection, if the sprite (in Group: Shots)
-        # is out of bounds, we kill that sprite
-        
-            
-
         pygame.display.flip()
 
 def options():
