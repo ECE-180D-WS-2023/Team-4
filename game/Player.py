@@ -46,7 +46,6 @@ class Player(GameObject):
 
     @property
     def player_state(self) -> int:
-        print("Current player state: ", self.m_state)
         return self.m_state
 
     @player_state.setter
@@ -134,18 +133,50 @@ class Player(GameObject):
             super().update(screen, action)
         
         elif self.m_state == PLAYER_SHOOTING:
-            color = (255,0,0)
-            aim_surf = pygame.Surface((10,60)) # dimensions for aiming rect
-            aim_surf.fill(color)
-            aimer = aim_surf.get_rect()
-            aimer.center = (self.position[0] + 32, self.position[1] - 30)
-            print(x_action)
-            screen.blit(pygame.transform.rotate(aim_surf, x_action), aimer)
+            # color = (255,0,0)
+            # aim_surf = pygame.Surface((10,60)) # dimensions for aiming rect
+            # aim_surf.fill(color)
+            # aimer = aim_surf.get_rect()
+            # aimer.center = (self.position[0] + 32, self.position[1] - 30)
+            # screen.blit(pygame.transform.rotate(aim_surf, x_action), aimer)
+            self.blitRotate(screen, pygame.image.load("assets/players/cannon.png"), 
+                            (self.position[0], self.position[1]), 
+                            (32,160),
+                            x_action)
             super().update(screen)
             return
+        
 
-        
-        
+    def blitRotate(self, surf, image, origin:Tuple[int, int], pivot:Tuple[int, int], angle):
+        '''
+        INPUT:
+            - origin: where do you want to put it in the larger system
+            - pivot: In the image sprite coordinates, where is the relative pivot
+
+        For example:
+        image: 32 x 32
+        canon: (roughly) 64 x 165
+
+        We want to set the pivot at the center bottom of the canon, but we have 
+        to use the canon coordinate system, i.e. pivot=(32, 160)
+        If you set the pivot to (0,0), for example, it will rotate wrt the top
+        left corner of the canon.
+
+        And then, we decide where to put that pivot in the larger coordinate system.
+        In this case, we want to put that pivot on top of the player's position,
+        hence origin=(self.position[0], self.position[1])
+
+        '''
+        image_rect = image.get_rect(topleft = (origin[0] - pivot[0], origin[1]-pivot[1]))
+        # print(origin, pivot, image_rect.center)
+        offset_center_to_pivot = pygame.math.Vector2(origin) - image_rect.center
+        # print(offset_center_to_pivot)
+        rotated_offset = offset_center_to_pivot.rotate(-angle)
+        rotated_image_center = (origin[0] - rotated_offset.x, origin[1] - rotated_offset.y)
+        rotated_image = pygame.transform.rotate(image, angle)
+        rotated_image_rect = rotated_image.get_rect(center = rotated_image_center)
+        surf.blit(rotated_image, rotated_image_rect)
+
 
     def switch_state(self, pressed_key):
         if pressed_key[K_0]:
