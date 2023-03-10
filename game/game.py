@@ -5,7 +5,7 @@ from Veggie import Veggie
 from Base import Base
 from Slingshot import Slingshot
 from constants import *
-import time
+import time, math
 
 pygame.init()          # Start game
 
@@ -108,7 +108,7 @@ def tutorials():
             elif event.type == pygame.JOYBUTTONDOWN:
                 if pygame.joystick.Joystick(0).get_button(0):
                     if player1.attack("carrot"):
-                        temp_veggie = Veggie(player1.position, (0, 0.5), 1, "carrot", 10)
+                        temp_veggie = Veggie(player1.position, (x_vel, y_vel), 1, "carrot", 10)
                         all_sprites.add([temp_veggie])
                         shots.add([temp_veggie])
             
@@ -118,6 +118,9 @@ def tutorials():
             y_speed = round(pygame.joystick.Joystick(0).get_axis(1))
         elif player1.player_state == PLAYER_SHOOTING:
             x_speed += round(pygame.joystick.Joystick(0).get_axis(0))
+            x_vel = math.sin(math.radians(x_speed%360)) * VEGGIE_VELOCITY
+            y_vel = math.cos(math.radians(x_speed%360)) * VEGGIE_VELOCITY
+            print(x_speed, x_vel, y_vel)
             y_speed = 0
 
         # player.display_backpack(pressed_keys)    # display backpack
