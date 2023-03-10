@@ -120,7 +120,6 @@ def tutorials():
             x_speed += round(pygame.joystick.Joystick(0).get_axis(0))
             x_vel = math.sin(math.radians(x_speed%360)) * VEGGIE_VELOCITY
             y_vel = math.cos(math.radians(x_speed%360)) * VEGGIE_VELOCITY
-            print(x_speed, x_vel, y_vel)
             y_speed = 0
 
         # player.display_backpack(pressed_keys)    # display backpack
