@@ -75,7 +75,7 @@ def tutorials():
     player1 = Player((30, 40), (2, 2), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
     veggie1 = Veggie((420, 270), (0, 0), 3, "carrot", 10)
     base1 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4)), (3, 3), 1, 10, 10)
-    base2 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4)), (3, 3), 2, 20, 10)
+    base2 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4)), (3, 3), 2, 10, 0)
     slingshot1 = Slingshot((500, 500), (0, 0), 1)
 
 
@@ -142,27 +142,29 @@ def tutorials():
                 player1.harvest(veggie1.m_type)
                 veggie1.kill()
                 
-
-        if pygame.sprite.collide_rect(player1, base2):
-            # if the base has health
-                # if the base is immune
-                    # record time and pass
-                # else
-                    # take damage and reset immune time
-            if base2.immune_time <= 0:
-                base2.immune_time = pygame.time.get_ticks()
-                pass
-            elif base2.health > 0:
-                hit_time = pygame.time.get_ticks()
-                damage = 10
-                base2.health = base2.health - damage
-                print("current base health: ", base2.health)
-
+        dead_sprite = pygame.sprite.spritecollideany(base2, shots)
+        if dead_sprite:
+            damage = dead_sprite.damage
+            dead_sprite.kill()
+            
+            if base2.base_shield >= 10:
+                base2.base_shield = base2.base_shield - 10
+            elif base2.base_shield > 0 and base2.base_shield < 10:
+                base2.health = base2.health - 10 + base2.base_shield
+                base2.base_shield = 0
             else:
-                base2.kill()
+                base2.health = base2.health - 10
+            
+            if base2.health <= 0:
+                for sprite in all_sprites:
+                    sprite.kill()
                 running = False
+                pygame.quit()
+                sys.exit()
         
         pygame.display.flip()
+    
+    
 
 def options():
     while True:

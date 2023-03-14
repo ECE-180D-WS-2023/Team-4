@@ -28,7 +28,7 @@ class Base(GameObject):
 
     @property
     def health(self) -> int:
-        print("Current base shield: ", self.m_health)
+        print("Current base health: ", self.m_health)
         return self.m_health
 
     @health.setter
