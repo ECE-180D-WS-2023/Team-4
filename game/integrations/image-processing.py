@@ -1,52 +1,75 @@
-import pygame
-import threading
-import time
 import mediapipe as mp
+import threading
+import queue
 import cv2 as cv
 import numpy as np
-from aim_hand import *
 
 mp_drawing = mp.solutions.drawing_utils # give drawing utilities
 mp_pose = mp.solutions.pose # import pose estimation model
 
-running = True
-latest_frame = None
-latest_frame_available = threading.Condition()
+def calculate_angle(a,b,c):
+    a = np.array(a) # first
+    b = np.array(b) # mid
+    c = np.array(c) # end
 
-def camera_worker_function():
-    global latest_frame
+    radians = np.arctan2(c[1]-b[1], c[0]-b[0]) - np.arctan2(a[1]-b[1], a[0]-b[0])
+    angle = radians*180.0//np.pi
 
+    # if angle > 180.0: # for pressing button situation the angle is between -90 to 90? or do we do 0 to 180 and have 90 has the starting
+    #     angle = 360-angle
+    
+    return angle
+
+def read_frames_from_camera(running_event, frame_available, frame_queue):
+    """Read frames from camera
+
+    Args:
+        running_event (threading.Event): Threading event that, when set, releases the camera
+        frame_available (threading.Condition): Threading condition that is used to notify other threads when a new frame is available
+        frame_queue (queue.Queue): Queue to place new frames in
+    """
     camera = cv.VideoCapture(0)
     assert camera.isOpened()
 
-    while running:
-        (rv, frame) = camera.read()
-        if not rv: break
+    while not running_event.is_set():
+        (ret, frame) = camera.read()
+        if not ret:
+            break
 
-        with latest_frame_available:
-            latest_frame = frame
-            latest_frame_available.notify_all()
+        with frame_available:
+            frame_queue.put(frame)
+            frame_available.notify_all()
 
     camera.release()
 
-def mediapipe_worker_function():
+def calculate_angle_using_mediapipe(running_event, frame_available, frame_queue, angle_queue):
+    """Read frames from camera
+
+    Args:
+        running_event (threading.Event): Threading event that, when set, stops processing
+        frame_available (threading.Condition): Threading condition that indicates when a new frame is available
+        frame_queue (queue.Queue): Queue to to grab new frames from
+    """
     # globals for values you need in the game
     angle = 0
+    pose = mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5)
 
-    while running:
-        with latest_frame_available:
-            if latest_frame_available.wait(timeout=1.0):
-                frame = latest_frame
+    while not running_event.is_set():
+        with frame_available:
+            if frame_available.wait(timeout=1.0):
+                frame = frame_queue.get()
             else: # False means timeout
                 continue # -> recheck `running`
 
-        if frame is None: break # sentinel value to shut down
+        if frame is None:
+            break # fallback value to shut down
 
+        # Process the frame
         image = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
         image = cv.flip(image, 1)
         image.flags.writeable = False
         results = pose.process(image)
-        # print(results)
+
         try:
             landmarks = results.pose_landmarks.landmark
             mid = [960/1920.0, landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].y + 100/1080.0]
@@ -56,78 +79,5 @@ def mediapipe_worker_function():
             angle = calculate_angle(nose, mid, right_wrist)
         except:
             pass
-        print(angle)
 
-camera_thread = threading.Thread(target=camera_worker_function)    
-camera_thread.start()
-
-mediapipe_thread = threading.Thread(target=mediapipe_worker_function)
-mediapipe_thread.start()
-
-pygame.joystick.init()
-joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
-
-class Player(object):
-    def __init__(self):
-        self.player = pygame.rect.Rect((300, 400, 50, 50))
-        self.color = "white"
-
-    def move(self, x_speed, y_speed):
-        self.player.move_ip((x_speed, y_speed))
-
-    def change_color(self, color):
-        self.color= color
-
-    def draw(self, game_screen):
-        pygame.draw.rect(game_screen, self.color, self.player)
-
-    pygame.init()
-
-player1 = Player()
-player2 = Player()
-clock = pygame.time.Clock()
-screen = pygame.display.set_mode((800,600))
-
-cap = cv.VideoCapture(0)
-pose = mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5)
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        if event.type == pygame.JOYBUTTONDOWN:
-            # if pygame.joystick.Joystick(1).get_button(0):
-            #     player1.change_color("blue")
-            if pygame.joystick.Joystick(0).get_button(0):
-                player2.change_color("red")
-        #     elif pygame.joystick.Joystick(1).get_button(0):
-        #         player.change_color("green")
-        #     elif pygame.joystick.Joystick(1).get_button(1):
-        #         player.change_color("purple")
-
-    # if event.type == pygame.JOYAXISMOTION:
-    #     print(event)
-    # x1_speed = round(pygame.joystick.Joystick(1).get_axis(0))
-    # y1_speed = round(pygame.joystick.Joystick(1).get_axis(1))
-    x2_speed = round(pygame.joystick.Joystick(0).get_axis(0))*5
-    y2_speed = round(pygame.joystick.Joystick(0).get_axis(1))*5
-
-    # player1.move(x1_speed, y1_speed)
-    player2.move(x2_speed, y2_speed)
-
-    screen.fill((0,0,0))
-    player1.draw(screen)
-    player2.draw(screen)
-
-    # t = time.time()
-    # angle = get_angle(cap, pose)
-    # # print(angle)
-    # print(time.time() - t)
-
-    pygame.display.update()
-    clock.tick(100)
-
-with latest_frame_available:
-    latest_frame = None # sentinel value
-    latest_frame_available.notify_all()
-mediapipe_thread.join()
-camera_thread.join()
+        angle_queue.put(angle)
