@@ -1,10 +1,11 @@
-import pygame, sys
+import pygame, sys, threading, queue
 from button import Button
 from Player import Player
 from Veggie import Veggie
 from Base import Base
 from Slingshot import Slingshot
 from constants import *
+from integrations.image_processing import *
 import time, math
 
 pygame.init()          # Start game
@@ -72,6 +73,7 @@ def tutorials():
 
     Only one player can move around.
     """
+    clock = pygame.time.Clock()
     player1 = Player((30, 40), (2, 2), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
     veggie1 = Veggie((420, 270), (0, 0), 3, "carrot", 10)
     base1 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4)), (3, 3), 1, 10, 10)
@@ -84,9 +86,18 @@ def tutorials():
     harvestables.add([veggie1])                   # Add veggie1 to harvestable group
     bases.add([base1, base2])                            # Add base1 to bases group
 
-    running = True
+    running = threading.Event()
+    latest_frame = queue.Queue()
+    latest_frame_available = threading.Condition()
+    angle_queue = queue.Queue(10)
+
+    camera_thread = threading.Thread(target=read_frames_from_camera, args=[running, latest_frame_available, latest_frame])
+    camera_thread.start()
+    mediapipe_thread = threading.Thread(target=calculate_angle_using_mediapipe, args=[running, latest_frame_available, latest_frame, angle_queue])
+    mediapipe_thread.start()
+
     TUTORIALS_BG = pygame.image.load("assets/grass.png")
-    while running:
+    while not running.is_set():
         TUTORIALS_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.blit(TUTORIALS_BG, (0, 0))
@@ -117,10 +128,15 @@ def tutorials():
             x_speed = round(pygame.joystick.Joystick(0).get_axis(0))
             y_speed = round(pygame.joystick.Joystick(0).get_axis(1))
         elif player1.player_state == PLAYER_SHOOTING:
-            x_speed += round(pygame.joystick.Joystick(0).get_axis(0))
+            # x_speed += round(pygame.joystick.Joystick(0).get_axis(0))
+            try:
+                x_speed = angle_queue.get(block=False)
+            except:
+                pass
             x_vel = math.sin(math.radians(x_speed%360)) * VEGGIE_VELOCITY
             y_vel = math.cos(math.radians(x_speed%360)) * VEGGIE_VELOCITY
             y_speed = 0
+            print(x_speed)
 
         # player.display_backpack(pressed_keys)    # display backpack
         player1.switch_state(pressed_keys)         # switch player states
@@ -163,6 +179,13 @@ def tutorials():
                 sys.exit()
         
         pygame.display.flip()
+        clock.tick(100)
+    
+    with latest_frame_available:
+        latest_frame = None # sentinel value
+        latest_frame_available.notify_all()
+    mediapipe_thread.join()
+    camera_thread.join()
     
     
 
