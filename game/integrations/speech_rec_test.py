@@ -1,9 +1,10 @@
 import time
 
 import speech_recognition as sr
-
+answer = "none"
 def speech_rec():
     def callback(recognizer, audio):
+        global answer
     # received audio data, now we'll recognize it using Google Speech Recognition
         try:
             # for testing purposes, we're just using the default API key
@@ -12,12 +13,13 @@ def speech_rec():
             word = ["switch", "sweet", "which"]
             for i in word:
                 if i in recognizer.recognize_google(audio):
-                    print(1)
-                    return 1
-            return 0
+                    answer = "switch"
+            #answer = "none"
         except sr.UnknownValueError:
             return 0
+            #answer = "none"
         except sr.RequestError as e:
+            #answer = "none"
             return 0
 # this is called from the background threa
     
