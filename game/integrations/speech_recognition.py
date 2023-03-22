@@ -1,19 +1,20 @@
 import time
 
 import speech_recognition as sr
-answer = "none"
-def speech_rec():
+
+def speech_rec(ans):
     def callback(recognizer, audio):
-        global answer
+        print(ans)
     # received audio data, now we'll recognize it using Google Speech Recognition
         try:
             # for testing purposes, we're just using the default API key
             # to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
             # instead of `r.recognize_google(audio)`
             word = ["switch", "sweet", "which"]
+            recognized_str = recognizer.recognize_google(audio)
             for i in word:
-                if i in recognizer.recognize_google(audio):
-                    answer = "switch"
+                if i in recognized_str:
+                    ans[0] = "switch"
             #answer = "none"
         except sr.UnknownValueError:
             return 0
@@ -21,6 +22,7 @@ def speech_rec():
         except sr.RequestError as e:
             #answer = "none"
             return 0
+        print("After callback: ", ans)
 # this is called from the background threa
     
     r = sr.Recognizer()
@@ -33,8 +35,8 @@ def speech_rec():
 # `stop_listening` is now a function that, when called, stops background listening
 
 # calling this function requests that the background listener stop listening
-stop_listening = speech_rec()
-for i in range(1,10):
-    time.sleep(1)
-    print(i)
-stop_listening(wait_for_stop=False)
+# stop_listening = speech_rec()
+# for i in range(1,10):
+#     time.sleep(1)
+#     print(i)
+# stop_listening(wait_for_stop=False)

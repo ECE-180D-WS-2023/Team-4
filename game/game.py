@@ -6,6 +6,7 @@ from Base import Base
 from Slingshot import Slingshot
 from constants import *
 import time, math
+from integrations.speech_recognition import speech_rec
 
 pygame.init()          # Start game
 
@@ -86,6 +87,9 @@ def tutorials():
 
     running = True
     TUTORIALS_BG = pygame.image.load("assets/grass.png")
+
+    audio_list = ["Eddie"]
+    stop_listening = speech_rec(audio_list)
     while running:
         TUTORIALS_MOUSE_POS = pygame.mouse.get_pos()
 
@@ -94,10 +98,16 @@ def tutorials():
 
         pressed_keys = pygame.key.get_pressed()   # Keyboard input
         
-
+        # Audio Input
+        if audio_list[0] == "switch":
+            print(".....................")
+            audio_list[0] = "Eddie"
+            player1.toggle_mount(slingshot1)
+        
         for event in pygame.event.get():
             # Quit Game
             if event.type == pygame.QUIT:
+                stop_listening(wait_for_stop=False)
                 pygame.quit()
                 sys.exit()
             # Mount Slingshot
@@ -159,10 +169,13 @@ def tutorials():
                 for sprite in all_sprites:
                     sprite.kill()
                 running = False
+                stop_listening(wait_for_stop=False)
                 pygame.quit()
                 sys.exit()
         
         pygame.display.flip()
+
+        
     
     
 
