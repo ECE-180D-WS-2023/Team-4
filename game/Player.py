@@ -174,6 +174,7 @@ class Player(GameObject):
         
     def switch_state(self, pressed_key):
         if pressed_key[K_0]:
+            self.m_mounted = False
             self.player_state = PLAYER_WALKING
             print("Walking!")
         if pressed_key[K_1]:

@@ -113,6 +113,7 @@ def tutorials():
             # Mount Slingshot
             elif event.type == KEYDOWN:
                 if event.key == K_RETURN:
+                    audio_list[0] = "Eddie"
                     player1.toggle_mount(slingshot1)
             # Attack
             elif event.type == pygame.JOYBUTTONDOWN:
