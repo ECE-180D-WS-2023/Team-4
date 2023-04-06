@@ -84,12 +84,12 @@ def tutorials():
     all_sprites.add([veggie1, base1, base2, slingshot1])
     players.add([player1])                        # Add player1 to players group
     harvestables.add([veggie1])                   # Add veggie1 to harvestable group
-    bases.add([base1, base2])                            # Add base1 to bases group
+    bases.add([base1, base2])                     # Add base1 to bases group
 
     running = threading.Event()
-    latest_frame = queue.Queue()
+    latest_frame = queue.Queue(maxsize=10)
     latest_frame_available = threading.Condition()
-    angle_queue = queue.Queue(10)
+    angle_queue = queue.Queue(maxsize=10)
 
     camera_thread = threading.Thread(target=read_frames_from_camera, args=[running, latest_frame_available, latest_frame])
     camera_thread.start()
@@ -136,7 +136,7 @@ def tutorials():
             x_vel = math.sin(math.radians(x_speed%360)) * VEGGIE_VELOCITY
             y_vel = math.cos(math.radians(x_speed%360)) * VEGGIE_VELOCITY
             y_speed = 0
-            print(x_speed)
+            # print(x_speed)
 
         # player.display_backpack(pressed_keys)    # display backpack
         player1.switch_state(pressed_keys)         # switch player states

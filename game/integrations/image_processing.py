@@ -37,8 +37,14 @@ def read_frames_from_camera(running_event, frame_available, frame_queue):
             break
 
         with frame_available:
-            frame_queue.put(frame)
-            frame_available.notify_all()
+            try:
+                frame_queue.put_nowait(frame)
+                frame_available.notify_all()
+            except queue.Full:
+                # print("Queue FUll!")
+                oldest_item = frame_queue.get_nowait()
+                frame_queue.put_nowait(frame)
+                frame_available.notify_all()
 
     camera.release()
 
@@ -57,8 +63,8 @@ def calculate_angle_using_mediapipe(running_event, frame_available, frame_queue,
     while not running_event.is_set():
         with frame_available:
             if frame_available.wait(timeout=1.0):
-                frame = frame_queue.get()
-            else: # False means timeout
+                frame = frame_queue.get(block=False)
+            else: # False means timeouts
                 continue # -> recheck `running`
 
         if frame is None:
@@ -79,5 +85,10 @@ def calculate_angle_using_mediapipe(running_event, frame_available, frame_queue,
             angle = calculate_angle(nose, mid, right_wrist)
         except:
             pass
-
-        angle_queue.put(angle)
+        
+        try:
+            angle_queue.put(angle, block=False)
+        except queue.Full:
+            # print("Angle queue full!")
+            oldest_item = angle_queue.get()
+            angle_queue.put_nowait(angle)
