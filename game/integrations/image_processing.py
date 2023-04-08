@@ -61,7 +61,7 @@ def calculate_angle_using_mediapipe(running_event, frame_available, frame_queue,
     while not running_event.is_set():
         with frame_available:
             if frame_available.wait(timeout=1.0):
-                print("Getting")
+                # print("Getting")
                 frame = frame_queue.get()
             else: # False means timeout
                 continue # -> recheck `running`
@@ -85,5 +85,10 @@ def calculate_angle_using_mediapipe(running_event, frame_available, frame_queue,
             angle = new_angle if abs(new_angle - angle) > 1 else angle
         except:
             pass
-
-        angle_queue.put(angle)
+        
+        try:
+            angle_queue.put(angle, block=False)
+        except queue.Full:
+            # print("Angle queue full!")
+            oldest_item = angle_queue.get()
+            angle_queue.put_nowait(angle)
