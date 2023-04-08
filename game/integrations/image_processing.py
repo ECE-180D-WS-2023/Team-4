@@ -37,8 +37,12 @@ def read_frames_from_camera(running_event, frame_available, frame_queue):
             break
 
         with frame_available:
-            frame_queue.put(frame)
-            frame_available.notify_all()
+            try:
+                frame_queue.put(frame, block=False)
+                frame_available.notify_all()
+            except:
+                frame_available.notify_all()
+                # print("Queue is full")
 
     camera.release()
 
@@ -57,6 +61,7 @@ def calculate_angle_using_mediapipe(running_event, frame_available, frame_queue,
     while not running_event.is_set():
         with frame_available:
             if frame_available.wait(timeout=1.0):
+                print("Getting")
                 frame = frame_queue.get()
             else: # False means timeout
                 continue # -> recheck `running`
@@ -76,7 +81,8 @@ def calculate_angle_using_mediapipe(running_event, frame_available, frame_queue,
             nose = [landmarks[mp_pose.PoseLandmark.NOSE.value].x, landmarks[mp_pose.PoseLandmark.NOSE.value].y]
             right_wrist = [landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].x, landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].y]
             mid = [nose[0], right_wrist[1] + 300/1080.0]
-            angle = calculate_angle(nose, mid, right_wrist)
+            new_angle = calculate_angle(nose, mid, right_wrist)
+            angle = new_angle if abs(new_angle - angle) > 1 else angle
         except:
             pass
 

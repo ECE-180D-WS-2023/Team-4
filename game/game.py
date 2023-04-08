@@ -87,7 +87,7 @@ def tutorials():
     bases.add([base1, base2])                            # Add base1 to bases group
 
     running = threading.Event()
-    latest_frame = queue.Queue()
+    latest_frame = queue.Queue(3)
     latest_frame_available = threading.Condition()
     angle_queue = queue.Queue(10)
 
