@@ -116,8 +116,8 @@ class Player(GameObject):
     def blitRotate(self, surf, image, origin:Tuple[int, int], pivot:Tuple[int, int], angle):
         '''
         INPUT:
-            - origin: where do you want to put it in the larger system
-            - pivot: In the image sprite coordinates, where is the relative pivot
+            - origin: position of the pivot point in the larger system
+            - pivot: in the image sprite coordinates, where is the relative pivot
 
         For example:
         player: 32 x 32
@@ -133,10 +133,10 @@ class Player(GameObject):
         hence origin=(self.pos[0], self.pos[1])
 
         '''
-        image_rect = image.get_rect(topleft = (origin[0] - pivot[0], origin[1]-pivot[1]))
-        offset_center_to_pivot = pygame.math.Vector2(origin) - image_rect.center
-        rotated_offset = offset_center_to_pivot.rotate(-angle)
-        rotated_image_center = (origin[0] - rotated_offset.x, origin[1] - rotated_offset.y)
+        image_rect = image.get_rect(topleft = (origin[0] - pivot[0], origin[1]-pivot[1]))  # position the image in the correct location
+        pivot_to_center = image_rect.center - pygame.math.Vector2(origin)
+        rotated_pivot_to_center = pivot_to_center.rotate(-angle)
+        rotated_image_center = (origin[0] + rotated_pivot_to_center.x, origin[1] + rotated_pivot_to_center.y)
         rotated_image = pygame.transform.rotate(image, angle)
         rotated_image_rect = rotated_image.get_rect(center = rotated_image_center)
         surf.blit(rotated_image, rotated_image_rect)
