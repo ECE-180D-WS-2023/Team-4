@@ -118,12 +118,12 @@ def tutorials():
             elif event.type == pygame.JOYBUTTONDOWN:
                 if pygame.joystick.Joystick(0).get_button(0):
                     if player1.attack("carrot"):
-                        temp_veggie = Veggie(player1.position, (x_vel, y_vel), 1, "carrot", 10)
+                        temp_veggie = Veggie(player1.pos, (x_vel, y_vel), 1, "carrot", 10)
                         all_sprites.add([temp_veggie])
                         shots.add([temp_veggie])
             
         # Joystick reading
-        if player1.player_state == PLAYER_WALKING:
+        if player1.state == PLAYER_WALKING:
             x_speed = round(pygame.joystick.Joystick(0).get_axis(0))
             y_speed = round(pygame.joystick.Joystick(0).get_axis(1))
         elif player1.player_state == PLAYER_SHOOTING:
@@ -161,11 +161,11 @@ def tutorials():
         if pygame.sprite.spritecollideany(player1, harvestables):
             # the harvestable glows and it takes time to harvest that veggie
             # veggie is destroyed after harvested
-            if player1.player_state != PLAYER_HARVESTING:
+            if player1.state != PLAYER_HARVESTING:
                 pass
             else:
                 # has to be right on top of the veggie
-                player1.harvest(veggie1.m_type)
+                player1.harvest(veggie1.type)
                 veggie1.kill()
                 
         dead_sprite = pygame.sprite.spritecollideany(base2, shots)

@@ -13,11 +13,11 @@ class GameObject(pygame.sprite.Sprite):
         super().__init__() # initialize sprite class
 
         # Attribute Initialization
-        self.m_pos_x = pos[0]                 # Initialize x position
-        self.m_pos_y = pos[1]                 # Initialize y position
-        self.m_vel_x = vel[0]                 # Initialize x velocity
-        self.m_vel_y = vel[1]                 # Initialize y velocity
-        self.m_team_num = team_num            # Initialize team number
+        self.pos_x = pos[0]                 # Initialize x position
+        self.pos_y = pos[1]                 # Initialize y position
+        self.vel_x = vel[0]                 # Initialize x velocity
+        self.vel_y = vel[1]                 # Initialize y velocity
+        self.team_num = team_num            # Initialize team number
 
         # Pygame sprite initialization
         # self.sprite_sheet = SpriteSheet(img)
@@ -33,6 +33,14 @@ class GameObject(pygame.sprite.Sprite):
         self.frame_row = 0 # action
         self.last_update = pygame.time.get_ticks()
         self.animation_cooldown = 170
+
+    @property
+    def pos(self):
+        return self.pos_x, self.pos_y
+
+    @pos.setter
+    def pos(self, pos: Tuple[int, int]):
+        self.pos_x, self.pos_y = pos
 
     def draw(self, screen, action=None):
         if action != None:
@@ -51,31 +59,5 @@ class GameObject(pygame.sprite.Sprite):
 
 
     def update(self, screen, action=None):
-        self.rect.center = (self.m_pos_x, self.m_pos_y)
+        self.rect.center = (self.pos_x, self.pos_y)
         self.draw(screen, action)
-
-    @property
-    def position(self):
-        return self.m_pos_x, self.m_pos_y
-
-    @position.setter
-    def position(self, pos: Tuple[int, int]):
-        self.m_pos_x, self.m_pos_y = pos
-
-    @property
-    def velocity(self) -> Tuple[int, int]:
-        print("My velocity is: ", self.m_vel_x, " and ", self.m_vel_y)
-        return self.m_vel_x, self.m_vel_y
-    
-    @velocity.setter
-    def velocity(self, vel: Tuple[int, int]) -> None:
-        self.m_vel_x, self.m_vel_y = vel
-
-    @property
-    def team_num(self) -> int:
-        print("Current team number: ", self.m_team_num)
-        return self.m_team_num
-
-    @team_num.setter
-    def team_num(self, team_num) -> None:
-        self.m_team_num = team_num
