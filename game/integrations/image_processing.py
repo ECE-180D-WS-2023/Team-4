@@ -71,7 +71,7 @@ def calculate_angle_using_mediapipe(running_event, frame_available, frame_queue,
 
         # Process the frame
         image = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
-        image = cv.flip(image, 1)
+        # image = cv.flip(image, 1)
         image.flags.writeable = False
         results = pose.process(image)
 
