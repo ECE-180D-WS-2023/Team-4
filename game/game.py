@@ -128,9 +128,9 @@ def tutorials():
             y_speed = round(pygame.joystick.Joystick(0).get_axis(1))
         elif player1.player_state == PLAYER_SHOOTING:
             if not camera_thread.is_alive():
+                running_threads.clear()
                 camera_thread = threading.Thread(target=read_frames_from_camera, args=[running_threads, latest_frame_available, latest_frame])
                 mediapipe_thread = threading.Thread(target=calculate_angle_using_mediapipe, args=[running_threads, latest_frame_available, latest_frame, angle_queue])
-                running_threads.clear()
                 camera_thread.start()
                 mediapipe_thread.start()
             try:
@@ -185,8 +185,9 @@ def tutorials():
                 for sprite in all_sprites:
                     sprite.kill()
                 running = False
+                running_threads.set()
                 pygame.quit()
-                sys.exit()
+                break
         
         pygame.display.flip()
         clock.tick(100)
