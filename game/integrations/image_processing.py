@@ -61,7 +61,6 @@ def calculate_angle_using_mediapipe(running_event, frame_available, frame_queue,
     while not running_event.is_set():
         with frame_available:
             if frame_available.wait(timeout=1.0):
-                # print("Getting")
                 frame = frame_queue.get()
             else: # False means timeout
                 continue # -> recheck `running`
@@ -71,7 +70,7 @@ def calculate_angle_using_mediapipe(running_event, frame_available, frame_queue,
 
         # Process the frame
         image = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
-        image = cv.flip(image, 1)
+        # image = cv.flip(image, 1)
         image.flags.writeable = False
         results = pose.process(image)
 
