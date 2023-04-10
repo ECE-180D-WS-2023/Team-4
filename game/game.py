@@ -126,7 +126,7 @@ def tutorials():
         if player1.state == PLAYER_WALKING:
             x_speed = round(pygame.joystick.Joystick(0).get_axis(0))
             y_speed = round(pygame.joystick.Joystick(0).get_axis(1))
-        elif player1.player_state == PLAYER_SHOOTING:
+        elif player1.state == PLAYER_SHOOTING:
             if not camera_thread.is_alive():
                 running_threads.clear()
                 camera_thread = threading.Thread(target=read_frames_from_camera, args=[running_threads, latest_frame_available, latest_frame])
@@ -142,7 +142,7 @@ def tutorials():
             y_speed = 0
             # print(x_speed)
 
-        if player1.player_state != PLAYER_SHOOTING:
+        if player1.state != PLAYER_SHOOTING:
             if camera_thread.is_alive():
                 running_threads.set()
                 camera_thread.join()
