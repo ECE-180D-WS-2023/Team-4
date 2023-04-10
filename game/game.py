@@ -86,18 +86,17 @@ def tutorials():
     harvestables.add([veggie1])                   # Add veggie1 to harvestable group
     bases.add([base1, base2])                     # Add base1 to bases group
 
-    running = threading.Event()
+    running_threads = threading.Event()
+    running = True
     latest_frame = queue.Queue(maxsize=3)
     latest_frame_available = threading.Condition()
     angle_queue = queue.Queue(maxsize=10)
 
-    camera_thread = threading.Thread(target=read_frames_from_camera, args=[running, latest_frame_available, latest_frame])
-    camera_thread.start()
-    mediapipe_thread = threading.Thread(target=calculate_angle_using_mediapipe, args=[running, latest_frame_available, latest_frame, angle_queue])
-    mediapipe_thread.start()
+    camera_thread = threading.Thread(target=read_frames_from_camera, args=[running_threads, latest_frame_available, latest_frame])
+    mediapipe_thread = threading.Thread(target=calculate_angle_using_mediapipe, args=[running_threads, latest_frame_available, latest_frame, angle_queue])
 
     TUTORIALS_BG = pygame.image.load("assets/grass.png")
-    while not running.is_set():
+    while running:
         TUTORIALS_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.blit(TUTORIALS_BG, (0, 0))
@@ -128,7 +127,12 @@ def tutorials():
             x_speed = round(pygame.joystick.Joystick(0).get_axis(0))
             y_speed = round(pygame.joystick.Joystick(0).get_axis(1))
         elif player1.player_state == PLAYER_SHOOTING:
-            # x_speed += round(pygame.joystick.Joystick(0).get_axis(0))
+            if not camera_thread.is_alive():
+                camera_thread = threading.Thread(target=read_frames_from_camera, args=[running_threads, latest_frame_available, latest_frame])
+                mediapipe_thread = threading.Thread(target=calculate_angle_using_mediapipe, args=[running_threads, latest_frame_available, latest_frame, angle_queue])
+                running_threads.clear()
+                camera_thread.start()
+                mediapipe_thread.start()
             try:
                 x_speed = angle_queue.get(block=False)
             except:
@@ -137,6 +141,12 @@ def tutorials():
             y_vel = math.cos(math.radians(x_speed%360)) * VEGGIE_VELOCITY
             y_speed = 0
             # print(x_speed)
+
+        if player1.player_state != PLAYER_SHOOTING:
+            if camera_thread.is_alive():
+                running_threads.set()
+                camera_thread.join()
+                mediapipe_thread.join()
 
         # player.display_backpack(pressed_keys)    # display backpack
         player1.switch_state(pressed_keys)         # switch player states
