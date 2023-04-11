@@ -89,14 +89,17 @@ class Player(GameObject):
                 actions.append(2)
 
             # Don't allow player to move off screen
-            if self.rect.left < 0:
-                self.pos_x = PLAYER_WIDTH/2
-            if self.rect.right > SCREEN_WIDTH:
-                self.pos_x = SCREEN_WIDTH-PLAYER_WIDTH
-            if self.rect.top <= 0:
-                self.pos_y = PLAYER_HEIGHT
-            if self.rect.bottom >= SCREEN_HEIGHT:
-                self.pos_y = SCREEN_HEIGHT-PLAYER_HEIGHT
+            player_rect_width = PLAYER_WIDTH*PLAYER_SCALE
+            player_rect_height = PLAYER_HEIGHT*PLAYER_SCALE
+
+            if self.pos_x < player_rect_width/2:
+                self.pos_x = player_rect_width/2
+            if self.pos_x > SCREEN_WIDTH - player_rect_width/2:
+                self.pos_x = SCREEN_WIDTH - player_rect_width/2
+            if self.pos_y < player_rect_height/2:
+                self.pos_y = player_rect_height/2
+            if self.pos_y > SCREEN_HEIGHT - player_rect_height/2:
+                self.pos_y = SCREEN_HEIGHT - player_rect_height/2
 
             action = actions[-1] if (len(actions) > 0) else None
             super().update(screen, action)
