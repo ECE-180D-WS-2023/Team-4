@@ -13,7 +13,7 @@ def speech_rec(ans):
             word = ["switch", "sweet", "which"]
             recognized_str = recognizer.recognize_google(audio)
             for i in word:
-                if i in recognizer.recognize_google(audio):
+                if i in recognized_str:
                     ans[0] = "switch"
             #answer = "none"
         except sr.UnknownValueError:
