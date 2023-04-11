@@ -75,9 +75,9 @@ def tutorials():
     """
     clock = pygame.time.Clock()
     player1 = Player((30, 40), (2, 2), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
-    veggie1 = Veggie((420, 270), (0, 0), 3, "carrot", 10)
-    base1 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4)), (3, 3), 1, 10, 10)
-    base2 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4)), (3, 3), 2, 10, 0)
+    veggie1 = Veggie((420, 270), (0, 0), 3, "carrot", 5)
+    base1 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4)), (3, 3), 1, 20, 0)
+    base2 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4)), (3, 3), 2, 20, 0)
     slingshot1 = Slingshot((500, 500), (0, 0), 1)
 
 
@@ -118,7 +118,7 @@ def tutorials():
             elif event.type == pygame.JOYBUTTONDOWN:
                 if pygame.joystick.Joystick(0).get_button(0):
                     if player1.attack("carrot"):
-                        temp_veggie = Veggie(player1.pos, (x_vel, y_vel), 1, "carrot", 10)
+                        temp_veggie = Veggie(player1.pos, (x_vel, y_vel), 1, "carrot", 5)
                         all_sprites.add([temp_veggie])
                         shots.add([temp_veggie])
             
@@ -173,13 +173,13 @@ def tutorials():
             damage = dead_sprite.damage
             dead_sprite.kill()
             
-            if base2.base_shield >= 10:
-                base2.base_shield = base2.base_shield - 10
-            elif base2.base_shield > 0 and base2.base_shield < 10:
-                base2.health = base2.health - 10 + base2.base_shield
-                base2.base_shield = 0
+            if base2.shield >= 10:
+                base2.shield = base2.shield - 10
+            elif base2.shield > 0 and base2.shield < 10:
+                base2.health = base2.health - 10 + base2.shield
+                base2.shield = 0
             else:
-                base2.health = base2.health - 10
+                base2.health = base2.health - damage
             
             if base2.health <= 0:
                 for sprite in all_sprites:
