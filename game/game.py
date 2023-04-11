@@ -75,7 +75,7 @@ def tutorials():
     Only one player can move around.
     """
     clock = pygame.time.Clock()
-    player1 = Player((30, 40), (2, 2), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
+    player1 = Player((80, 80), (2, 2), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
     veggie1 = Veggie((420, 270), (0, 0), 3, "carrot", 5)
     base1 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4)), (3, 3), 1, 20, 0)
     base2 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4)), (3, 3), 2, 20, 0)

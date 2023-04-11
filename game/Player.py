@@ -26,7 +26,7 @@ class Player(GameObject):
             - health: object health/damage
             - team_num: object team number
         """
-        super().__init__((PLAYER_WIDTH, PLAYER_HEIGHT), pos, vel, team_num, img='assets/players/engineer.png', animation_steps=[3,3,3,3])
+        super().__init__((PLAYER_WIDTH, PLAYER_HEIGHT), pos, vel, team_num, img='assets/players/engineer.png', animation_steps=[3,3,3,3], scale=PLAYER_SCALE)
         self.role = role
         self.state = state
         self.backpack = {}
