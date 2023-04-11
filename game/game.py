@@ -7,6 +7,7 @@ from Slingshot import Slingshot
 from constants import *
 from integrations.image_processing import *
 import time, math
+from integrations.speech_recognition import speech_rec
 
 pygame.init()          # Start game
 
@@ -97,6 +98,9 @@ def tutorials():
     mediapipe_thread = threading.Thread(target=calculate_angle_using_mediapipe, args=[running_threads, latest_frame_available, latest_frame, angle_queue])
 
     TUTORIALS_BG = pygame.image.load("assets/grass.png")
+
+    audio_list = ["Eddie"]
+    stop_listening = speech_rec(audio_list)
     while running:
         TUTORIALS_MOUSE_POS = pygame.mouse.get_pos()
 
@@ -105,15 +109,22 @@ def tutorials():
 
         pressed_keys = pygame.key.get_pressed()   # Keyboard input
         
-
+        # Audio Input
+        if audio_list[0] == "switch":
+            print(".....................")
+            audio_list[0] = "Eddie"
+            player1.toggle_mount(slingshot1)
+        
         for event in pygame.event.get():
             # Quit Game
             if event.type == pygame.QUIT:
+                stop_listening(wait_for_stop=False)
                 pygame.quit()
                 sys.exit()
             # Mount Slingshot
             elif event.type == KEYDOWN:
                 if event.key == K_RETURN:
+                    audio_list[0] = "Eddie"
                     player1.toggle_mount(slingshot1)
             # Attack
             elif event.type == pygame.JOYBUTTONDOWN:
@@ -187,6 +198,7 @@ def tutorials():
                     sprite.kill()
                 running = False
                 running_threads.set()
+                stop_listening(wait_for_stop=False)
                 pygame.quit()
                 break
         
@@ -198,8 +210,8 @@ def tutorials():
         latest_frame_available.notify_all()
     mediapipe_thread.join()
     camera_thread.join()
-    
-    
+
+
 
 def options():
     while True:
