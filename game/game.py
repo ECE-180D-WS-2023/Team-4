@@ -18,6 +18,7 @@ print(joysticks)
 
 # https://stackoverflow.com/questions/73758038/pygame-wrong-resolution-on-macos
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN | pygame.SCALED)
+# SCREEN = pygame.display.set_mode((600, 800))
 
 pygame.display.set_caption("Veggie Wars")
 

@@ -24,7 +24,7 @@ class SpriteSheet():
 
         return image
 
-    def get_animation_list(self, animation_steps, frame_size):
+    def get_animation_list(self, animation_steps, frame_size, scale):
         '''
         animation_steps: len is number of rows, value of each index is number of col in each row
         '''
@@ -35,7 +35,7 @@ class SpriteSheet():
         for row in range(len(animation_steps)):
             temp_img_list = []
             for col in range(animation_steps[row]): 
-                temp_img_list.append(self.get_image(col, row, frame_size[0], frame_size[1], 1, BLACK))
+                temp_img_list.append(self.get_image(col, row, frame_size[0], frame_size[1], scale, BLACK))
             animation_list.append(temp_img_list)
         
         return animation_list
