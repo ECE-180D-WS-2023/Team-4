@@ -48,9 +48,9 @@ class Player(GameObject):
         if (self.state != PLAYER_HARVESTING):
             print("not in harvesting mode")
 
-        elif self.backpack[item] < 5 and self.backpack[item] >= 0:
+        elif 0 <= self.backpack.get(item, 0) < 5:
             print("You successfully added ", item)
-            self.backpack[item] += 1
+            self.backpack[item] = self.backpack.get(item, 0) + 1
             # make veggie disapper in the arena and map
             self.display_backpack()
         else:
