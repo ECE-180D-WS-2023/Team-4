@@ -180,28 +180,9 @@ def tutorials():
                 player1.harvest(veggie1.type)
                 veggie1.kill()
                 
-        dead_sprite = pygame.sprite.spritecollideany(base2, shots)
-        if dead_sprite:
-            damage = dead_sprite.damage
-            dead_sprite.kill()
-            
-            if base2.shield >= 10:
-                base2.shield = base2.shield - 10
-            elif base2.shield > 0 and base2.shield < 10:
-                base2.health = base2.health - 10 + base2.shield
-                base2.shield = 0
-            else:
-                base2.health = base2.health - damage
-            
-            if base2.health <= 0:
-                for sprite in all_sprites:
-                    sprite.kill()
-                running = False
-                running_threads.set()
-                stop_listening(wait_for_stop=False)
-                pygame.quit()
-                break
         
+        for base in bases:
+            base.update(shots, SCREEN)
         pygame.display.flip()
         clock.tick(100)
     
