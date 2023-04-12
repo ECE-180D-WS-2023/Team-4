@@ -38,7 +38,6 @@ class Player(GameObject):
     def is_alive(self):
         return self.health > 0
 
-    def harvest(self, item):
         """
         Add items to player backpack (only when player is in HARVESTING mode)
 
@@ -47,14 +46,14 @@ class Player(GameObject):
         """
         if (self.state != PLAYER_HARVESTING):
             print("not in harvesting mode")
+    def harvest(self, veggies_group):
+        if self.state == PLAYER_SHOOTING:
+            return
 
-        elif 0 <= self.backpack.get(item, 0) < 5:
-            print("You successfully added ", item)
-            self.backpack[item] = self.backpack.get(item, 0) + 1
-            # make veggie disapper in the arena and map
-            self.display_backpack()
-        else:
-            print("sorry backpack full")
+        veggie = pygame.sprite.spritecollideany(self, veggies_group)
+        if veggie:
+            self.backpack[veggie.__class__.__name__] = self.backpack.get(veggie.__class__.__name__, 0) + 1
+            veggie.kill()
 
     def toggle_mount(self, slingshot):
         if self.mounted:

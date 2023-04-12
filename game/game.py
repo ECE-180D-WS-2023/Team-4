@@ -126,6 +126,8 @@ def tutorials():
                 if event.key == K_RETURN:
                     audio_list[0] = "Eddie"
                     player1.toggle_mount(slingshot1)
+                if event.key == K_SPACE:
+                    player1.harvest(veggies)
             # Attack
             elif event.type == pygame.JOYBUTTONDOWN:
                 if pygame.joystick.Joystick(0).get_button(0):
