@@ -3,11 +3,9 @@ from constants import *
 import pygame
 
 class Veggie(GameObject):
-    def __init__(self, pos, vel, team_num: int, veggie_type: str, damage: int, ) -> None:
+    def __init__(self, pos, vel, team_num: int, damage: int, ) -> None:
         super().__init__((VEGGIE_WIDTH, VEGGIE_HEIGHT), pos, vel, team_num, img='assets/veggies/veggies.png')
-        self.type = veggie_type
         self.damage = damage
-        self.harvest_time = veggie_dict[veggie_type] / 2
         
     def update(self, screen, action=None):
         self.pos_x -= self.vel_x
@@ -20,12 +18,10 @@ class Veggie(GameObject):
             or self.rect.top <= 0
             or self.rect.bottom >= SCREEN_HEIGHT):
             self.kill()
-            print("this object is killed")
 
 class Carrot(Veggie):
-    # def __init__(self, pos, vel, team_num: int, veggie_type: str, damage: int) -> None:
-    #     super().__init__(pos, vel, team_num, veggie_type, damage)
-    ...
+    def __init__(self):
+        pass
 
 class Mushroom(Veggie):
     def __init__(self):
