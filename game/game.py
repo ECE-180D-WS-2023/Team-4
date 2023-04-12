@@ -1,5 +1,6 @@
 import pygame, sys, threading, queue
 from button import Button
+import random
 from Player import Player
 from Veggie import Veggie
 from Base import Base
@@ -26,22 +27,15 @@ pygame.display.set_caption("Veggie Wars")
 # Initialize sprite groups
 all_sprites = pygame.sprite.Group()
 players = pygame.sprite.Group()
-harvestables = pygame.sprite.Group()
+veggies = pygame.sprite.Group()
 bases = pygame.sprite.Group()
+slingshots = pygame.sprite.Group()
 shots = pygame.sprite.Group()
 
 BG = pygame.image.load("assets/Background.png")
 
 def get_font(size):
     return pygame.font.Font("assets/font.ttf", size)
-
-def redraw_screen(screen):
-    for sprite in players:
-        screen.blit(sprite.surf, sprite.rect)
-    for sprite in harvestables:
-        screen.blit(sprite.surf, sprite.rect)
-    for sprite in bases:
-        screen.blit(sprite.surf, sprite.rect)
 
 def play():
     while True:
@@ -77,16 +71,15 @@ def tutorials():
     """
     clock = pygame.time.Clock()
     player1 = Player((80, 80), (2, 2), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
-    veggie1 = Veggie((420, 270), (0, 0), 3, "carrot", 5)
     base1 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4)), (3, 3), 1, 20, 0)
     base2 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4)), (3, 3), 2, 20, 0)
-    slingshot1 = Slingshot((500, 500), (0, 0), 1)
+    slingshot1 = Slingshot((500, 1000), (0, 0), 1)
 
 
-    all_sprites.add([veggie1, base1, base2, slingshot1])
+    all_sprites.add([base1, base2, slingshot1])
     players.add([player1])                        # Add player1 to players group
-    harvestables.add([veggie1])                   # Add veggie1 to harvestable group
     bases.add([base1, base2])                     # Add base1 to bases group
+    slingshots.add([slingshot1])
 
     running_threads = threading.Event()
     running = True
@@ -101,6 +94,15 @@ def tutorials():
 
     audio_list = ["Eddie"]
     stop_listening = speech_rec(audio_list)
+    angle = 0
+
+
+    for _ in range(MAX_VEGGIES):
+        v_x = random.randint(0, SCREEN_WIDTH - VEGGIE_WIDTH)
+        v_y = random.randint(0, SCREEN_HEIGHT - VEGGIE_HEIGHT)
+        veggie = Veggie((v_x, v_y), (0, 0), 1, 10)
+        veggies.add(veggie)
+
     while running:
         TUTORIALS_MOUSE_POS = pygame.mouse.get_pos()
 
@@ -108,13 +110,13 @@ def tutorials():
 
 
         pressed_keys = pygame.key.get_pressed()   # Keyboard input
-        
+
         # Audio Input
         if audio_list[0] == "switch":
             print(".....................")
             audio_list[0] = "Eddie"
             player1.toggle_mount(slingshot1)
-        
+
         for event in pygame.event.get():
             # Quit Game
             if event.type == pygame.QUIT:
@@ -131,13 +133,15 @@ def tutorials():
             # Attack
             elif event.type == pygame.JOYBUTTONDOWN:
                 if pygame.joystick.Joystick(0).get_button(0):
-            
-        # Joystick reading
-        if player1.state == PLAYER_WALKING:
-            x_speed = round(pygame.joystick.Joystick(0).get_axis(0))
-            y_speed = round(pygame.joystick.Joystick(0).get_axis(1))
-        elif player1.state == PLAYER_SHOOTING:
                     player1.attack(Veggie, angle, (shots, all_sprites))
+
+        if len(veggies) < MAX_VEGGIES:
+            v_x = random.randint(0, SCREEN_WIDTH - VEGGIE_WIDTH)
+            v_y = random.randint(0, SCREEN_HEIGHT - VEGGIE_HEIGHT)
+            veggie = Veggie((v_x, v_y), (0, 0), 1, 10)
+            veggies.add(veggie)
+
+        if player1.state == PLAYER_SHOOTING:
             if not camera_thread.is_alive():
                 running_threads.clear()
                 camera_thread = threading.Thread(target=read_frames_from_camera, args=[running_threads, latest_frame_available, latest_frame])
@@ -145,13 +149,9 @@ def tutorials():
                 camera_thread.start()
                 mediapipe_thread.start()
             try:
-                x_speed = angle_queue.get(block=False)
+                angle = angle_queue.get(block=False)
             except:
                 pass
-            x_vel = math.sin(math.radians(x_speed%360)) * VEGGIE_VELOCITY
-            y_vel = math.cos(math.radians(x_speed%360)) * VEGGIE_VELOCITY
-            y_speed = 0
-            # print(x_speed)
 
         if player1.state != PLAYER_SHOOTING:
             if camera_thread.is_alive():
@@ -159,34 +159,33 @@ def tutorials():
                 camera_thread.join()
                 mediapipe_thread.join()
 
-        # player.display_backpack(pressed_keys)    # display backpack
-        player1.switch_state(pressed_keys)         # switch player states
+        x_speed = round(pygame.joystick.Joystick(0).get_axis(0))
+        y_speed = round(pygame.joystick.Joystick(0).get_axis(1))
 
         # Refresh screen and display objects
-        redraw_screen(SCREEN)
-        player1.update([x_speed, y_speed], SCREEN)         # moving players
-        for sprite in all_sprites:
-            sprite.update(SCREEN)
-        
-
-        if pygame.sprite.spritecollideany(player1, harvestables):
-            # the harvestable glows and it takes time to harvest that veggie
-            # veggie is destroyed after harvested
-            if player1.state != PLAYER_HARVESTING:
-                pass
-            else:
-                # has to be right on top of the veggie
-                player1.harvest(veggie1.type)
-                veggie1.kill()
-                
-        
         for player in players:
             player.update([x_speed, y_speed], angle, SCREEN)
+        for veggie in veggies:
+            veggie.update(SCREEN)
         for base in bases:
             base.update(shots, SCREEN)
+        for slingshot in slingshots:
+            slingshot.update(SCREEN)
+        for shot in shots:
+            shot.update(SCREEN)
+
+        if base2.health == 0:
+            for sprite in all_sprites:
+                sprite.kill()
+            running = False
+            running_threads.set()
+            stop_listening(wait_for_stop=False)
+            pygame.quit()
+            break
+
         pygame.display.flip()
         clock.tick(100)
-    
+
     with latest_frame_available:
         latest_frame = None # sentinel value
         latest_frame_available.notify_all()

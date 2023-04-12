@@ -1,31 +1,12 @@
 from GameObject import GameObject
 from constants import *
+import math
 from typing import List, Set, Dict, Tuple
 import pygame
 
 class Player(GameObject):
     # TODO: remove role attribute in favor of subclasses
     def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
-        """
-        INPUT:
-        - role: player_role
-            - ENGINEER(const.): 3
-            - TRAVELER(const.): 4
-            - SOLDIER(const.): 5
-            - FARMER(const.): 6
-        - state: player_state
-            - PLAYER_WALKING(const.): 0
-            - PLAYER_HARVESTING(const.): 1
-            - PLAYER_SHOOTING(const.): 2
-        - name: name
-        - **profile: kwargs containing attribute values
-            - pos_x: position in x axis
-            - pos_y: position in y axis
-            - vel_x: velocity in x direction
-            - vel_y: velocity in y direction
-            - health: object health/damage
-            - team_num: object team number
-        """
         super().__init__((PLAYER_WIDTH, PLAYER_HEIGHT), pos, vel, team_num, img='assets/players/engineer.png', animation_steps=[3,3,3,3], scale=PLAYER_SCALE)
         self.role = role
         self.state = state
@@ -34,9 +15,6 @@ class Player(GameObject):
         self.name = name
         self.health = health
         self.mounted = False
-
-    def is_alive(self):
-        return self.health > 0
 
     def attack(self, veggie_class, angle, sprite_groups):
         """
@@ -75,14 +53,10 @@ class Player(GameObject):
             self.pos = slingshot.pos
             self.state = PLAYER_SHOOTING
 
-    def update(self, js_action, screen):
+    def update(self, js_action, angle, screen):
         x_action, y_action = js_action
 
-        if self.state == PLAYER_HARVESTING:
-            super().update(screen)
-            return
-
-        elif self.state == PLAYER_WALKING:
+        if self.state == PLAYER_WALKING:
             actions = []
 
             if y_action == -1:     # Up
@@ -121,7 +95,7 @@ class Player(GameObject):
                             aiming_indicator,
                             (self.pos[0], self.pos[1]),
                             (34,160),
-                            x_action)
+                            angle)
             super().update(screen)
             return
 

@@ -32,14 +32,14 @@ VEGGIE_HEIGHT = 32
 BASE_WIDTH = 93
 BASE_HEIGHT = 100
 
+MAX_VEGGIES = 10
+
 # Veggie damage
 VEGGIE_POTATO = 5
 VEGGIE_CARROT = 7
 VEGGIE_CABBAGE = 10
 VEGGIE_PUMPKIN = 15
-veggie_dict = {"carrot": VEGGIE_CARROT, "cabbage": VEGGIE_CABBAGE,
-               "potato": VEGGIE_POTATO, "pumpkin": VEGGIE_PUMPKIN}
-VEGGIE_VELOCITY = 1
+VEGGIE_VELOCITY = 10
 
 # Veggie weights
 
