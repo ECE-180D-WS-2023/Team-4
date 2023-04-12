@@ -38,14 +38,25 @@ class Player(GameObject):
     def is_alive(self):
         return self.health > 0
 
+    def attack(self, veggie_class, angle, sprite_groups):
         """
-        Add items to player backpack (only when player is in HARVESTING mode)
+        Attack using an item in the player backpack (only when player is in SHOOTING mode)
 
-        if the player's backpack is full, then you cannot harvest that veggie and it rots.
+        if the player's backpack is empty, then you cannot shoot.
 
         """
-        if (self.state != PLAYER_HARVESTING):
-            print("not in harvesting mode")
+        if self.state != PLAYER_SHOOTING:
+            return
+
+        if self.backpack.get(veggie_class.__name__, 0) == 0:
+            return
+
+        self.backpack[veggie_class.__name__] -= 1
+        x_vel = math.sin(math.radians(angle%360)) * VEGGIE_VELOCITY
+        y_vel = math.cos(math.radians(angle%360)) * VEGGIE_VELOCITY
+        veggie = veggie_class(self.pos, (x_vel, y_vel), self.team_num, 5)
+        veggie.add(*sprite_groups)
+
     def harvest(self, veggies_group):
         if self.state == PLAYER_SHOOTING:
             return
@@ -155,32 +166,9 @@ class Player(GameObject):
             self.state = PLAYER_SHOOTING
             print("Shooting!")
 
-    def attack(self, item):
-        """
-        Attack using an item in the player backpack (only when player is in SHOOTING mode)
-
-        if the player's backpack is empty, then you cannot shoot.
-
-        """
-        if (self.state != PLAYER_SHOOTING):
-            print("Player not in shooting mode")
-        elif self.backpack[item] >= 1:
-            self.backpack[item] -= 1
-            self.display_backpack()
-            return True
-        else:
-            # This should never be executed, since we won't display veggies that you don't have.
-            print("sorry no ammo")
-            return True
-
-    def display_backpack(self):
-        print(self.backpack)
-        return self.backpack
-
 class Engineer(Player):
     def __init__(self):
         pass
-
 
 class Traveler(Player):
     def __init__(self):
