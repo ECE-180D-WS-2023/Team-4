@@ -187,10 +187,12 @@ def tutorials():
                 camera_thread.join()
                 mediapipe_thread.join()
 
-        x_speed = round(pygame.joystick.Joystick(0).get_axis(0))
-        y_speed = round(pygame.joystick.Joystick(0).get_axis(1))
-        
-
+        try:
+            x_speed = round(pygame.joystick.Joystick(0).get_axis(0))
+            y_speed = round(pygame.joystick.Joystick(0).get_axis(1))
+        except:
+            x_speed = 0
+            y_speed = 0
 
         # Refresh screen and display objects
         for player in players:
