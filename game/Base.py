@@ -1,5 +1,10 @@
 from GameObject import GameObject
 from constants import *
+from pygame import mixer
+
+mixer.init()
+collision_sound = pygame.mixer.Sound('assets/music/collision.mp3')
+collision_sound.set_volume(0.4)
 
 class Base(GameObject):
     def __init__(self, pos, vel, team_num, health=100, shield=0):
@@ -19,6 +24,7 @@ class Base(GameObject):
         shot = pygame.sprite.spritecollideany(self, shots_group)
         if shot:
             if pygame.sprite.spritecollideany(self, shots_group, pygame.sprite.collide_mask):
+                collision_sound.play()
                 self.health = max(0, self.health-shot.damage)
                 shot.kill()
 

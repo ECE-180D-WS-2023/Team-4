@@ -1,4 +1,5 @@
 import pygame, sys, threading, queue
+from pygame import mixer
 from button import Button
 import random
 from Player import *
@@ -10,6 +11,7 @@ from integrations.image_processing import *
 import time, math
 from integrations.speech_recognition import speech_rec
 
+mixer.init()           # music
 pygame.init()          # Start game
 
 # Joystick configuration
@@ -69,8 +71,20 @@ def tutorials():
 
     Only one player can move around.
     """
+
+    # load music and sounds
+    pygame.mixer.music.load('assets/music/on-a-clear-day.mp3')
+    pygame.mixer.music.set_volume(0.4)
+    pygame.mixer.music.play(-1, 0.0)
+
+    is_shooting_music = False
+    walking_sound = pygame.mixer.Sound('assets/music/walking.mp3')
+
+    shooting = pygame.mixer.Sound('assets/music/not-afraid.mp3')
+
+
     clock = pygame.time.Clock()
-    player1 = Player((80, 80), (2, 2), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
+    player1 = Player((80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
     base1 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4)), (3, 3), 1, 20, 0)
     base2 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4)), (3, 3), 2, 20, 0)
     slingshot1 = Slingshot((900, 1000), (0, 0), 1)
@@ -125,7 +139,7 @@ def tutorials():
                 stop_listening(wait_for_stop=False)
                 pygame.quit()
                 sys.exit()
-            # Mount Slingshot
+            # Mount Slingshot and Harvesting
             elif event.type == KEYDOWN:
                 if event.key == K_RETURN:
                     audio_list[0] = "Eddie"
@@ -148,6 +162,10 @@ def tutorials():
             veggies.add(veggie)
 
         if player1.state == PLAYER_SHOOTING:
+            if not is_shooting_music:
+                pygame.mixer.music.load('assets/music/not-afraid.mp3')
+                pygame.mixer.music.play(-1)
+                is_shooting_music = True
             if not camera_thread.is_alive():
                 running_threads.clear()
                 camera_thread = threading.Thread(target=read_frames_from_camera, args=[running_threads, latest_frame_available, latest_frame])
@@ -160,6 +178,10 @@ def tutorials():
                 pass
 
         if player1.state != PLAYER_SHOOTING:
+            if is_shooting_music:
+                pygame.mixer.music.load('assets/music/on-a-clear-day.mp3')
+                pygame.mixer.music.play(-1)
+                is_shooting_music = False
             if camera_thread.is_alive():
                 running_threads.set()
                 camera_thread.join()

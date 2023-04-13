@@ -4,6 +4,11 @@ import math
 import collections
 from typing import List, Set, Dict, Tuple
 import pygame
+from pygame import mixer
+
+mixer.init()
+walking_sound = pygame.mixer.Sound('assets/music/walking.mp3')
+walking_sound.set_volume(1.5)
 
 class Player(GameObject):
     # TODO: remove role attribute in favor of subclasses
@@ -50,6 +55,7 @@ class Player(GameObject):
         if veggie:
             if pygame.sprite.spritecollideany(self, veggies_group, pygame.sprite.collide_mask):
                 # self.backpack[veggie.__class__.__name__] = self.backpack.get(veggie.__class__.__name__, 0) + 1
+                walking_sound.play()
                 self.backpack.append(veggie.__class__)
                 veggie.kill()
 
@@ -69,7 +75,6 @@ class Player(GameObject):
 
         if self.state == PLAYER_WALKING:
             actions = []
-
             if y_action == -1:     # Up
                 self.pos_y -= self.vel_y
                 actions.append(3)
