@@ -18,7 +18,8 @@ class Base(GameObject):
     def update(self, shots_group, screen):
         shot = pygame.sprite.spritecollideany(self, shots_group)
         if shot:
-            self.health = max(0, self.health-shot.damage)
-            shot.kill()
+            if pygame.sprite.spritecollideany(self, shots_group, pygame.sprite.collide_mask):
+                self.health = max(0, self.health-shot.damage)
+                shot.kill()
 
         super().update(screen)

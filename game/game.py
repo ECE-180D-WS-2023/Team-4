@@ -73,7 +73,7 @@ def tutorials():
     player1 = Player((80, 80), (2, 2), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
     base1 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4)), (3, 3), 1, 20, 0)
     base2 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4)), (3, 3), 2, 20, 0)
-    slingshot1 = Slingshot((500, 1000), (0, 0), 1)
+    slingshot1 = Slingshot((900, 1000), (0, 0), 1)
 
 
     all_sprites.add([base1, base2, slingshot1])
@@ -161,6 +161,8 @@ def tutorials():
 
         x_speed = round(pygame.joystick.Joystick(0).get_axis(0))
         y_speed = round(pygame.joystick.Joystick(0).get_axis(1))
+        
+
 
         # Refresh screen and display objects
         for player in players:
@@ -173,6 +175,11 @@ def tutorials():
             slingshot.update(SCREEN)
         for shot in shots:
             shot.update(SCREEN)
+
+        # show mask
+        # for sprite in all_sprites:
+        #     pygame.draw.rect(SCREEN, (255,255,255), sprite, 2)
+        #     SCREEN.blit(sprite.mask.to_surface(sprite.surf, setcolor = (255,255,255)), sprite.rect)
 
         if base2.health == 0:
             for sprite in all_sprites:

@@ -34,6 +34,7 @@ class GameObject(pygame.sprite.Sprite):
         self.last_update = pygame.time.get_ticks()
         self.animation_cooldown = 170
 
+        self.mask = pygame.mask.from_surface(self.animation_list[self.frame_row][self.frame_col])
     @property
     def pos(self):
         return self.pos_x, self.pos_y
@@ -61,3 +62,4 @@ class GameObject(pygame.sprite.Sprite):
     def update(self, screen, action=None):
         self.rect.center = (self.pos_x, self.pos_y)
         self.draw(screen, action)
+        self.mask = pygame.mask.from_surface(self.animation_list[self.frame_row][self.frame_col])

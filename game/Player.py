@@ -41,8 +41,9 @@ class Player(GameObject):
 
         veggie = pygame.sprite.spritecollideany(self, veggies_group)
         if veggie:
-            self.backpack[veggie.__class__.__name__] = self.backpack.get(veggie.__class__.__name__, 0) + 1
-            veggie.kill()
+            if pygame.sprite.spritecollideany(self, veggies_group, pygame.sprite.collide_mask):
+                self.backpack[veggie.__class__.__name__] = self.backpack.get(veggie.__class__.__name__, 0) + 1
+                veggie.kill()
 
     def toggle_mount(self, slingshot):
         if self.mounted:
