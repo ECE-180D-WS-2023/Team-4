@@ -1,8 +1,8 @@
 import pygame, sys, threading, queue
 from button import Button
 import random
-from Player import Player
-from Veggie import Veggie
+from Player import *
+from Veggie import *
 from Base import Base
 from Slingshot import Slingshot
 from constants import *
@@ -97,10 +97,12 @@ def tutorials():
     angle = 0
 
 
+    veggies_list = Veggie.__subclasses__()
     for _ in range(MAX_VEGGIES):
         v_x = random.randint(0, SCREEN_WIDTH - VEGGIE_WIDTH)
         v_y = random.randint(0, SCREEN_HEIGHT - VEGGIE_HEIGHT)
-        veggie = Veggie((v_x, v_y), (0, 0), 1, 10)
+        v_type = random.choice(veggies_list)
+        veggie = v_type((v_x, v_y), (0, 0), 1)
         veggies.add(veggie)
 
     while running:
@@ -133,12 +135,12 @@ def tutorials():
             # Attack
             elif event.type == pygame.JOYBUTTONDOWN:
                 if pygame.joystick.Joystick(0).get_button(0):
-                    player1.attack(Veggie, angle, (shots, all_sprites))
+                    player1.attack(angle, (shots, all_sprites))
 
         if len(veggies) < MAX_VEGGIES:
             v_x = random.randint(0, SCREEN_WIDTH - VEGGIE_WIDTH)
             v_y = random.randint(0, SCREEN_HEIGHT - VEGGIE_HEIGHT)
-            veggie = Veggie((v_x, v_y), (0, 0), 1, 10)
+            veggie = Mushroom((v_x, v_y), (0, 0), 1)
             veggies.add(veggie)
 
         if player1.state == PLAYER_SHOOTING:

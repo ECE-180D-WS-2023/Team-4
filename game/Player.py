@@ -1,6 +1,7 @@
 from GameObject import GameObject
 from constants import *
 import math
+import collections
 from typing import List, Set, Dict, Tuple
 import pygame
 
@@ -10,13 +11,13 @@ class Player(GameObject):
         super().__init__((PLAYER_WIDTH, PLAYER_HEIGHT), pos, vel, team_num, img='assets/players/engineer.png', animation_steps=[3,3,3,3], scale=PLAYER_SCALE)
         self.role = role
         self.state = state
-        self.backpack = {}
+        self.backpack = collections.deque()
         self.weight = role
         self.name = name
         self.health = health
         self.mounted = False
 
-    def attack(self, veggie_class, angle, sprite_groups):
+    def attack(self, angle, sprite_groups):
         """
         Attack using an item in the player backpack (only when player is in SHOOTING mode)
 
@@ -26,13 +27,19 @@ class Player(GameObject):
         if self.state != PLAYER_SHOOTING:
             return
 
-        if self.backpack.get(veggie_class.__name__, 0) == 0:
+        # if self.backpack.get(veggie_class.__name__, 0) == 0:
+        #     return
+
+        # self.backpack[veggie_class.__name__] -= 1
+
+        if len(self.backpack) == 0:
             return
 
-        self.backpack[veggie_class.__name__] -= 1
+        veggie_class = self.backpack.popleft()
+
         x_vel = math.sin(math.radians(angle%360)) * VEGGIE_VELOCITY
         y_vel = math.cos(math.radians(angle%360)) * VEGGIE_VELOCITY
-        veggie = veggie_class(self.pos, (x_vel, y_vel), self.team_num, 5)
+        veggie = veggie_class(self.pos, (x_vel, y_vel), self.team_num)
         veggie.add(*sprite_groups)
 
     def harvest(self, veggies_group):
@@ -42,7 +49,8 @@ class Player(GameObject):
         veggie = pygame.sprite.spritecollideany(self, veggies_group)
         if veggie:
             if pygame.sprite.spritecollideany(self, veggies_group, pygame.sprite.collide_mask):
-                self.backpack[veggie.__class__.__name__] = self.backpack.get(veggie.__class__.__name__, 0) + 1
+                # self.backpack[veggie.__class__.__name__] = self.backpack.get(veggie.__class__.__name__, 0) + 1
+                self.backpack.append(veggie.__class__)
                 veggie.kill()
 
     def toggle_mount(self, slingshot):
