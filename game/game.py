@@ -136,6 +136,10 @@ def tutorials():
             elif event.type == pygame.JOYBUTTONDOWN:
                 if pygame.joystick.Joystick(0).get_button(0):
                     player1.attack(angle, (shots, all_sprites))
+                if pygame.joystick.Joystick(0).get_button(1):
+                    player1.harvest(veggies)
+                if pygame.joystick.Joystick(0).get_button(3):
+                    player1.toggle_mount(slingshot1)
 
         if len(veggies) < MAX_VEGGIES:
             v_x = random.randint(0, SCREEN_WIDTH - VEGGIE_WIDTH)
