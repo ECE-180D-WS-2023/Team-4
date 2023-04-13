@@ -78,9 +78,8 @@ def tutorials():
     pygame.mixer.music.play(-1, 0.0)
 
     is_shooting_music = False
-    walking_sound = pygame.mixer.Sound('assets/music/walking.mp3')
-
-    shooting = pygame.mixer.Sound('assets/music/not-afraid.mp3')
+    # walking_sound = pygame.mixer.Sound('assets/music/walking.mp3')
+    # shooting_sound = pygame.mixer.Sound('assets/music/shotgun-firing.mp3')
 
 
     clock = pygame.time.Clock()

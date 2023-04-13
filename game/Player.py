@@ -9,6 +9,7 @@ from pygame import mixer
 mixer.init()
 walking_sound = pygame.mixer.Sound('assets/music/walking.mp3')
 walking_sound.set_volume(1.5)
+shooting_sound = pygame.mixer.Sound('assets/music/shotgun-firing.mp3')
 
 class Player(GameObject):
     # TODO: remove role attribute in favor of subclasses
@@ -47,6 +48,8 @@ class Player(GameObject):
         veggie = veggie_class(self.pos, (x_vel, y_vel), self.team_num)
         veggie.add(*sprite_groups)
 
+        shooting_sound.play()
+
     def harvest(self, veggies_group):
         if self.state == PLAYER_SHOOTING:
             return
@@ -72,7 +75,6 @@ class Player(GameObject):
 
     def update(self, js_action, angle, screen):
         x_action, y_action = js_action
-
         if self.state == PLAYER_WALKING:
             actions = []
             if y_action == -1:     # Up
