@@ -10,6 +10,7 @@ from constants import *
 from integrations.image_processing import *
 import time, math
 from integrations.speech_recognition import speech_rec
+from Dimmer import *
 
 mixer.init()           # music
 pygame.init()          # Start game
@@ -269,8 +270,13 @@ def main_menu():
     QUIT_BUTTON = Button(image=pygame.image.load("assets/menu/Quit Rect.png"), pos=(700, 800),
                         text_input="QUIT", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
     
+    # Button clicking sound effect
     clicking_sound = mixer.Sound('assets/music/button_clicked.mp3')
     clicking_sound.set_volume(1.5)
+
+    # Screen Dimmer Test
+    dim_screen = False
+    dimmer = Dimmer(keepalive=True)
     
     while True:
         SCREEN.blit(BG, (0, 0))
@@ -289,6 +295,10 @@ def main_menu():
             button.changeColor(MENU_MOUSE_POS)
             button.hoverNoise(MENU_MOUSE_POS)
             button.update(SCREEN)
+
+        if dim_screen:
+            dimmer.dim(darken_factor=200, color_filter=(0,0,0))
+        
 
         # event after clicking
         for event in pygame.event.get():
@@ -309,6 +319,12 @@ def main_menu():
                     clicking_sound.play()
                     pygame.quit()
                     sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    if not dim_screen:
+                        dim_screen = True
+                    else:
+                        dim_screen = False
 
         pygame.display.update()
 
