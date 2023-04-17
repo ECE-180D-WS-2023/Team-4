@@ -34,7 +34,7 @@ bases = pygame.sprite.Group()
 slingshots = pygame.sprite.Group()
 shots = pygame.sprite.Group()
 
-BG = pygame.image.load("assets/Background.png")
+BG = pygame.image.load("assets/new_background.png")
 
 def get_font(size):
     return pygame.font.Font("assets/font.ttf", size)
@@ -258,30 +258,36 @@ def options():
 
 
 def main_menu():
+
+    # Initialize buttons
+    PLAY_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png"), pos=(700, 350),
+                        text_input="PLAY", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+    OPTIONS_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(700, 500),
+                        text_input="OPTIONS", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+    TUTORIALS_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(700, 650),
+                        text_input="TUTORIALS", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+    QUIT_BUTTON = Button(image=pygame.image.load("assets/menu/Quit Rect.png"), pos=(700, 800),
+                        text_input="QUIT", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+    
+    clicking_sound = mixer.Sound('assets/music/button_clicked.mp3')
+    clicking_sound.set_volume(1.5)
+    
     while True:
         SCREEN.blit(BG, (0, 0))
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
         # Initialize main text box
-        MENU_TEXT = get_font(100).render("Veggie Wars", True, "#b68f40")
-        MENU_RECT = MENU_TEXT.get_rect(center=(640, 80))
+        MENU_TEXT = get_font(150).render("Veggie Wars", True, "#b68f40")
+        MENU_RECT = MENU_TEXT.get_rect(center=(SCREEN_WIDTH/2, 120))
 
-        # Initialize buttons
-        PLAY_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png"), pos=(640, 230),
-                            text_input="PLAY", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
-        OPTIONS_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(640, 380),
-                            text_input="OPTIONS", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
-        TUTORIALS_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(640, 530),
-                            text_input="TUTORIALS", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load("assets/menu/Quit Rect.png"), pos=(640, 650),
-                            text_input="QUIT", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
-
+        
         SCREEN.blit(MENU_TEXT, MENU_RECT)
 
-        # change color when hovering
+        # change color and play noise when hovering
         for button in [PLAY_BUTTON, OPTIONS_BUTTON, TUTORIALS_BUTTON, QUIT_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
+            button.hoverNoise(MENU_MOUSE_POS)
             button.update(SCREEN)
 
         # event after clicking
@@ -291,12 +297,16 @@ def main_menu():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    clicking_sound.play()
                     play()
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    clicking_sound.play()
                     options()
                 if TUTORIALS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    clicking_sound.play()
                     tutorials()
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    clicking_sound.play()
                     pygame.quit()
                     sys.exit()
 
