@@ -208,6 +208,8 @@ def tutorials():
                     player1.toggle_mount(slingshot1)
                 if event.key == K_SPACE:
                     player1.harvest(veggies)
+                if event.key == K_TAB:
+                    player1.promote()
             # Attack
             elif event.type == pygame.JOYBUTTONDOWN:
                 if pygame.joystick.Joystick(0).get_button(0):

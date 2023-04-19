@@ -17,6 +17,8 @@ class Base(GameObject):
         super().draw(screen, action)
 
         # Health Bar
+        # Advanced Health Bar
+        # https://www.youtube.com/watch?v=pUEZbUAMZYA
         pygame.draw.rect(screen, (255,0,0), (self.pos_x - 46.5, self.pos_y - 65, BASE_WIDTH, 12))  # Red
         pygame.draw.rect(screen, (0,128,0), (self.pos_x - 46.5, self.pos_y - 65, BASE_HEIGHT - ((93/20) * (20 - self.health)), 12))  # Green
 

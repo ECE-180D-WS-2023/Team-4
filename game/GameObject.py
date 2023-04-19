@@ -21,12 +21,12 @@ class GameObject(pygame.sprite.Sprite):
 
         # Pygame sprite initialization
         # self.sprite_sheet = SpriteSheet(img)
-        img = pygame.image.load(img).convert_alpha()
+        self.img = pygame.image.load(img).convert_alpha()
         self.animation_steps = animation_steps
         self.surf = pygame.Surface((shape[0]*scale, shape[1]*scale))
         self.rect = self.surf.get_rect()
         self.rect.center = pos
-        self.animation_list = SpriteSheet(img).get_animation_list(self.animation_steps, shape, scale)
+        self.animation_list = SpriteSheet(self.img).get_animation_list(self.animation_steps, shape, scale)
 
         # use in draw functions
         self.frame_col = 0 # frame
@@ -42,6 +42,14 @@ class GameObject(pygame.sprite.Sprite):
     @pos.setter
     def pos(self, pos: Tuple[int, int]):
         self.pos_x, self.pos_y = pos
+
+    @property
+    def vel(self):
+        return self.vel_x, self.vel_y
+
+    @vel.setter
+    def vel(self, vel: Tuple[int, int]):
+        self.vel_x, self.vel_y = vel
 
     def draw(self, screen, action=None):
         if action != None:
