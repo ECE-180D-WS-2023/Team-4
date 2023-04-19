@@ -1,4 +1,7 @@
-import pygame, sys, threading, queue
+import pygame
+import sys
+import threading
+import queue
 from pygame import mixer
 from button import Button
 import random
@@ -8,7 +11,8 @@ from Base import Base
 from Slingshot import Slingshot
 from constants import *
 from integrations.image_processing import *
-import time, math
+import time
+import math
 from integrations.speech_recognition import speech_rec
 from Dimmer import *
 
@@ -17,12 +21,14 @@ pygame.init()          # Start game
 
 # Joystick configuration
 pygame.joystick.init()
-joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
+joysticks = [pygame.joystick.Joystick(x)
+             for x in range(pygame.joystick.get_count())]
 print(joysticks)
 
 
 # https://stackoverflow.com/questions/73758038/pygame-wrong-resolution-on-macos
-SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN | pygame.SCALED)
+SCREEN = pygame.display.set_mode(
+    (SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN | pygame.SCALED)
 # SCREEN = pygame.display.set_mode((600, 800))
 
 pygame.display.set_caption("Veggie Wars")
@@ -37,8 +43,10 @@ shots = pygame.sprite.Group()
 
 BG = pygame.image.load("assets/new_background.png")
 
+
 def get_font(size):
     return pygame.font.Font("assets/font.ttf", size)
+
 
 def play():
     while True:
@@ -46,12 +54,13 @@ def play():
 
         SCREEN.fill("black")
 
-        PLAY_TEXT = get_font(45).render("This is the PLAY screen.", True, "White")
+        PLAY_TEXT = get_font(45).render(
+            "This is the PLAY screen.", True, "White")
         PLAY_RECT = PLAY_TEXT.get_rect(center=(640, 260))
         SCREEN.blit(PLAY_TEXT, PLAY_RECT)
 
         PLAY_BACK = Button(image=None, pos=(640, 460),
-                            text_input="BACK", font=get_font(75), base_color="White", hovering_color="Green")
+                           text_input="BACK", font=get_font(75), base_color="White", hovering_color="Green")
 
         PLAY_BACK.changeColor(PLAY_MOUSE_POS)
         PLAY_BACK.update(SCREEN)
@@ -66,6 +75,7 @@ def play():
 
         pygame.display.update()
 
+
 def choosePlayer():
 
     background = pygame.image.load("assets/grass.png")
@@ -73,48 +83,51 @@ def choosePlayer():
     running = True
 
     ENGINEER_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(500, 350),
-                        text_input="ENGINEER", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
-    
+                             text_input="ENGINEER", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+
     SOLDIER_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH/2, 350),
-                        text_input="SOLDIER", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
-    
-    FARMER_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH - 500, 350),
-                        text_input="FARMER", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+                            text_input="SOLDIER", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+
+    DARTHVADER_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH - 500, 350),
+                               text_input="DARTH VADER", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
 
     while running:
 
         CHOOSEPLAYER_MOUSE_POS = pygame.mouse.get_pos()
         SCREEN.blit(background, (0, 0))
-        dimmer.dim(darken_factor=200, color_filter=(0,0,0))
-        
+        dimmer.dim(darken_factor=200, color_filter=(0, 0, 0))
 
-        for button in [ENGINEER_BUTTON, SOLDIER_BUTTON, FARMER_BUTTON]:
+        for button in [ENGINEER_BUTTON, SOLDIER_BUTTON, DARTHVADER_BUTTON]:
             button.changeColor(CHOOSEPLAYER_MOUSE_POS)
             button.hoverNoise(CHOOSEPLAYER_MOUSE_POS)
             button.update(SCREEN)
 
-
-        
-
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if ENGINEER_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
-                    player = Engineer((80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
+                    player = Engineer(
+                        (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
                     return player
                 if SOLDIER_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
-                    player = Soldier((80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
+                    player = Soldier((80, 80), (2.5, 2.5), 1,
+                                     PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
                     return player
-                if FARMER_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
-                    player = Farmer((80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
+                if DARTHVADER_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                    player = DarthVader(
+                        (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
+                    return player
             elif event.type == KEYDOWN:
                 if event.key == K_SPACE:
-                    player = Player((80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
+                    player = Player((80, 80), (2.5, 2.5), 1,
+                                    PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
                     return player
                 if event.key == K_q:
-                    player = Player((80, 80), (2.5, 2.5), 1, PLAYER_FARMER, "Bruce", PLAYER_WALKING, 10)
+                    player = Player((80, 80), (2.5, 2.5), 1,
+                                    PLAYER_FARMER, "Bruce", PLAYER_WALKING, 10)
                     return player
-                
+
         pygame.display.update()
+
 
 def tutorials():
     """
@@ -132,17 +145,15 @@ def tutorials():
     # walking_sound = pygame.mixer.Sound('assets/music/walking.mp3')
     # shooting_sound = pygame.mixer.Sound('assets/music/shotgun-firing.mp3')
 
-
     clock = pygame.time.Clock()
     player1 = choosePlayer()
-    # player1 = Player((80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
     base1 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4)), (3, 3), 1, 20, 0)
     base2 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4)), (3, 3), 2, 20, 0)
     slingshot1 = Slingshot((900, 1000), (0, 0), 1)
 
-
     all_sprites.add([base1, base2, slingshot1])
-    players.add([player1])                        # Add player1 to players group
+    # Add player1 to players group
+    players.add([player1])
     bases.add([base1, base2])                     # Add base1 to bases group
     slingshots.add([slingshot1])
 
@@ -152,15 +163,16 @@ def tutorials():
     latest_frame_available = threading.Condition()
     angle_queue = queue.Queue(maxsize=10)
 
-    camera_thread = threading.Thread(target=read_frames_from_camera, args=[running_threads, latest_frame_available, latest_frame])
-    mediapipe_thread = threading.Thread(target=calculate_angle_using_mediapipe, args=[running_threads, latest_frame_available, latest_frame, angle_queue])
+    camera_thread = threading.Thread(target=read_frames_from_camera, args=[
+                                     running_threads, latest_frame_available, latest_frame])
+    mediapipe_thread = threading.Thread(target=calculate_angle_using_mediapipe, args=[
+                                        running_threads, latest_frame_available, latest_frame, angle_queue])
 
     TUTORIALS_BG = pygame.image.load("assets/grass.png")
 
     audio_list = ["Eddie"]
     stop_listening = speech_rec(audio_list)
     angle = 0
-
 
     veggies_list = Veggie.__subclasses__()
     for _ in range(MAX_VEGGIES):
@@ -174,7 +186,6 @@ def tutorials():
         TUTORIALS_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.blit(TUTORIALS_BG, (0, 0))
-
 
         pressed_keys = pygame.key.get_pressed()   # Keyboard input
 
@@ -219,8 +230,10 @@ def tutorials():
                 is_shooting_music = True
             if not camera_thread.is_alive():
                 running_threads.clear()
-                camera_thread = threading.Thread(target=read_frames_from_camera, args=[running_threads, latest_frame_available, latest_frame])
-                mediapipe_thread = threading.Thread(target=calculate_angle_using_mediapipe, args=[running_threads, latest_frame_available, latest_frame, angle_queue])
+                camera_thread = threading.Thread(target=read_frames_from_camera, args=[
+                                                 running_threads, latest_frame_available, latest_frame])
+                mediapipe_thread = threading.Thread(target=calculate_angle_using_mediapipe, args=[
+                                                    running_threads, latest_frame_available, latest_frame, angle_queue])
                 camera_thread.start()
                 mediapipe_thread.start()
             try:
@@ -275,11 +288,10 @@ def tutorials():
         clock.tick(100)
 
     with latest_frame_available:
-        latest_frame = None # sentinel value
+        latest_frame = None  # sentinel value
         latest_frame_available.notify_all()
     mediapipe_thread.join()
     camera_thread.join()
-
 
 
 def options():
@@ -288,12 +300,13 @@ def options():
 
         SCREEN.fill("white")
 
-        OPTIONS_TEXT = get_font(45).render("This is the OPTIONS screen.", True, "Black")
+        OPTIONS_TEXT = get_font(45).render(
+            "This is the OPTIONS screen.", True, "Black")
         OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 260))
         SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
 
         OPTIONS_BACK = Button(image=None, pos=(640, 460),
-                            text_input="BACK", font=get_font(75), base_color="Black", hovering_color="Green")
+                              text_input="BACK", font=get_font(75), base_color="Black", hovering_color="Green")
 
         OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
         OPTIONS_BACK.update(SCREEN)
@@ -313,22 +326,18 @@ def main_menu():
 
     # Initialize buttons
     PLAY_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png"), pos=(700, 350),
-                        text_input="PLAY", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+                         text_input="PLAY", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
     OPTIONS_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(700, 500),
-                        text_input="OPTIONS", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+                            text_input="OPTIONS", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
     TUTORIALS_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(700, 650),
-                        text_input="TUTORIALS", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+                              text_input="TUTORIALS", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
     QUIT_BUTTON = Button(image=pygame.image.load("assets/menu/Quit Rect.png"), pos=(700, 800),
-                        text_input="QUIT", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
-    
+                         text_input="QUIT", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+
     # Button clicking sound effect
     clicking_sound = mixer.Sound('assets/music/button_clicked.mp3')
     clicking_sound.set_volume(1.5)
 
-    # Screen Dimmer Test
-    dim_screen = False
-    dimmer = Dimmer(keepalive=True)
-    
     while True:
         SCREEN.blit(BG, (0, 0))
 
@@ -338,7 +347,6 @@ def main_menu():
         MENU_TEXT = get_font(150).render("Veggie Wars", True, "#b68f40")
         MENU_RECT = MENU_TEXT.get_rect(center=(SCREEN_WIDTH/2, 120))
 
-        
         SCREEN.blit(MENU_TEXT, MENU_RECT)
 
         # change color and play noise when hovering
@@ -346,10 +354,6 @@ def main_menu():
             button.changeColor(MENU_MOUSE_POS)
             button.hoverNoise(MENU_MOUSE_POS)
             button.update(SCREEN)
-
-        if dim_screen:
-            dimmer.dim(darken_factor=200, color_filter=(0,0,0))
-        
 
         # event after clicking
         for event in pygame.event.get():
@@ -370,14 +374,8 @@ def main_menu():
                     clicking_sound.play()
                     pygame.quit()
                     sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    if not dim_screen:
-                        dim_screen = True
-                    else:
-                        dim_screen = False
 
         pygame.display.update()
 
-main_menu()
 
+main_menu()

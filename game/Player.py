@@ -13,8 +13,8 @@ shooting_sound = pygame.mixer.Sound('assets/music/shotgun-firing.mp3')
 
 class Player(GameObject):
     # TODO: remove role attribute in favor of subclasses
-    def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
-        super().__init__((PLAYER_WIDTH, PLAYER_HEIGHT), pos, vel, team_num, img='assets/players/engineer.png', animation_steps=[3,3,3,3], scale=PLAYER_SCALE)
+    def __init__(self, pos, vel, team_num, role, name, img, state=PLAYER_WALKING, health=100):
+        super().__init__((PLAYER_WIDTH, PLAYER_HEIGHT), pos, vel, team_num, img, animation_steps=[3,3,3,3], scale=PLAYER_SCALE)
         self.role = role
         self.state = state
         self.backpack = collections.deque()
@@ -160,15 +160,15 @@ class Player(GameObject):
 
 class Engineer(Player):
     def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
-        super().__init__(pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100)
+        super().__init__(pos, vel, team_num, role, name, img="assets/players/engineer.png", state=PLAYER_WALKING, health=100)
 
-class Traveler(Player):
+class DarthVader(Player):
     def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
-        super().__init__(pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100)
+        super().__init__(pos, vel, team_num, role, name, img="assets/players/darthvader.png", state=PLAYER_WALKING, health=100)
 
 class Soldier(Player):
     def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
-        super().__init__(pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100)
+        super().__init__(pos, vel, team_num, role, name, img="assets/players/soldier.png", state=PLAYER_WALKING, health=100)
 
 class Farmer(Player):
     def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
