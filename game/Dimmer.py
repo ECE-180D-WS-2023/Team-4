@@ -20,7 +20,7 @@ class Dimmer:
             old_clip=pygame.display.get_surface().get_clip()
             # ..blit over entire screen...
             pygame.display.get_surface().blit(darken,(0,0))
-            pygame.display.flip()
+            # pygame.display.flip()
             # ... and restore clipping
             pygame.display.get_surface().set_clip(old_clip)
 

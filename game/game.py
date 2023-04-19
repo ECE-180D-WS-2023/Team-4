@@ -66,6 +66,41 @@ def play():
 
         pygame.display.update()
 
+def choosePlayer():
+
+    background = pygame.image.load("assets/grass.png")
+    dimmer = Dimmer(keepalive=True)
+    running = True
+
+    ENGINEER_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(500, 350),
+                        text_input="ENGINEER", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+
+    while running:
+
+        CHOOSEPLAYER_MOUSE_POS = pygame.mouse.get_pos()
+        SCREEN.blit(background, (0, 0))
+        dimmer.dim(darken_factor=200, color_filter=(0,0,0))
+        
+        ENGINEER_BUTTON.changeColor(CHOOSEPLAYER_MOUSE_POS)
+        ENGINEER_BUTTON.hoverNoise(CHOOSEPLAYER_MOUSE_POS)
+        ENGINEER_BUTTON.update(SCREEN)
+        
+
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if ENGINEER_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                    player = Player((80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
+                    return player
+            elif event.type == KEYDOWN:
+                if event.key == K_SPACE:
+                    player = Player((80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
+                    return player
+                if event.key == K_q:
+                    player = Player((80, 80), (2.5, 2.5), 1, PLAYER_FARMER, "Bruce", PLAYER_WALKING, 10)
+                    return player
+                
+        pygame.display.update()
+
 def tutorials():
     """
     MODE: TUTORIALS
@@ -84,7 +119,8 @@ def tutorials():
 
 
     clock = pygame.time.Clock()
-    player1 = Player((80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
+    player1 = choosePlayer()
+    # player1 = Player((80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
     base1 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4)), (3, 3), 1, 20, 0)
     base2 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4)), (3, 3), 2, 20, 0)
     slingshot1 = Slingshot((900, 1000), (0, 0), 1)
