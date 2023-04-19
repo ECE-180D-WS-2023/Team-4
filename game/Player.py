@@ -159,17 +159,17 @@ class Player(GameObject):
             print("Shooting!")
 
 class Engineer(Player):
-    def __init__(self):
-        pass
+    def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
+        super().__init__(pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100)
 
 class Traveler(Player):
-    def __init__(self):
-        pass
+    def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
+        super().__init__(pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100)
 
 class Soldier(Player):
-    def __init__(self):
-        pass
+    def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
+        super().__init__(pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100)
 
 class Farmer(Player):
-    def __init__(self):
-        pass
+    def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
+        super().__init__(pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100)

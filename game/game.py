@@ -74,6 +74,12 @@ def choosePlayer():
 
     ENGINEER_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(500, 350),
                         text_input="ENGINEER", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+    
+    SOLDIER_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH/2, 350),
+                        text_input="SOLDIER", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+    
+    FARMER_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH - 500, 350),
+                        text_input="FARMER", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
 
     while running:
 
@@ -81,16 +87,25 @@ def choosePlayer():
         SCREEN.blit(background, (0, 0))
         dimmer.dim(darken_factor=200, color_filter=(0,0,0))
         
-        ENGINEER_BUTTON.changeColor(CHOOSEPLAYER_MOUSE_POS)
-        ENGINEER_BUTTON.hoverNoise(CHOOSEPLAYER_MOUSE_POS)
-        ENGINEER_BUTTON.update(SCREEN)
+
+        for button in [ENGINEER_BUTTON, SOLDIER_BUTTON, FARMER_BUTTON]:
+            button.changeColor(CHOOSEPLAYER_MOUSE_POS)
+            button.hoverNoise(CHOOSEPLAYER_MOUSE_POS)
+            button.update(SCREEN)
+
+
         
 
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if ENGINEER_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
-                    player = Player((80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
+                    player = Engineer((80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
                     return player
+                if SOLDIER_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                    player = Soldier((80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
+                    return player
+                if FARMER_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                    player = Farmer((80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
             elif event.type == KEYDOWN:
                 if event.key == K_SPACE:
                     player = Player((80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
