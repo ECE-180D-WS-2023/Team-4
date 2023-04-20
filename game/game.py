@@ -209,7 +209,11 @@ def tutorials():
                 if event.key == K_SPACE:
                     player1.harvest(veggies)
                 if event.key == K_TAB:
+                    tempEffect = GameObject((PLAYER_WIDTH, PLAYER_HEIGHT), player1.pos, player1.vel,
+                                            player1.team_num, img="assets/players/soldier-transform-effect.png", animation_steps=[5,5], scale=PLAYER_SCALE)
+                    tempEffect.update(SCREEN, 0)
                     player1.promote()
+                    
             # Attack
             elif event.type == pygame.JOYBUTTONDOWN:
                 if pygame.joystick.Joystick(0).get_button(0):
