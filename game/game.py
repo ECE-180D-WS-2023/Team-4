@@ -229,7 +229,8 @@ def tutorials():
         if len(veggies) < MAX_VEGGIES:
             v_x = random.randint(0, SCREEN_WIDTH - VEGGIE_WIDTH)
             v_y = random.randint(0, SCREEN_HEIGHT - VEGGIE_HEIGHT)
-            veggie = Mushroom((v_x, v_y), (0, 0), 1)
+            v_type = random.choice(veggies_list)
+            veggie = v_type((v_x, v_y), (0, 0), 1)
             veggies.add(veggie)
 
         if player1.state == PLAYER_SHOOTING:
