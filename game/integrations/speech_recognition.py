@@ -29,9 +29,11 @@ def speech_rec(ans):
     m = sr.Microphone()
     with m as source:
         r.adjust_for_ambient_noise(source)  # we only need to calibrate once, before we start listening
-    
+    r.energy_threshold = 999999
+    r.dynamic_energy_threshold = False
+
     # start listening in the background (note that we don't have to do this inside a `with` statement)
-    return r.listen_in_background(m, callback)
+    return r, r.listen_in_background(m, callback)
 # `stop_listening` is now a function that, when called, stops background listening
 
 # calling this function requests that the background listener stop listening

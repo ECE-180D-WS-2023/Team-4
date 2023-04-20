@@ -171,7 +171,7 @@ def tutorials():
     TUTORIALS_BG = pygame.image.load("assets/grass.png")
 
     audio_list = ["Eddie"]
-    stop_listening = speech_rec(audio_list)
+    recognizer, stop_listening = speech_rec(audio_list)
     angle = 0
 
     veggies_list = Veggie.__subclasses__()
@@ -214,8 +214,17 @@ def tutorials():
                     player1.attack(angle, (shots, all_sprites))
                 if pygame.joystick.Joystick(0).get_button(1):
                     player1.harvest(veggies)
+                # if pygame.joystick.Joystick(0).get_button(3):
+                #     player1.toggle_mount(slingshot1)
                 if pygame.joystick.Joystick(0).get_button(3):
-                    player1.toggle_mount(slingshot1)
+                    recognizer.energy_threshold = 300
+            elif event.type == pygame.JOYBUTTONUP:
+                if not pygame.joystick.Joystick(0).get_button(3):
+                    recognizer.energy_threshold = 9999999
+                    print("mute")
+
+                
+            
 
         if len(veggies) < MAX_VEGGIES:
             v_x = random.randint(0, SCREEN_WIDTH - VEGGIE_WIDTH)
