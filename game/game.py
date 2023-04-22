@@ -221,7 +221,6 @@ def tutorials():
             elif event.type == pygame.JOYBUTTONUP:
                 if not pygame.joystick.Joystick(0).get_button(3):
                     recognizer.energy_threshold = 9999999
-                    print("mute")
 
                 
             
@@ -269,10 +268,10 @@ def tutorials():
             y_speed = 0
 
         # Refresh screen and display objects
-        for player in players:
-            player.update([x_speed, y_speed], angle, SCREEN)
         for veggie in veggies:
             veggie.update(SCREEN)
+        for player in players:
+            player.update([x_speed, y_speed], angle, SCREEN)
         for base in bases:
             base.update(shots, SCREEN)
         for slingshot in slingshots:
