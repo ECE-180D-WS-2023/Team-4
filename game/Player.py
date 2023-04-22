@@ -11,6 +11,8 @@ mixer.init()
 walking_sound = pygame.mixer.Sound('assets/music/walking.mp3')
 walking_sound.set_volume(1.5)
 shooting_sound = pygame.mixer.Sound('assets/music/shotgun-firing.mp3')
+soldier_transformation_sound = pygame.mixer.Sound("assets/music/Soldier_transformation_effect.mp3")
+soldier_transformation_sound.set_volume(2)
 
 class Player(GameObject):
     # TODO: remove role attribute in favor of subclasses
@@ -188,10 +190,10 @@ class Soldier(Player):
         option2: reset img, animation_list, and 
         
         """
-
-
-        # Temporary solution
-        # super().__init__(self.pos, self.vel, self.team_num, self.role, self.name, img="assets/players/darthvader.png", state=PLAYER_WALKING, health=100)
+        self.promoted = True
+        soldier_transformation_sound.play()
+        pygame.mixer.music.load("assets/music/DarthVader_bgm.mp3")
+        pygame.mixer.music.play(-1)
         self.state = PLAYER_TRANSFORMING
         self.animation_list = SpriteSheet(self.promoted_img).get_animation_list(self.animation_steps, self.shape, self.scale)
 

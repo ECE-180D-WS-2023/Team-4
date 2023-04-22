@@ -238,7 +238,7 @@ def tutorials():
             veggies.add(veggie)
 
         if player1.state == PLAYER_SHOOTING:
-            if not is_shooting_music:
+            if not is_shooting_music and player1.promoted == False:
                 pygame.mixer.music.load('assets/music/not-afraid.mp3')
                 pygame.mixer.music.play(-1)
                 is_shooting_music = True
@@ -256,7 +256,7 @@ def tutorials():
                 pass
 
         if player1.state != PLAYER_SHOOTING:
-            if is_shooting_music:
+            if is_shooting_music and player1.promoted == False:
                 pygame.mixer.music.load('assets/music/on-a-clear-day.mp3')
                 pygame.mixer.music.play(-1)
                 is_shooting_music = False
@@ -275,11 +275,11 @@ def tutorials():
         # Refresh screen and display objects
         for effect in effects:
             if effect_start_time != None:
-                if pygame.time.get_ticks() - effect_start_time < 3000:
+                if pygame.time.get_ticks() - effect_start_time < 2500:
                     effect.update(SCREEN, 3)
                 else:
                     Timer_on = False
-                    player1.state = PLAYER_SHOOTING
+                    player1.state = PLAYER_WALKING
                     effect.kill()
         for player in players:
             player.update([x_speed, y_speed], angle, SCREEN)
