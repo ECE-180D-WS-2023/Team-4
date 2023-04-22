@@ -172,7 +172,10 @@ class DarthVader(Player):
 class Soldier(Player):
     def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
         super().__init__(pos, vel, team_num, role, name, img="assets/players/soldier.png", state=PLAYER_WALKING, health=100)
-
+        
+        self.promoted = False
+        self.promoted_img = pygame.image.load("assets/players/darthvader.png").convert_alpha()
+        
     def promote(self):
         """
         WIP:
@@ -182,15 +185,12 @@ class Soldier(Player):
         option2: reset img, animation_list, and 
         
         """
+
+
         # Temporary solution
-        super().__init__(self.pos, self.vel, self.team_num, self.role, self.name, img="assets/players/darthvader.png", state=PLAYER_WALKING, health=100)
+        # super().__init__(self.pos, self.vel, self.team_num, self.role, self.name, img="assets/players/darthvader.png", state=PLAYER_WALKING, health=100)
 
-        
-        #self.img = "assets/players/darthvader.png"
-        # self.animation_list = SpriteSheet(self.img).get_animation_list(self.animation_steps, self.shape, self.scale)
-        # self.mask = pygame.mask.from_surface(self.animation_list[self.frame_row][self.frame_col])
-
-
+        self.animation_list = SpriteSheet(self.promoted_img).get_animation_list(self.animation_steps, self.shape, self.scale)
 
         return
         

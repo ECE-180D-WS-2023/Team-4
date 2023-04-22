@@ -22,11 +22,13 @@ class GameObject(pygame.sprite.Sprite):
         # Pygame sprite initialization
         # self.sprite_sheet = SpriteSheet(img)
         self.img = pygame.image.load(img).convert_alpha()
+        self.shape = shape
+        self.scale = scale
         self.animation_steps = animation_steps
         self.surf = pygame.Surface((shape[0]*scale, shape[1]*scale))
         self.rect = self.surf.get_rect()
         self.rect.center = pos
-        self.animation_list = SpriteSheet(self.img).get_animation_list(self.animation_steps, shape, scale)
+        self.animation_list = SpriteSheet(self.img).get_animation_list(self.animation_steps, self.shape, self.scale)
 
         # use in draw functions
         self.frame_col = 0 # frame

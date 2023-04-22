@@ -40,6 +40,7 @@ veggies = pygame.sprite.Group()
 bases = pygame.sprite.Group()
 slingshots = pygame.sprite.Group()
 shots = pygame.sprite.Group()
+effects = pygame.sprite.Group()
 
 BG = pygame.image.load("assets/new_background.png")
 
@@ -145,7 +146,11 @@ def tutorials():
     # walking_sound = pygame.mixer.Sound('assets/music/walking.mp3')
     # shooting_sound = pygame.mixer.Sound('assets/music/shotgun-firing.mp3')
 
+    # Timer and Clock
     clock = pygame.time.Clock()
+    Timer_on = False
+
+    # GameObjects
     player1 = choosePlayer()
     base1 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4)), (3, 3), 1, 20, 0)
     base2 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4)), (3, 3), 2, 20, 0)
@@ -209,10 +214,13 @@ def tutorials():
                 if event.key == K_SPACE:
                     player1.harvest(veggies)
                 if event.key == K_TAB:
-                    tempEffect = GameObject((PLAYER_WIDTH, PLAYER_HEIGHT), player1.pos, player1.vel,
-                                            player1.team_num, img="assets/players/soldier-transform-effect.png", animation_steps=[5,5], scale=PLAYER_SCALE)
-                    tempEffect.update(SCREEN, 0)
-                    player1.promote()
+                    if not Timer_on:
+                        tempEffect = GameObject((PLAYER_WIDTH*3, PLAYER_HEIGHT*3), player1.pos, player1.vel,
+                                                player1.team_num, img="assets/players/timeEffects.png", animation_steps=[5,5,5,5], scale=1)
+                        effects.add([tempEffect])
+                        Timer_on = True
+                        effect_start_time = pygame.time.get_ticks()
+                        player1.promote()
                     
             # Attack
             elif event.type == pygame.JOYBUTTONDOWN:
@@ -265,6 +273,13 @@ def tutorials():
             y_speed = 0
 
         # Refresh screen and display objects
+        for effect in effects:
+            if effect_start_time != None:
+                if pygame.time.get_ticks() - effect_start_time < 3000:
+                    effect.update(SCREEN, 3)
+                else:
+                    Timer_on = False
+                    effect.kill()
         for player in players:
             player.update([x_speed, y_speed], angle, SCREEN)
         for veggie in veggies:
