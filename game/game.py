@@ -279,6 +279,7 @@ def tutorials():
                     effect.update(SCREEN, 3)
                 else:
                     Timer_on = False
+                    player1.state = PLAYER_SHOOTING
                     effect.kill()
         for player in players:
             player.update([x_speed, y_speed], angle, SCREEN)

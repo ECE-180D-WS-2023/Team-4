@@ -119,6 +119,9 @@ class Player(GameObject):
                             angle)
             super().update(screen)
             return
+        
+        else: # Player harvesting
+            return
 
 
     def blitRotate(self, surf, image, origin:Tuple[int, int], pivot:Tuple[int, int], angle):
@@ -155,7 +158,7 @@ class Player(GameObject):
             self.player_state = PLAYER_WALKING
             print("Walking!")
         if pressed_key[K_1]:
-            self.state = PLAYER_HARVESTING
+            self.state = PLAYER_TRANSFORMING
             print("Harvesting!")
         if pressed_key[K_2]:
             self.state = PLAYER_SHOOTING
@@ -189,7 +192,7 @@ class Soldier(Player):
 
         # Temporary solution
         # super().__init__(self.pos, self.vel, self.team_num, self.role, self.name, img="assets/players/darthvader.png", state=PLAYER_WALKING, health=100)
-
+        self.state = PLAYER_TRANSFORMING
         self.animation_list = SpriteSheet(self.promoted_img).get_animation_list(self.animation_steps, self.shape, self.scale)
 
         return
