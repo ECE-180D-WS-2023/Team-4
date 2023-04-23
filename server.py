@@ -1,62 +1,45 @@
-import paho.mqtt.client as mqtt
-import game
+import socket
+import threading
 
-# Dictionary that contains each player's sprite information
-# players = {
-#   "player1": {
-#     "sprite1": { "pos": (x, y), ... }
-#     "sprite2": { "pos": (x, y), ... }
-#     "sprite3": { "pos": (x, y), ... }
-#   }
-# }
-players = {
-        "player1": "",
-        "player2": ""
-}
+HEADER = 64
+PORT = 5050
+SERVER = socket.gethostbyname(socket.gethostname())
+ADDR = (SERVER, PORT)
+FORMAT = 'utf-8'
+DISCONNECT_MESSAGE = '!DISCONNECT'
+print(SERVER)
 
-subscribe_topics = {f"player{num+1}":f"/rps/player{num+1}/srv" for num in range(4)}
-publish_topics = {f"player{num+1}":f"/rps/srv/player{num+1}" for num in range(4)}
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.bind(ADDR)
 
-def on_connect(client, userdata, flags, rc):
-    print("Connection returned result: " + str(rc))
+def handle_client(conn, addr):
+    print(f"[NEW CONNECTION] {addr} connected")
 
-    client.subscribe("/rps/player1/srv", qos=1)
-    client.subscribe("/rps/player2/srv", qos=1)
+    connected = True
+    while connected:
+        msg_length = conn.recv(HEADER).decode(FORMAT)
+        if msg_length:
+          msg_length = int(msg_length)
+          msg = conn.recv(msg_length).decode(FORMAT)
+          if msg == DISCONNECT_MESSAGE:
+              connected = False
 
-def on_disconnect(client, userdata, rc):
-    if rc != 0:
-        print('Unexpected Disconnect')
-    else:
-        print('Expected Disconnect')
+          print(f'[{addr}] {msg}')
+          conn.send("Message received".encode(FORMAT))
 
-def on_message(client, userdata, message):
-    data = message.payload
-    if message.topic.find("player1") > 0:
-        players["player1"] = data
-        if players["player2"]:
-            client.publish("/rps/srv/player1", players["player2"])
-    else: 
-        players["player2"] = data
-        if players["player1"]:
-            client.publish("/rps/srv/player2", players["player1"])
+    conn.close()
+    
+def start():
+    server.listen()
+    running = True
+    print(f"[LISTENING] Server is listening on {SERVER}")
 
-
-def create_client():
-    client = mqtt.Client()
-
-    client.on_connect = on_connect
-    client.on_disconnect = on_disconnect
-    client.on_message = on_message
+    while running:
+        conn, addr = server.accept()
+        thread = threading.Thread(target=handle_client, args=(conn, addr))
+        thread.start()
+        print(f"[ACTIVE CONNECTION] {threading.active_count() - 1}")
 
 
-    client.connect_async('mqtt.eclipseprojects.io')
-    # client.connect_async("192.168.8.20")
-    # client.connect_async("localhost")
-    client.loop_start()
-
-    return client
-
-client = create_client()
-
-while True:
-    ...
+print("[STARTING] Server is starting ...")
+start()
