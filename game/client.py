@@ -6,7 +6,8 @@ from Player import *
 
 HEADER = 2048
 PORT = 5050
-SERVER = socket.gethostbyname(socket.gethostname())
+# SERVER = socket.gethostbyname(socket.gethostname())
+SERVER = '127.0.0.1'
 ADDR = (SERVER, PORT)
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = '!DISCONNECT'
@@ -79,19 +80,11 @@ def main():
         x = round(pygame.joystick.Joystick(0).get_axis(0))
         y = round(pygame.joystick.Joystick(0).get_axis(1))
 
-        if y == -1:     # Up
-            data_package["js"] = "up"
-        elif y == 1:      # Down
-            data_package["js"] = "down"
-        elif x == -1:     # Left
-            data_package["js"] = "left"
-        elif x == 1:      # Right
-            data_package["js"] = "right"
-        else:
-            data_package["js"] = None
+        data_package["js"] = (x, y)
 
 
         send(data_package)
+        # print(receive())
         data_package = receive()
 
         # print(data_package["player1_pos"])

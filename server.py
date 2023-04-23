@@ -1,11 +1,16 @@
 import socket
 import json
 import threading
+import pygame
+
+pygame.init()
+clock = pygame.time.Clock()
 
 
 HEADER = 2048
 PORT = 5050
-SERVER = socket.gethostbyname(socket.gethostname())
+# SERVER = socket.gethostbyname(socket.gethostname())
+SERVER = '127.0.0.1'
 ADDR = (SERVER, PORT)
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = '!DISCONNECT'
@@ -25,7 +30,10 @@ def handle_client(conn, addr):
         #   msg_length = int(msg_length)
           # msg = conn.recv(msg_length).decode(FORMAT)
           msg = conn.recv(HEADER).decode(FORMAT)
-          data_package = json.loads(msg)
+          try:
+              data_package = json.loads(msg)
+          except:
+            ...
 
           # Disconnect
           if data_package["DISCONNECT"] == True:
@@ -35,24 +43,20 @@ def handle_client(conn, addr):
           # Movement
           player1_pos_x, player1_pos_y = data_package["player1_pos"]
           player1_vel_x, player1_vel_y = data_package["player1_vel"]
-          js_movement = data_package.get("js", " ")
-          if js_movement == "up":
-             player1_pos_x -= player1_vel_x
-          elif js_movement == "down":
-             player1_pos_x += player1_vel_x
-          elif js_movement == "left":
-             player1_pos_y -= player1_vel_y
-          elif js_movement == "right":
-             player1_pos_y += player1_vel_y
+          js_movement = data_package.get("js", (0, 0))
+          player1_pos_x += js_movement[0]*player1_vel_x
+          player1_pos_y += js_movement[1]*player1_vel_y
           data_package["player1_pos"] = (player1_pos_x, player1_pos_y)
 
-          
+          # print(data_package)
           # print(data_package["player1_pos"])
 
           # Encode and send back to client
           json_message = json.dumps(data_package)
           message = json_message.encode(FORMAT)
           conn.send(message)
+
+          clock.tick(60)
 
     conn.close()
     
