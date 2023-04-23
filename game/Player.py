@@ -193,6 +193,7 @@ class Soldier(Player):
         self.promoted = True
         soldier_transformation_sound.play()
         pygame.mixer.music.load("assets/music/DarthVader_bgm.mp3")
+        pygame.mixer.music.set_volume(2)
         pygame.mixer.music.play(-1)
         self.state = PLAYER_TRANSFORMING
         self.animation_list = SpriteSheet(self.promoted_img).get_animation_list(self.animation_steps, self.shape, self.scale)
