@@ -43,6 +43,14 @@ class GameObject(pygame.sprite.Sprite):
     def pos(self, pos: Tuple[int, int]):
         self.pos_x, self.pos_y = pos
 
+    @property
+    def vel(self):
+        return self.vel_x, self.vel_y
+
+    @vel.setter
+    def vel(self, vel: Tuple[int, int]):
+        self.vel_x, self.vel_y = vel
+
     def draw(self, screen, action=None):
         if action != None:
             self.frame_row = action
