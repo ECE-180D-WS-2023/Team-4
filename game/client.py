@@ -6,8 +6,8 @@ from Player import *
 
 HEADER = 2048
 PORT = 5050
-# SERVER = socket.gethostbyname(socket.gethostname())
-SERVER = '127.0.0.1'
+SERVER = socket.gethostbyname(socket.gethostname())
+# SERVER = '127.0.0.1'
 ADDR = (SERVER, PORT)
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = '!DISCONNECT'
@@ -93,7 +93,7 @@ def main():
         # for player in players:
         #     player.update([0, 0], 0, SCREEN)
         player1.pos = data_package["player1_pos"]
-        player1.update([0, 0], 0, SCREEN)
+        player1.update((x,y), 0, SCREEN)
 
         pygame.display.flip()
         clock.tick(60)
