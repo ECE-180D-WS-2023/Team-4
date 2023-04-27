@@ -14,7 +14,8 @@ from pygame.locals import (
     K_TAB,
     K_0,
     K_1,
-    K_2
+    K_2,
+    K_p
 )
 
 # Arena Parameters
