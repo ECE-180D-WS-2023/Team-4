@@ -167,6 +167,8 @@ def tutorials():
                                      running_threads, latest_frame_available, latest_frame])
     mediapipe_thread = threading.Thread(target=calculate_angle_using_mediapipe, args=[
                                         running_threads, latest_frame_available, latest_frame, angle_queue])
+    image_processing_thread = threading.Thread(target=image_processing_thread_func, args=[
+                                        running_threads, angle_queue])
 
     TUTORIALS_BG = pygame.image.load("assets/grass.png")
 
@@ -237,14 +239,19 @@ def tutorials():
                 pygame.mixer.music.load('assets/music/not-afraid.mp3')
                 pygame.mixer.music.play(-1)
                 is_shooting_music = True
-            if not camera_thread.is_alive():
+            # if not camera_thread.is_alive():
+            #     running_threads.clear()
+            #     camera_thread = threading.Thread(target=read_frames_from_camera, args=[
+            #                                      running_threads, latest_frame_available, latest_frame])
+            #     mediapipe_thread = threading.Thread(target=calculate_angle_using_mediapipe, args=[
+            #                                         running_threads, latest_frame_available, latest_frame, angle_queue])
+            #     camera_thread.start()
+            #     mediapipe_thread.start()
+            if not image_processing_thread.is_alive():
                 running_threads.clear()
-                camera_thread = threading.Thread(target=read_frames_from_camera, args=[
-                                                 running_threads, latest_frame_available, latest_frame])
-                mediapipe_thread = threading.Thread(target=calculate_angle_using_mediapipe, args=[
-                                                    running_threads, latest_frame_available, latest_frame, angle_queue])
-                camera_thread.start()
-                mediapipe_thread.start()
+                image_processing_thread = threading.Thread(target=image_processing_thread_func, args=[
+                                                 running_threads, angle_queue])
+                image_processing_thread.start()
             try:
                 angle = angle_queue.get(block=False)
             except:
@@ -255,10 +262,13 @@ def tutorials():
                 pygame.mixer.music.load('assets/music/on-a-clear-day.mp3')
                 pygame.mixer.music.play(-1)
                 is_shooting_music = False
-            if camera_thread.is_alive():
+            # if camera_thread.is_alive():
+            #     running_threads.set()
+            #     camera_thread.join()
+            #     mediapipe_thread.join()
+            if image_processing_thread.is_alive():
                 running_threads.set()
-                camera_thread.join()
-                mediapipe_thread.join()
+                image_processing_thread.join()
 
         try:
             x_speed = round(pygame.joystick.Joystick(0).get_axis(0))

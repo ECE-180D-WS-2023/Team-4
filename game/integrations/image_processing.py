@@ -91,3 +91,35 @@ def calculate_angle_using_mediapipe(running_event, frame_available, frame_queue,
             # print("Angle queue full!")
             oldest_item = angle_queue.get()
             angle_queue.put_nowait(angle)
+
+def image_processing_thread_func(running_event, angle_queue):
+    camera = cv.VideoCapture(0)
+    assert camera.isOpened()
+
+    angle = 0
+    pose = mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5)
+
+    while not running_event.is_set():
+        (ret, frame) = camera.read()
+        if not ret:
+            break
+
+        image = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+        image.flags.writeable = False
+        results = pose.process(image)
+        try:
+            landmarks = results.pose_landmarks.landmark
+            nose = landmarks[mp_pose.PoseLandmark.NOSE.value]
+            right_wrist = landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value]
+            anchor = [nose.x, right_wrist.y + 200/1080.0]
+            new_angle = calculate_angle((nose.x, nose.y), anchor, (right_wrist.x, right_wrist.y))
+            angle = new_angle if abs(new_angle - angle) > 1 else angle
+        except Exception as e:
+            print(f"[POSE]: {e}")
+        
+        try:
+            angle_queue.put(angle, block=False)
+        except queue.Full:
+            # print("Angle queue full!")
+            oldest_item = angle_queue.get()
+            angle_queue.put_nowait(angle)
