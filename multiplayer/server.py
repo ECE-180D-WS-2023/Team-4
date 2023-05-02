@@ -7,7 +7,7 @@ from veggie import *
 
 # Initialize socket
 PORT = 8080
-SERVER = '192.168.0.190'
+SERVER = '172.20.10.2'
 server = ServerSocket(SERVER, PORT)
 
 # Initialize pygame
@@ -26,21 +26,21 @@ def handle_client(conn, id):
 
     # Initialize player
     game_state["players"][str(id)] = Player((80, 80))
-    player = game_state["players"][str(id)]
+    my_player = game_state["players"][str(id)]
 
     while True:
         client_inputs = conn.receive()
 
         # Joystick dpad
         js_axis = client_inputs.get("js_axis", (0, 0))
-        player.direction.x = js_axis[0]
-        player.direction.y = js_axis[1]
+        my_player.direction.x = js_axis[0]
+        my_player.direction.y = js_axis[1]
 
         # Joystick buttons
         js_buttondown = client_inputs.get("js_buttondown", False)
         if js_buttondown:
             if 0 in js_buttondown:
-                game_state["shots"].append(Veggie(player.pos, 10, (1, 1)))
+                game_state["shots"].append(Veggie(my_player.pos, 10, (1, 1)))
 
         for player in game_state["players"].values():
             player.update()
