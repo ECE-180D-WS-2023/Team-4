@@ -14,7 +14,8 @@ class Socket:
         # self.socket.send(("%04d" % len(msg)).encode())  # send message length
         # self.socket.send(msg.encode()) # send message
         msg = pickle.dumps(msg)
-        self.socket.send(("%04d" % len(msg)).encode())  # send message length
+        self.socket.send(("%06d" % len(msg)).encode())  # send message length
+        # print(("%06d" % len(msg)).encode())
         self.socket.send(msg) # send message
 
     def receive(self):
@@ -26,7 +27,7 @@ class Socket:
         # message = self.socket.recv(msg_length).decode()
         # return json.loads(message)
         try:
-            msg_length = int(self.socket.recv(4).decode())
+            msg_length = int(self.socket.recv(6).decode())
         except Exception as e:
             print(e)
             return False
