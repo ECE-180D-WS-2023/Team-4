@@ -13,7 +13,7 @@ from constants import *
 from integrations.image_processing import *
 import time
 import math
-from integrations.speech_recognition import speech_rec
+from integrations.speech_recognition import *
 from Dimmer import *
 
 mixer.init()           # music
@@ -173,8 +173,12 @@ def tutorials():
 
     TUTORIALS_BG = pygame.image.load("assets/grass.png")
 
-    audio_list = ["Eddie"]
-    recognizer, stop_listening = speech_rec(audio_list)
+    # audio_list = ["Eddie"]
+    # recognizer, stop_listening = speech_rec(audio_list)
+    #
+    speech_recognizer = SpeechRecognizer()
+    speech_recognizer.start()
+
     angle = 0
 
     veggies_list = Veggie.__subclasses__()
@@ -193,9 +197,11 @@ def tutorials():
         pressed_keys = pygame.key.get_pressed()   # Keyboard input
 
         # Audio Input
-        if audio_list[0] == "switch":
-            print(".....................")
-            audio_list[0] = "Eddie"
+        # if audio_list[0] == "switch":
+        #     print(".....................")
+        #     audio_list[0] = "Eddie"
+        #     player1.toggle_mount(slingshot1)
+        if speech_recognizer.prediction == "switch":
             player1.toggle_mount(slingshot1)
 
         for event in pygame.event.get():
@@ -220,10 +226,12 @@ def tutorials():
                 # if pygame.joystick.Joystick(0).get_button(3):
                 #     player1.toggle_mount(slingshot1)
                 if pygame.joystick.Joystick(0).get_button(3):
-                    recognizer.energy_threshold = 300
+                    # recognizer.energy_threshold = 300
+                    speech_recognizer.unmute()
             elif event.type == pygame.JOYBUTTONUP:
                 if not pygame.joystick.Joystick(0).get_button(3):
-                    recognizer.energy_threshold = 9999999
+                    # recognizer.energy_threshold = 9999999
+                    speech_recognizer.mute()
 
                 
             
