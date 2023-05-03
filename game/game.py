@@ -43,7 +43,6 @@ shots = pygame.sprite.Group()
 
 BG = pygame.image.load("assets/new_background.png")
 
-
 def get_font(size):
     return pygame.font.Font("assets/font.ttf", size)
 
@@ -91,6 +90,9 @@ def choosePlayer():
     DARTHVADER_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH - 500, 350),
                                text_input="DARTH VADER", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
 
+    BACK_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png"), pos=(SCREEN_WIDTH/2, 650),
+                               text_input="BACK", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
+
     while running:
 
         CHOOSEPLAYER_MOUSE_POS = pygame.mouse.get_pos()
@@ -116,6 +118,8 @@ def choosePlayer():
                     player = DarthVader(
                         (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
                     return player
+                if BACK_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                    main_menu()
             elif event.type == KEYDOWN:
                 if event.key == K_SPACE:
                     player = Player((80, 80), (2.5, 2.5), 1,
@@ -188,9 +192,8 @@ def tutorials():
         v_type = random.choice(veggies_list)
         veggie = v_type((v_x, v_y), (0, 0), 1)
         veggies.add(veggie)
-
+    
     while running:
-        TUTORIALS_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.blit(TUTORIALS_BG, (0, 0))
 
@@ -212,6 +215,10 @@ def tutorials():
                 sys.exit()
             # Mount Slingshot and Harvesting
             elif event.type == KEYDOWN:
+                if event.key == K_p:
+                    sub_menu()
+                    # global game_paused
+                    # game_paused = not game_paused
                 if event.key == K_RETURN:
                     audio_list[0] = "Eddie"
                     player1.toggle_mount(slingshot1)
@@ -230,10 +237,7 @@ def tutorials():
                     speech_recognizer.unmute()
             elif event.type == pygame.JOYBUTTONUP:
                 if not pygame.joystick.Joystick(0).get_button(3):
-                    # recognizer.energy_threshold = 9999999
                     speech_recognizer.mute()
-
-                
             
 
         if len(veggies) < MAX_VEGGIES:
@@ -332,6 +336,69 @@ def options():
 
         pygame.display.update()
 
+def sub_menu():
+
+    background = pygame.image.load("assets/grass.png")
+    dimmer = Dimmer(keepalive=True)
+    running = True
+
+    # Initialize buttons
+
+    RESUME_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH/2, 350),
+                             text_input="RESUME", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+
+    OPTIONS_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH/2, 500),
+                            text_input="OPTIONS", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+
+    TUTORIALS_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH/2, 650),
+                              text_input="TUTORIALS", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+
+    QUIT_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png"), pos=(SCREEN_WIDTH/2, 800),
+                               text_input="QUIT", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
+    
+    # Button clicking sound effect
+    clicking_sound = mixer.Sound('assets/music/button_clicked.mp3')
+    clicking_sound.set_volume(1.5)
+    
+    while running:
+        SCREEN.blit(background, (0, 0))
+
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+        dimmer.dim(darken_factor=200, color_filter=(0, 0, 0))
+
+        # Initialize main text box
+        MENU_TEXT = get_font(150).render("Paused", True, "#b68f40")
+        MENU_RECT = MENU_TEXT.get_rect(center=(SCREEN_WIDTH/2, 120))
+
+        SCREEN.blit(MENU_TEXT, MENU_RECT)
+
+        # change color and play noise when hovering
+        for button in [RESUME_BUTTON, OPTIONS_BUTTON, TUTORIALS_BUTTON, QUIT_BUTTON]:
+            button.changeColor(MENU_MOUSE_POS)
+            button.hoverNoise(MENU_MOUSE_POS)
+            button.update(SCREEN)
+
+        # event after clicking
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if RESUME_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    clicking_sound.play()
+                    running = False
+                if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    clicking_sound.play()
+                    options()
+                if TUTORIALS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    clicking_sound.play()
+                    tutorials()
+                if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    clicking_sound.play()
+                    pygame.quit()
+                    sys.exit()
+
+        pygame.display.update()
 
 def main_menu():
 
@@ -351,7 +418,7 @@ def main_menu():
 
     while True:
         SCREEN.blit(BG, (0, 0))
-
+        
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
         # Initialize main text box
