@@ -3,7 +3,7 @@ from constants import *
 
 class Slingshot(GameObject):
     def __init__(self, pos, vel, team_num: int) -> None:
-        super().__init__((SLINGSHOT_WIDTH, SLINGSHOT_HEIGHT), pos, vel, team_num, img='assets/veggies/veggies.png')
+        super().__init__((SLINGSHOT_WIDTH, SLINGSHOT_HEIGHT), pos, vel, team_num, img='assets/slingshot_station.png', scale=2)
 
     # # TODO: remove this test
     # def whoami(self):
