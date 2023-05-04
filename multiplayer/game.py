@@ -14,6 +14,7 @@ class Game:
             "Engineer": SpriteSheet("assets/players/engineer.png"),
             "Soldier": SpriteSheet("assets/players/soldier.png"),
             "Veggie": SpriteSheet("assets/veggies/carrot-big.png"),
+            "Slingshot": SpriteSheet("assets/veggies/cabbage.png"),
         }
 
     def handle_inputs(self):
@@ -51,5 +52,7 @@ class Game:
                 screen.blit(self.spritesheets[veggie.__class__.__name__].get_image(0, 0, VEGGIE_WIDTH, VEGGIE_HEIGHT, 1), veggie.rect)
             for shot in self.state["shots"]:
                 screen.blit(self.spritesheets[shot.__class__.__name__].get_image(0, 0, 32, 32, 2), shot.rect)
+            for slingshot in self.state["slingshots"]:
+                screen.blit(self.spritesheets[slingshot.__class__.__name__].get_image(0, 0, VEGGIE_WIDTH, VEGGIE_HEIGHT, 1), slingshot.rect)
         except Exception as e:
             print(e)
