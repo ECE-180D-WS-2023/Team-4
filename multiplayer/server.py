@@ -4,10 +4,11 @@ from constants import *
 from network import *
 from player import *
 from veggie import *
+from slingshot import *
 
 # Initialize socket
 PORT = 8080
-SERVER = '172.20.10.2'
+SERVER = '192.168.0.190'
 server = ServerSocket(SERVER, PORT)
 
 # Initialize pygame
@@ -18,6 +19,10 @@ game_state = {
     "players": {},
     "veggies": [],
     "shots": [],
+    "slingshots": [
+        Slingshot((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4))),
+        Slingshot((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4))),
+    ],
 }
 
 def handle_client(conn, id):
@@ -41,6 +46,12 @@ def handle_client(conn, id):
         if js_buttondown:
             if 0 in js_buttondown:
                 game_state["shots"].append(Veggie(my_player.pos, 10, (1, 1)))
+
+        # Speech recognition
+        speech = client_inputs.get("speech", None)
+        if speech == "switch":
+            print("switch")
+            my_player.toggle_mount(game_state["slingshots"][1])
 
         for player in game_state["players"].values():
             player.update()

@@ -1,6 +1,8 @@
 import pygame
 from constants import *
 from spritesheet import *
+from integrations.speech_recognition import *
+from integrations.image_processing import *
 
 class Game:
     def __init__(self):
@@ -16,6 +18,9 @@ class Game:
             "Veggie": SpriteSheet("assets/veggies/carrot-big.png"),
             "Slingshot": SpriteSheet("assets/veggies/cabbage.png"),
         }
+        self.speech_recognizer = SpeechRecognizer()
+        self.speech_recognizer.start()
+        self.image_processor = ImageProcessor()
 
     def handle_inputs(self):
         self.inputs = {}
@@ -37,7 +42,15 @@ class Game:
                 if pygame.joystick.Joystick(0).get_button(1):
                     self.inputs["js_buttondown"].append(1)
                 if pygame.joystick.Joystick(0).get_button(3):
-                    self.inputs["js_buttondown"].append(3)
+                    self.speech_recognizer.unmute()
+            elif event.type == pygame.JOYBUTTONUP:
+                if not pygame.joystick.Joystick(0).get_button(3):
+                    self.speech_recognizer.mute()
+
+        speech_prediction = self.speech_recognizer.prediction
+        if speech_prediction != None:
+            print(speech_prediction)
+            self.inputs["speech"] = speech_prediction
 
         x = round(pygame.joystick.Joystick(0).get_axis(0))
         y = round(pygame.joystick.Joystick(0).get_axis(1))
