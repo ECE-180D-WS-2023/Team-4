@@ -5,7 +5,8 @@ from constants import *
 
 class Player(GameObject):
     def __init__(self, pos=(0, 0), vel=5):
-        super().__init__(pos, vel)
+        super().__init__(pos, vel, scale=PLAYER_SCALE)
+        self.state = PLAYER_WALKING
         self.backpack = collections.deque()
         self.mounted = False
 
@@ -21,3 +22,7 @@ class Player(GameObject):
             self.state = PLAYER_SHOOTING
         else:
             print("toggle")
+
+    def update(self):
+        if self.state == PLAYER_WALKING:
+            self.rect.center += self.direction * self.vel

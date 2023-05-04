@@ -60,11 +60,11 @@ class Game:
         screen.blit(self.background, (0, 0))
         try:
             for player in self.state["players"].values():
-                screen.blit(self.spritesheets[player.__class__.__name__].get_image(0, 0, PLAYER_WIDTH, PLAYER_HEIGHT, 2), player.rect)
+                screen.blit(self.spritesheets[player.__class__.__name__].get_image(0, 0, PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_SCALE), player.rect)
             for veggie in self.state["veggies"]:
-                screen.blit(self.spritesheets[veggie.__class__.__name__].get_image(0, 0, VEGGIE_WIDTH, VEGGIE_HEIGHT, 1), veggie.rect)
+                screen.blit(self.spritesheets[veggie.__class__.__name__].get_image(0, 0, VEGGIE_WIDTH, VEGGIE_HEIGHT, VEGGIE_SCALE), veggie.rect)
             for shot in self.state["shots"]:
-                screen.blit(self.spritesheets[shot.__class__.__name__].get_image(0, 0, 32, 32, 2), shot.rect)
+                screen.blit(self.spritesheets[shot.__class__.__name__].get_image(0, 0, SHOT_WIDTH, SHOT_HEIGHT, SHOT_SCALE), shot.rect)
             for slingshot in self.state["slingshots"]:
                 screen.blit(self.spritesheets[slingshot.__class__.__name__].get_image(0, 0, VEGGIE_WIDTH, VEGGIE_HEIGHT, 1), slingshot.rect)
         except Exception as e:
