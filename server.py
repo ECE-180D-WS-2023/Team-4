@@ -1,62 +1,84 @@
-import paho.mqtt.client as mqtt
-import game
+import socket
+import json
+import threading
+import pygame
 
-# Dictionary that contains each player's sprite information
-# players = {
-#   "player1": {
-#     "sprite1": { "pos": (x, y), ... }
-#     "sprite2": { "pos": (x, y), ... }
-#     "sprite3": { "pos": (x, y), ... }
-#   }
-# }
-players = {
-        "player1": "",
-        "player2": ""
-}
-
-subscribe_topics = {f"player{num+1}":f"/rps/player{num+1}/srv" for num in range(4)}
-publish_topics = {f"player{num+1}":f"/rps/srv/player{num+1}" for num in range(4)}
-
-def on_connect(client, userdata, flags, rc):
-    print("Connection returned result: " + str(rc))
-
-    client.subscribe("/rps/player1/srv", qos=1)
-    client.subscribe("/rps/player2/srv", qos=1)
-
-def on_disconnect(client, userdata, rc):
-    if rc != 0:
-        print('Unexpected Disconnect')
-    else:
-        print('Expected Disconnect')
-
-def on_message(client, userdata, message):
-    data = message.payload
-    if message.topic.find("player1") > 0:
-        players["player1"] = data
-        if players["player2"]:
-            client.publish("/rps/srv/player1", players["player2"])
-    else: 
-        players["player2"] = data
-        if players["player1"]:
-            client.publish("/rps/srv/player2", players["player1"])
+pygame.init()
+clock = pygame.time.Clock()
 
 
-def create_client():
-    client = mqtt.Client()
+HEADER = 2048
+PORT = 5050
+SERVER = socket.gethostbyname(socket.gethostname())
+# SERVER = '127.0.0.1'
+ADDR = (SERVER, PORT)
+FORMAT = 'utf-8'
+DISCONNECT_MESSAGE = '!DISCONNECT'
+print(SERVER)
 
-    client.on_connect = on_connect
-    client.on_disconnect = on_disconnect
-    client.on_message = on_message
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.bind(ADDR)
 
+def handle_client(conn, addr):
+    print(f"[NEW CONNECTION] {addr} connected")
 
-    client.connect_async('mqtt.eclipseprojects.io')
-    # client.connect_async("192.168.8.20")
-    # client.connect_async("localhost")
-    client.loop_start()
+    connected = True
+    while connected:
+        # msg_length = conn.recv(HEADER).decode(FORMAT)
 
-    return client
+        # if msg_length:
+        #   msg_length = int(msg_length)
+          # msg = conn.recv(msg_length).decode(FORMAT)
+          msg = conn.recv(HEADER).decode(FORMAT)
+          try:
+              data_package = json.loads(msg)
+          except:
+            ...
 
-client = create_client()
+          # Disconnect
+          if data_package["DISCONNECT"] == True:
+              print("[SERVER DISCONNECT] Server disconnected")
+              connected = False
+          
+          # Movement
+          player1_pos_x, player1_pos_y = data_package["player1_pos"]
+          player1_vel_x, player1_vel_y = data_package["player1_vel"]
+          js_movement = data_package.get("js", (0, 0))
+          player1_pos_x += js_movement[0]*player1_vel_x
+          player1_pos_y += js_movement[1]*player1_vel_y
+          data_package["player1_pos"] = (player1_pos_x, player1_pos_y)
 
-while True:
-    ...
+          # print(data_package)
+          # print(data_package["player1_pos"])
+
+          # Encode and send back to client
+          json_message = json.dumps(data_package)
+          message = json_message.encode(FORMAT)
+          conn.send(message)
+
+          clock.tick(60)
+
+    conn.close()
+    
+def start():
+    server.listen()
+    running = True
+    print(f"[LISTENING] Server is listening on {SERVER}")
+
+    while running:
+        conn, addr = server.accept()
+        thread = threading.Thread(target=handle_client, args=(conn, addr))
+        thread.start()
+        print(f"[ACTIVE CONNECTION] {threading.active_count() - 1}")
+
+def send_back(msg):
+    json_message = json.dumps(msg)
+    message = json_message.encode(FORMAT)
+    msg_length = len(message)
+    send_length = str(msg_length).encode(FORMAT)
+    send_length += b' ' * (HEADER - len(send_length))
+    server.send(send_length)
+    server.send(message)
+
+print("[STARTING] Server is starting ...")
+start()
