@@ -33,13 +33,6 @@ SCREEN = pygame.display.set_mode(
 
 pygame.display.set_caption("Veggie Wars")
 
-# Initialize sprite groups
-all_sprites = pygame.sprite.Group()
-players = pygame.sprite.Group()
-veggies = pygame.sprite.Group()
-bases = pygame.sprite.Group()
-slingshots = pygame.sprite.Group()
-shots = pygame.sprite.Group()
 
 BG = pygame.image.load("assets/new_background.png")
 
@@ -151,9 +144,18 @@ def tutorials():
 
     clock = pygame.time.Clock()
     player1 = choosePlayer()
-    base1 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4)), (3, 3), 1, 20, 0)
-    base2 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4)), (3, 3), 2, 20, 0)
+    base1 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4)), (3, 3), 1, img = "assets/base1.png", health = 20, shield = 0)
+    base2 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4)), (3, 3), 2, img = "assets/base2.png", health = 20, shield = 0)
     slingshot1 = Slingshot((900, 1000), (0, 0), 1)
+
+
+    # Initialize sprite groups
+    all_sprites = pygame.sprite.Group()
+    players = pygame.sprite.Group()
+    veggies = pygame.sprite.Group()
+    bases = pygame.sprite.Group()
+    slingshots = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
 
     all_sprites.add([base1, base2, slingshot1])
     # Add player1 to players group
@@ -175,7 +177,8 @@ def tutorials():
                                         running_threads, angle_queue])
     image_processor = ImageProcessor()
 
-    TUTORIALS_BG = pygame.image.load("assets/grass.png")
+    TUTORIALS_BG = pygame.image.load("assets/objects_2.5.png").convert_alpha()
+    TUTORIALS_BG = pygame.transform.scale(TUTORIALS_BG, (2560, 1600))
 
     # audio_list = ["Eddie"]
     # recognizer, stop_listening = speech_rec(audio_list)
@@ -194,120 +197,172 @@ def tutorials():
         veggies.add(veggie)
     
     while running:
+        try:
+            SCREEN.blit(TUTORIALS_BG, (0, 0))
 
-        SCREEN.blit(TUTORIALS_BG, (0, 0))
+            pressed_keys = pygame.key.get_pressed()   # Keyboard input
 
-        pressed_keys = pygame.key.get_pressed()   # Keyboard input
+            # Audio Input
+            # if audio_list[0] == "switch":
+            #     print(".....................")
+            #     audio_list[0] = "Eddie"
+            #     player1.toggle_mount(slingshot1)
+            if speech_recognizer.prediction == "switch":
+                player1.toggle_mount(slingshot1)
 
-        # Audio Input
-        # if audio_list[0] == "switch":
-        #     print(".....................")
-        #     audio_list[0] = "Eddie"
-        #     player1.toggle_mount(slingshot1)
-        if speech_recognizer.prediction == "switch":
-            player1.toggle_mount(slingshot1)
+            for event in pygame.event.get():
+                # Quit Game
+                if event.type == pygame.QUIT:
+                    raise ValueError
+                # Mount Slingshot and Harvesting
+                elif event.type == KEYDOWN:
+                    if event.key == K_p:
+                        paused = sub_menu()
+                        if paused == "quit":
+                            raise ValueError
+                        elif paused == "main menu":
+                            raise TypeError
+                    if event.key == K_RETURN:
+                        audio_list[0] = "Eddie"
+                        player1.toggle_mount(slingshot1)
+                    if event.key == K_SPACE:
+                        player1.harvest(veggies)
+                # Attack
+                elif event.type == pygame.JOYBUTTONDOWN:
+                    if pygame.joystick.Joystick(0).get_button(0):
+                        player1.attack(angle, (shots, all_sprites))
+                    if pygame.joystick.Joystick(0).get_button(1):
+                        player1.harvest(veggies)
+                    # if pygame.joystick.Joystick(0).get_button(3):
+                    #     player1.toggle_mount(slingshot1)
+                    if pygame.joystick.Joystick(0).get_button(3):
+                        # recognizer.energy_threshold = 300
+                        speech_recognizer.unmute()
+                elif event.type == pygame.JOYBUTTONUP:
+                    if not pygame.joystick.Joystick(0).get_button(3):
+                        speech_recognizer.mute()
+                
 
+            if len(veggies) < MAX_VEGGIES:
+                v_x = random.randint(0, SCREEN_WIDTH - VEGGIE_WIDTH)
+                v_y = random.randint(0, SCREEN_HEIGHT - VEGGIE_HEIGHT)
+                v_type = random.choice(veggies_list)
+                veggie = v_type((v_x, v_y), (0, 0), 1)
+                veggies.add(veggie)
+
+            if player1.state == PLAYER_SHOOTING:
+                if not is_shooting_music:
+                    pygame.mixer.music.load('assets/music/not-afraid.mp3')
+                    pygame.mixer.music.play(-1)
+                    is_shooting_music = True
+                image_processor.start()
+                try:
+                    # angle = angle_queue.get(block=False)
+                    angle = image_processor.angle
+                except:
+                    pass
+
+            if player1.state != PLAYER_SHOOTING:
+                if is_shooting_music:
+                    pygame.mixer.music.load('assets/music/on-a-clear-day.mp3')
+                    pygame.mixer.music.play(-1)
+                    is_shooting_music = False
+                image_processor.stop()
+
+            try:
+                x_speed = round(pygame.joystick.Joystick(0).get_axis(0))
+                y_speed = round(pygame.joystick.Joystick(0).get_axis(1))
+            except:
+                x_speed = 0
+                y_speed = 0
+
+            # Refresh screen and display objects
+            for veggie in veggies:
+                veggie.update(SCREEN)
+            for slingshot in slingshots:
+                slingshot.update(SCREEN)
+            for player in players:
+                player.update([x_speed, y_speed], angle, SCREEN)
+            for base in bases:
+                base.update(shots, SCREEN)
+            for shot in shots:
+                shot.update(SCREEN)
+
+            # show mask
+            # for sprite in all_sprites:
+            #     pygame.draw.rect(SCREEN, (255,255,255), sprite, 2)
+            #     SCREEN.blit(sprite.mask.to_surface(sprite.surf, setcolor = (255,255,255)), sprite.rect)
+
+            if base2.health == 0:
+                if gameover() == "exit":
+                    raise ValueError
+                raise TypeError
+
+            pygame.display.flip()
+            clock.tick(100)
+        except ValueError:
+            for sprite in all_sprites:
+                    sprite.kill()
+            image_processor.stop()
+            speech_recognizer.stop()
+            pygame.quit()
+        except TypeError:
+            for sprite in all_sprites:
+                    sprite.kill()
+            image_processor.stop()
+            speech_recognizer.stop()
+            running = False
+
+def gameover():
+    background = pygame.image.load("assets/grass.png")
+    dimmer = Dimmer(keepalive=True)
+    running = True
+
+    # Initialize buttons
+
+    MAIN_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH/2, 650),
+                              text_input="MAIN MENU", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+
+    EXIT_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png"), pos=(SCREEN_WIDTH/2, 800),
+                               text_input="EXIT", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
+    
+    # Button clicking sound effect
+    clicking_sound = mixer.Sound('assets/music/button_clicked.mp3')
+    clicking_sound.set_volume(1.5)
+    
+    while running:
+        SCREEN.blit(background, (0, 0))
+
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+        dimmer.dim(darken_factor=200, color_filter=(0, 0, 0))
+
+        # Initialize main text box
+        MENU_TEXT = get_font(150).render("Game Over", True, "#b68f40")
+        MENU_RECT = MENU_TEXT.get_rect(center=(SCREEN_WIDTH/2, 120))
+
+        SCREEN.blit(MENU_TEXT, MENU_RECT)
+
+        # change color and play noise when hovering
+        for button in [MAIN_BUTTON, EXIT_BUTTON]:
+            button.changeColor(MENU_MOUSE_POS)
+            button.hoverNoise(MENU_MOUSE_POS)
+            button.update(SCREEN)
+
+        # event after clicking
         for event in pygame.event.get():
-            # Quit Game
             if event.type == pygame.QUIT:
-                stop_listening(wait_for_stop=False)
                 pygame.quit()
                 sys.exit()
-            # Mount Slingshot and Harvesting
-            elif event.type == KEYDOWN:
-                if event.key == K_p:
-                    sub_menu()
-                    # global game_paused
-                    # game_paused = not game_paused
-                if event.key == K_RETURN:
-                    audio_list[0] = "Eddie"
-                    player1.toggle_mount(slingshot1)
-                if event.key == K_SPACE:
-                    player1.harvest(veggies)
-            # Attack
-            elif event.type == pygame.JOYBUTTONDOWN:
-                if pygame.joystick.Joystick(0).get_button(0):
-                    player1.attack(angle, (shots, all_sprites))
-                if pygame.joystick.Joystick(0).get_button(1):
-                    player1.harvest(veggies)
-                # if pygame.joystick.Joystick(0).get_button(3):
-                #     player1.toggle_mount(slingshot1)
-                if pygame.joystick.Joystick(0).get_button(3):
-                    # recognizer.energy_threshold = 300
-                    speech_recognizer.unmute()
-            elif event.type == pygame.JOYBUTTONUP:
-                if not pygame.joystick.Joystick(0).get_button(3):
-                    speech_recognizer.mute()
-            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if MAIN_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    clicking_sound.play()
+                    running = False
+                if EXIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    clicking_sound.play()
+                    running = False
+                    return "exit"
 
-        if len(veggies) < MAX_VEGGIES:
-            v_x = random.randint(0, SCREEN_WIDTH - VEGGIE_WIDTH)
-            v_y = random.randint(0, SCREEN_HEIGHT - VEGGIE_HEIGHT)
-            v_type = random.choice(veggies_list)
-            veggie = v_type((v_x, v_y), (0, 0), 1)
-            veggies.add(veggie)
-
-        if player1.state == PLAYER_SHOOTING:
-            if not is_shooting_music:
-                pygame.mixer.music.load('assets/music/not-afraid.mp3')
-                pygame.mixer.music.play(-1)
-                is_shooting_music = True
-            image_processor.start()
-            try:
-                # angle = angle_queue.get(block=False)
-                angle = image_processor.angle
-            except:
-                pass
-
-        if player1.state != PLAYER_SHOOTING:
-            if is_shooting_music:
-                pygame.mixer.music.load('assets/music/on-a-clear-day.mp3')
-                pygame.mixer.music.play(-1)
-                is_shooting_music = False
-            image_processor.stop()
-
-        try:
-            x_speed = round(pygame.joystick.Joystick(0).get_axis(0))
-            y_speed = round(pygame.joystick.Joystick(0).get_axis(1))
-        except:
-            x_speed = 0
-            y_speed = 0
-
-        # Refresh screen and display objects
-        for veggie in veggies:
-            veggie.update(SCREEN)
-        for player in players:
-            player.update([x_speed, y_speed], angle, SCREEN)
-        for base in bases:
-            base.update(shots, SCREEN)
-        for slingshot in slingshots:
-            slingshot.update(SCREEN)
-        for shot in shots:
-            shot.update(SCREEN)
-
-        # show mask
-        # for sprite in all_sprites:
-        #     pygame.draw.rect(SCREEN, (255,255,255), sprite, 2)
-        #     SCREEN.blit(sprite.mask.to_surface(sprite.surf, setcolor = (255,255,255)), sprite.rect)
-
-        if base2.health == 0:
-            for sprite in all_sprites:
-                sprite.kill()
-            running = False
-            running_threads.set()
-            stop_listening(wait_for_stop=False)
-            pygame.quit()
-            break
-
-        pygame.display.flip()
-        clock.tick(100)
-
-    with latest_frame_available:
-        latest_frame = None  # sentinel value
-        latest_frame_available.notify_all()
-    mediapipe_thread.join()
-    camera_thread.join()
-
+        pygame.display.update()
 
 def options():
     while True:
@@ -350,8 +405,8 @@ def sub_menu():
     OPTIONS_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH/2, 500),
                             text_input="OPTIONS", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
 
-    TUTORIALS_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH/2, 650),
-                              text_input="TUTORIALS", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+    MAIN_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH/2, 650),
+                              text_input="MAIN MENU", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
 
     QUIT_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png"), pos=(SCREEN_WIDTH/2, 800),
                                text_input="QUIT", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
@@ -373,7 +428,7 @@ def sub_menu():
         SCREEN.blit(MENU_TEXT, MENU_RECT)
 
         # change color and play noise when hovering
-        for button in [RESUME_BUTTON, OPTIONS_BUTTON, TUTORIALS_BUTTON, QUIT_BUTTON]:
+        for button in [RESUME_BUTTON, OPTIONS_BUTTON, MAIN_BUTTON, QUIT_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
             button.hoverNoise(MENU_MOUSE_POS)
             button.update(SCREEN)
@@ -390,13 +445,16 @@ def sub_menu():
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     clicking_sound.play()
                     options()
-                if TUTORIALS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                if MAIN_BUTTON.checkForInput(MENU_MOUSE_POS):
                     clicking_sound.play()
-                    tutorials()
+                    running = False
+                    return "main menu"
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     clicking_sound.play()
-                    pygame.quit()
-                    sys.exit()
+                    running = False
+                    return "quit"
+                    # pygame.quit()
+                    # sys.exit()
 
         pygame.display.update()
 
