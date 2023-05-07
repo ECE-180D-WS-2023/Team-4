@@ -1,7 +1,10 @@
 import pygame
+import math
 import collections
 from gameobject import *
 from constants import *
+from weapon import *
+from veggie import *
 
 class Player(GameObject):
     def __init__(self, pos=(0, 0), vel=5):
@@ -9,19 +12,29 @@ class Player(GameObject):
         self.state = PLAYER_WALKING
         self.backpack = collections.deque()
         self.mounted = False
+        self.weapon = None
+
+    def shoot(self):
+        return Veggie(self.pos, 10, (math.cos(math.radians(self.weapon.angle-90)), math.sin(math.radians(self.weapon.angle-90))))
 
     def toggle_mount(self, slingshot):
         if self.mounted:
             print("unmount")
             self.mounted = False
             self.state = PLAYER_WALKING
+            self._toggle_weapon()
         elif self.rect.colliderect(slingshot.rect):
             print("mount")
             self.mounted = True
             self.pos = slingshot.pos
             self.state = PLAYER_SHOOTING
+            self._toggle_weapon()
+
+    def _toggle_weapon(self):
+        if not self.weapon:
+            self.weapon = Weapon(self.pos)
         else:
-            print("toggle")
+            self.weapon = None
 
     def update(self):
         if self.state == PLAYER_WALKING:

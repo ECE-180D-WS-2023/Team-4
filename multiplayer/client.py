@@ -17,7 +17,7 @@ joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_coun
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN | pygame.SCALED)
 
-game = Game()
+game = Game(client.id)
 
 def handle_server():
     while game.running:

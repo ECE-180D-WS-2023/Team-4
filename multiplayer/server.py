@@ -5,6 +5,7 @@ from network import *
 from player import *
 from veggie import *
 from slingshot import *
+from weapon import *
 
 # Initialize socket
 PORT = 8080
@@ -45,13 +46,24 @@ def handle_client(conn, id):
         js_buttondown = client_inputs.get("js_buttondown", False)
         if js_buttondown:
             if 0 in js_buttondown:
-                game_state["shots"].append(Veggie(my_player.pos, 10, (1, 1)))
+                if my_player.state == PLAYER_SHOOTING:
+                    game_state["shots"].append(my_player.shoot())
+
+        # Keyboard
+        keyboard = client_inputs.get("keyboard", [])
+        if K_RETURN in keyboard:
+            ...
 
         # Speech recognition
         speech = client_inputs.get("speech", None)
         if speech == "switch":
             print("switch")
             my_player.toggle_mount(game_state["slingshots"][1])
+
+        # Image Processing
+        angle = client_inputs.get("angle", None)
+        if my_player.state == PLAYER_SHOOTING:
+            my_player.weapon.angle = angle
 
         for player in game_state["players"].values():
             player.update()

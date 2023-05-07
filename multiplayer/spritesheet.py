@@ -10,7 +10,7 @@ class SpriteSheet():
         width, height: size of each frame. i.e. 32x32 16x16
         color: get rid of the BG surface color of each frame (transparency color). Usually set to BLACK
         '''
-        image = pygame.Surface((width, height)).convert_alpha()
+        image = pygame.Surface((width, height))
         image.blit(self.spritesheet, (0,0), ((sheet_col * width), (sheet_row * height), width, height))
         image = pygame.transform.scale(image, (width * scale, height * scale))
         image.set_colorkey(colorkey)
