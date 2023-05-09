@@ -25,6 +25,7 @@ joysticks = [pygame.joystick.Joystick(x)
              for x in range(pygame.joystick.get_count())]
 print(joysticks)
 
+clock = pygame.time.Clock()
 
 # https://stackoverflow.com/questions/73758038/pygame-wrong-resolution-on-macos
 SCREEN = pygame.display.set_mode(
@@ -42,7 +43,9 @@ slingshots = pygame.sprite.Group()
 shots = pygame.sprite.Group()
 effects = pygame.sprite.Group()
 
-BG = pygame.image.load("assets/new_background.png")
+STATIC_BACKGROUND = pygame.image.load("assets/menu/static-background.png")
+BG_5 = pygame.image.load("assets/menu/5.png")
+BG_6 = pygame.image.load("assets/menu/6.png")
 
 
 def get_font(size):
@@ -92,11 +95,25 @@ def choosePlayer():
     DARTHVADER_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH - 500, 350),
                                text_input="DARTH VADER", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
 
-    while running:
+    input_box_rect = pygame.Rect(1080,200,400,40)
+    input_text = ""
+    input_active = False
 
+    # Set up the cursor
+    cursor_active = False
+    cursor_timer = 0
+
+    # Set up the label
+    label_text = "Enter Player Name:"
+    label_surface = get_font(30).render(label_text, True, (0,0,0))
+    label_rect = label_surface.get_rect()
+    label_rect.x = input_box_rect.x
+    label_rect.y = input_box_rect.y - label_rect.height - 5
+
+    while running:
         CHOOSEPLAYER_MOUSE_POS = pygame.mouse.get_pos()
         SCREEN.blit(background, (0, 0))
-        dimmer.dim(darken_factor=200, color_filter=(0, 0, 0))
+        # dimmer.dim(darken_factor=200, color_filter=(0, 0, 0))
 
         for button in [ENGINEER_BUTTON, SOLDIER_BUTTON, DARTHVADER_BUTTON]:
             button.changeColor(CHOOSEPLAYER_MOUSE_POS)
@@ -107,27 +124,50 @@ def choosePlayer():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if ENGINEER_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
                     player = Engineer(
-                        (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
+                        (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
                     return player
-                if SOLDIER_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                elif SOLDIER_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
                     player = Soldier((80, 80), (2.5, 2.5), 1,
-                                     PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
+                                     PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
                     return player
-                if DARTHVADER_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                elif DARTHVADER_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
                     player = DarthVader(
-                        (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
+                        (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
                     return player
-            elif event.type == KEYDOWN:
-                if event.key == K_SPACE:
-                    player = Player((80, 80), (2.5, 2.5), 1,
-                                    PLAYER_ENGINEER, "Bruce", PLAYER_WALKING, 10)
-                    return player
-                if event.key == K_q:
-                    player = Player((80, 80), (2.5, 2.5), 1,
-                                    PLAYER_FARMER, "Bruce", PLAYER_WALKING, 10)
-                    return player
+                elif input_box_rect.collidepoint(event.pos):
+                    input_active = True
+                    cursor_active = True
+                    cursor_timer = pygame.time.get_ticks()
+                else:
+                    input_active = False
+                    cursor_active = False
 
+            elif event.type == KEYDOWN:
+                if input_active:
+                    if event.unicode.isprintable():
+                        input_text += event.unicode
+                    elif event.key == pygame.K_BACKSPACE:
+                        input_text = input_text[:-1]
+
+        pygame.draw.rect(SCREEN, (0,0,0), input_box_rect, 2)
+        input_surface = get_font(30).render(input_text, True, (0,0,0))
+        SCREEN.blit(input_surface, (input_box_rect.x + 5, input_box_rect.y + 5))
+        SCREEN.blit(label_surface, label_rect)
+
+        if input_active:
+            cursor_timer += pygame.time.get_ticks() % 1000
+            if cursor_timer > 20000:
+                cursor_active = not cursor_active
+                cursor_timer = 0
+            if cursor_active:
+                cursor_surface = get_font(30).render("|", True, (0,0,0))
+                cursor_rect = cursor_surface.get_rect()
+                cursor_rect.x = input_box_rect.x + 5 + input_surface.get_width()
+                cursor_rect.y = input_box_rect.y + 5
+                SCREEN.blit(cursor_surface, cursor_rect)
+        
         pygame.display.update()
+        clock.tick(60)
 
 
 def tutorials():
@@ -346,6 +386,9 @@ def options():
 
 def main_menu():
 
+    background_5 = 0
+    background_6 = 0
+
     # Initialize buttons
     PLAY_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png"), pos=(700, 350),
                          text_input="PLAY", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
@@ -361,7 +404,15 @@ def main_menu():
     clicking_sound.set_volume(1.5)
 
     while True:
-        SCREEN.blit(BG, (0, 0))
+        SCREEN.blit(STATIC_BACKGROUND, (0, 0))
+        SCREEN.blit(BG_5, (background_5, 0))
+        SCREEN.blit(BG_6, (background_6, 0))
+        background_5 -= 5
+        background_6 -= 30
+        if background_5 <= -BG_5.get_width():
+            background_5 = 0
+        if background_6 <= -BG_6.get_width():
+            background_6 = 0
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
@@ -398,6 +449,8 @@ def main_menu():
                     sys.exit()
 
         pygame.display.update()
+        
+        clock.tick(60)
 
 
 main_menu()

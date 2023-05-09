@@ -22,7 +22,9 @@ class Player(GameObject):
         self.state = state
         self.backpack = collections.deque()
         self.weight = role
+        font = pygame.font.Font("assets/font.ttf", 15)
         self.name = name
+        self.name_surface = font.render(self.name, True, (255, 255, 255))
         self.health = health
         self.mounted = False
     
@@ -79,6 +81,11 @@ class Player(GameObject):
                 self.state = PLAYER_SHOOTING
 
     def update(self, js_action, angle, screen):
+        # Player name
+        name_x = self.rect.centerx - self.name_surface.get_width() // 2
+        name_y = self.rect.top - self.name_surface.get_height()
+        screen.blit(self.name_surface, (name_x, name_y))
+
         x_action, y_action = js_action
         if self.state == PLAYER_WALKING:
             actions = []
@@ -122,7 +129,7 @@ class Player(GameObject):
             super().update(screen)
             return
         
-        else: # Player harvesting
+        else: # Player transforming
             return
 
 
@@ -161,7 +168,7 @@ class Player(GameObject):
             print("Walking!")
         if pressed_key[K_1]:
             self.state = PLAYER_TRANSFORMING
-            print("Harvesting!")
+            print("Transforming!")
         if pressed_key[K_2]:
             self.state = PLAYER_SHOOTING
             print("Shooting!")
