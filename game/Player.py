@@ -1,4 +1,5 @@
 from GameObject import GameObject
+from Spritesheet import SpriteSheet
 from constants import *
 import math
 import collections
@@ -10,7 +11,12 @@ mixer.init()
 walking_sound = pygame.mixer.Sound('assets/music/walking.mp3')
 walking_sound.set_volume(1.5)
 shooting_sound = pygame.mixer.Sound('assets/music/shotgun-firing.mp3')
-
+student_transformation_sound = pygame.mixer.Sound("assets/music/Transformation-sound/student-transformation-sound.mp3")
+student_transformation_sound.set_volume(2)
+soldier_transformation_sound = pygame.mixer.Sound("assets/music/Transformation-sound/soldier-transformation-sound.mp3")
+soldier_transformation_sound.set_volume(2)
+enchantress_transformation_sound = pygame.mixer.Sound("assets/music/Transformation-sound/enchantress-transformation-sound.mp3")
+enchantress_transformation_sound.set_volume(2)
 class Player(GameObject):
     # TODO: remove role attribute in favor of subclasses
     def __init__(self, pos, vel, team_num, role, name, img, state=PLAYER_WALKING, health=100):
@@ -19,9 +25,13 @@ class Player(GameObject):
         self.state = state
         self.backpack = collections.deque()
         self.weight = role
+        font = pygame.font.Font("assets/font.ttf", 15)
         self.name = name
+        self.name_surface = font.render(self.name, True, (255, 255, 255))
         self.health = health
         self.mounted = False
+    
+    
 
     def attack(self, angle, sprite_groups):
         """
@@ -74,6 +84,11 @@ class Player(GameObject):
                 self.state = PLAYER_SHOOTING
 
     def update(self, js_action, angle, screen):
+        # Player name
+        name_x = self.rect.centerx - self.name_surface.get_width() // 2
+        name_y = self.rect.top - self.name_surface.get_height()
+        screen.blit(self.name_surface, (name_x, name_y))
+
         x_action, y_action = js_action
         if self.state == PLAYER_WALKING:
             actions = []
@@ -116,6 +131,9 @@ class Player(GameObject):
                             angle)
             super().update(screen)
             return
+        
+        else: # Player transforming
+            return
 
 
     def blitRotate(self, surf, image, origin:Tuple[int, int], pivot:Tuple[int, int], angle):
@@ -152,15 +170,26 @@ class Player(GameObject):
             self.player_state = PLAYER_WALKING
             print("Walking!")
         if pressed_key[K_1]:
-            self.state = PLAYER_HARVESTING
-            print("Harvesting!")
+            self.state = PLAYER_TRANSFORMING
+            print("Transforming!")
         if pressed_key[K_2]:
             self.state = PLAYER_SHOOTING
             print("Shooting!")
 
-class Engineer(Player):
+class Student(Player):
     def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
-        super().__init__(pos, vel, team_num, role, name, img="assets/players/engineer.png", state=PLAYER_WALKING, health=100)
+        super().__init__(pos, vel, team_num, role, name, img="assets/players/student.png", state=PLAYER_WALKING, health=100)
+        self.promoted = False
+        self.promoted_img = pygame.image.load("assets/players/engineer.png").convert_alpha()
+    def promote(self):
+        self.promoted = True
+        student_transformation_sound.play()
+        pygame.mixer.music.load("assets/music/Engineer_bgm.mp3")
+        pygame.mixer.music.set_volume(2)
+        pygame.mixer.music.play(-1)
+        self.state = PLAYER_TRANSFORMING
+        self.animation_list = SpriteSheet(self.promoted_img).get_animation_list(self.animation_steps, self.shape, self.scale)
+        return
 
 class DarthVader(Player):
     def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
@@ -169,7 +198,37 @@ class DarthVader(Player):
 class Soldier(Player):
     def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
         super().__init__(pos, vel, team_num, role, name, img="assets/players/soldier.png", state=PLAYER_WALKING, health=100)
+        
+        self.promoted = False
+        self.promoted_img = pygame.image.load("assets/players/darthvader.png").convert_alpha()
+        
+    def promote(self):
+        self.promoted = True
+        soldier_transformation_sound.play()
+        pygame.mixer.music.load("assets/music/DarthVader_bgm.mp3")
+        pygame.mixer.music.set_volume(2)
+        pygame.mixer.music.play(-1)
+        self.state = PLAYER_TRANSFORMING
+        self.animation_list = SpriteSheet(self.promoted_img).get_animation_list(self.animation_steps, self.shape, self.scale)
 
+        return
+    
+class Enchantress(Player):
+    def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
+        super().__init__(pos, vel, team_num, role, name, img="assets/players/enchantress.png", state=PLAYER_WALKING, health=100)
+        self.promoted = False
+        self.promoted_img = pygame.image.load("assets/players/dragonqueen.png").convert_alpha()
+
+    def promote(self):
+        self.promoted = True
+        enchantress_transformation_sound.play()
+        pygame.mixer.music.load("assets/music/DragonQueen_bgm.mp3")
+        pygame.mixer.music.set_volume(2)
+        pygame.mixer.music.play(-1)
+        self.state = PLAYER_TRANSFORMING
+        self.animation_list = SpriteSheet(self.promoted_img).get_animation_list(self.animation_steps, self.shape, self.scale)
+        return
+        
 class Farmer(Player):
     def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
         super().__init__(pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100)
