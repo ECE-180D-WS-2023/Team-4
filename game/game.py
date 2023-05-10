@@ -86,14 +86,14 @@ def choosePlayer():
     dimmer = Dimmer(keepalive=True)
     running = True
 
-    ENGINEER_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(500, 350),
-                             text_input="ENGINEER", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+    STUDENT_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(500, 350),
+                             text_input="STUDENT", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
 
     SOLDIER_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH/2, 350),
                             text_input="SOLDIER", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
 
-    DARTHVADER_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH - 500, 350),
-                               text_input="DARTH VADER", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
+    ENCHANTRESS_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH - 500, 350),
+                               text_input="ENCHANTRESS", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
 
     input_box_rect = pygame.Rect(1080,200,400,40)
     input_text = ""
@@ -115,23 +115,23 @@ def choosePlayer():
         SCREEN.blit(background, (0, 0))
         # dimmer.dim(darken_factor=200, color_filter=(0, 0, 0))
 
-        for button in [ENGINEER_BUTTON, SOLDIER_BUTTON, DARTHVADER_BUTTON]:
+        for button in [STUDENT_BUTTON, SOLDIER_BUTTON, ENCHANTRESS_BUTTON]:
             button.changeColor(CHOOSEPLAYER_MOUSE_POS)
             button.hoverNoise(CHOOSEPLAYER_MOUSE_POS)
             button.update(SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if ENGINEER_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
-                    player = Engineer(
+                if STUDENT_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                    player = Student(
                         (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
                     return player
                 elif SOLDIER_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
                     player = Soldier((80, 80), (2.5, 2.5), 1,
                                      PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
                     return player
-                elif DARTHVADER_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
-                    player = DarthVader(
+                elif ENCHANTRESS_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                    player = Enchantress(
                         (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
                     return player
                 elif input_box_rect.collidepoint(event.pos):
@@ -255,8 +255,14 @@ def tutorials():
                     player1.harvest(veggies)
                 if event.key == K_TAB:
                     if not Timer_on:
-                        tempEffect = GameObject((PLAYER_WIDTH*3, PLAYER_HEIGHT*3), player1.pos, player1.vel,
-                                                player1.team_num, img="assets/players/timeEffects.png", animation_steps=[5,5,5,5], scale=1)
+                        if isinstance(player1, Student):
+                            tempEffect = GameObject()
+                        elif isinstance(player1, Soldier):
+                            tempEffect = GameObject((PLAYER_WIDTH*3, PLAYER_HEIGHT*3), player1.pos, player1.vel,
+                                                    player1.team_num, img="assets/players/timeEffects.png", animation_steps=[5,5,5,5], scale=1)
+                        elif isinstance(player1, Enchantress):
+                            tempEffect = GameObject((PLAYER_WIDTH*3, PLAYER_HEIGHT*3), player1.pos, player1.vel,
+                                                    player1.team_num, img="assets/players/enchantress-transform-effect.png", animation_steps=[5,5,5], scale=1)
                         effects.add([tempEffect])
                         Timer_on = True
                         effect_start_time = pygame.time.get_ticks()
@@ -316,7 +322,7 @@ def tutorials():
         for effect in effects:
             if effect_start_time != None:
                 if pygame.time.get_ticks() - effect_start_time < 2500:
-                    effect.update(SCREEN, 3)
+                    effect.update(SCREEN, -1)
                 else:
                     Timer_on = False
                     player1.state = PLAYER_WALKING

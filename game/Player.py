@@ -11,9 +11,10 @@ mixer.init()
 walking_sound = pygame.mixer.Sound('assets/music/walking.mp3')
 walking_sound.set_volume(1.5)
 shooting_sound = pygame.mixer.Sound('assets/music/shotgun-firing.mp3')
-soldier_transformation_sound = pygame.mixer.Sound("assets/music/Soldier_transformation_effect.mp3")
+soldier_transformation_sound = pygame.mixer.Sound("assets/music/Transformation-sound/soldier-transformation-sound.mp3")
 soldier_transformation_sound.set_volume(2)
-
+enchantress_transformation_sound = pygame.mixer.Sound("assets/music/Transformation-sound/enchantress-transformation-sound.mp3")
+enchantress_transformation_sound.set_volume(2)
 class Player(GameObject):
     # TODO: remove role attribute in favor of subclasses
     def __init__(self, pos, vel, team_num, role, name, img, state=PLAYER_WALKING, health=100):
@@ -173,9 +174,20 @@ class Player(GameObject):
             self.state = PLAYER_SHOOTING
             print("Shooting!")
 
-class Engineer(Player):
+class Student(Player):
     def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
-        super().__init__(pos, vel, team_num, role, name, img="assets/players/engineer.png", state=PLAYER_WALKING, health=100)
+        super().__init__(pos, vel, team_num, role, name, img="assets/players/student.png", state=PLAYER_WALKING, health=100)
+
+    def promote(self):
+        self.promoted = True
+        soldier_transformation_sound.play()
+        pygame.mixer.music.load("assets/music/DarthVader_bgm.mp3")
+        pygame.mixer.music.set_volume(2)
+        pygame.mixer.music.play(-1)
+        self.state = PLAYER_TRANSFORMING
+        self.animation_list = SpriteSheet(self.promoted_img).get_animation_list(self.animation_steps, self.shape, self.scale)
+
+        return
 
 class DarthVader(Player):
     def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
@@ -189,14 +201,6 @@ class Soldier(Player):
         self.promoted_img = pygame.image.load("assets/players/darthvader.png").convert_alpha()
         
     def promote(self):
-        """
-        WIP:
-
-        option1: call super().__init__, which will reset backpack
-
-        option2: reset img, animation_list, and 
-        
-        """
         self.promoted = True
         soldier_transformation_sound.play()
         pygame.mixer.music.load("assets/music/DarthVader_bgm.mp3")
@@ -205,6 +209,22 @@ class Soldier(Player):
         self.state = PLAYER_TRANSFORMING
         self.animation_list = SpriteSheet(self.promoted_img).get_animation_list(self.animation_steps, self.shape, self.scale)
 
+        return
+    
+class Enchantress(Player):
+    def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
+        super().__init__(pos, vel, team_num, role, name, img="assets/players/enchantress.png", state=PLAYER_WALKING, health=100)
+        self.promoted = False
+        self.promoted_img = pygame.image.load("assets/players/dragonqueen.png").convert_alpha()
+
+    def promote(self):
+        self.promoted = True
+        enchantress_transformation_sound.play()
+        pygame.mixer.music.load("assets/music/DragonQueen_bgm.mp3")
+        pygame.mixer.music.set_volume(2)
+        pygame.mixer.music.play(-1)
+        self.state = PLAYER_TRANSFORMING
+        self.animation_list = SpriteSheet(self.promoted_img).get_animation_list(self.animation_steps, self.shape, self.scale)
         return
         
 class Farmer(Player):
