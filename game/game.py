@@ -256,10 +256,11 @@ def tutorials():
                 if event.key == K_TAB:
                     if not Timer_on:
                         if isinstance(player1, Student):
-                            tempEffect = GameObject()
+                            tempEffect = GameObject((PLAYER_WIDTH*3, PLAYER_HEIGHT*3), player1.pos, player1.vel,
+                                                    player1.team_num, img="assets/players/student-transform-effect.png", animation_steps=[5,5,5], scale=1)
                         elif isinstance(player1, Soldier):
                             tempEffect = GameObject((PLAYER_WIDTH*3, PLAYER_HEIGHT*3), player1.pos, player1.vel,
-                                                    player1.team_num, img="assets/players/timeEffects.png", animation_steps=[5,5,5,5], scale=1)
+                                                    player1.team_num, img="assets/players/soldier-transform-effect.png", animation_steps=[5,5,5,5], scale=1)
                         elif isinstance(player1, Enchantress):
                             tempEffect = GameObject((PLAYER_WIDTH*3, PLAYER_HEIGHT*3), player1.pos, player1.vel,
                                                     player1.team_num, img="assets/players/enchantress-transform-effect.png", animation_steps=[5,5,5], scale=1)
