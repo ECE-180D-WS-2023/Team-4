@@ -3,7 +3,7 @@ import sys
 import threading
 import queue
 from pygame import mixer
-from button import Button
+from button import *
 import random
 from Player import *
 from Veggie import *
@@ -77,14 +77,14 @@ def choosePlayer():
     dimmer = Dimmer(keepalive=True)
     running = True
 
-    STUDENT_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(500, 350),
-                             text_input="STUDENT", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+    STUDENT_BUTTON = StudentCard(image=pygame.image.load("assets/players/student.png"), pos=(500, 500),
+                             text_input="STUDENT", font=get_font(30), base_color="#d7fcd4", hovering_color="White")
 
-    SOLDIER_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH/2, 350),
-                            text_input="SOLDIER", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+    SOLDIER_BUTTON = SoldierCard(image=pygame.image.load("assets/players/soldier.png"), pos=(SCREEN_WIDTH/2, 500),
+                            text_input="SOLDIER", font=get_font(30), base_color="#d7fcd4", hovering_color="White")
 
-    ENCHANTRESS_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH - 500, 350),
-                               text_input="ENCHANTRESS", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
+    ENCHANTRESS_BUTTON = EnchantressCard(image=pygame.image.load("assets/players/enchantress.png"), pos=(SCREEN_WIDTH - 500, 500),
+                               text_input="ENCHANTRESS", font=get_font(30), base_color="#d7fcd4", hovering_color="White")
 
     input_box_rect = pygame.Rect(1080,200,400,40)
     input_text = ""
@@ -113,6 +113,7 @@ def choosePlayer():
             button.changeColor(CHOOSEPLAYER_MOUSE_POS)
             button.hoverNoise(CHOOSEPLAYER_MOUSE_POS)
             button.update(SCREEN)
+            button.hoverShow(CHOOSEPLAYER_MOUSE_POS, SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
