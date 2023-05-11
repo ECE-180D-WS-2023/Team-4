@@ -19,7 +19,7 @@ class Game:
             "Engineer": SpriteSheet("assets/players/engineer.png"),
             "Soldier": SpriteSheet("assets/players/soldier.png"),
             "Veggie": SpriteSheet("assets/veggies/carrot-big.png"),
-            "Slingshot": SpriteSheet("assets/veggies/cabbage.png"),
+            "Slingshot": SpriteSheet("assets/slingshot_station.png"),
             "Weapon": SpriteSheet("assets/players/cannon.png"),
         }
         self.speech_recognizer = SpeechRecognizer()
@@ -41,9 +41,11 @@ class Game:
                     self.inputs["js_buttondown"].append(1)
                 if pygame.joystick.Joystick(0).get_button(3):
                     self.speech_recognizer.unmute()
+                    print("unmute")
             elif event.type == pygame.JOYBUTTONUP:
                 if not pygame.joystick.Joystick(0).get_button(3):
                     self.speech_recognizer.mute()
+                    print("mute")
 
         try:
             if self.state["players"][str(self.client_id)].state == PLAYER_SHOOTING:

@@ -7,9 +7,10 @@ from weapon import *
 from veggie import *
 
 class Player(GameObject):
-    def __init__(self, pos=(0, 0), vel=5):
+    def __init__(self, pos=(0, 0), vel=5, team_num=1):
         super().__init__(pos, vel, scale=PLAYER_SCALE)
         self.state = PLAYER_WALKING
+        self.team_num = team_num
         self.backpack = collections.deque()
         self.mounted = False
         self.weapon = None

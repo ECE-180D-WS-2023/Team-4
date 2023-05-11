@@ -9,7 +9,7 @@ from weapon import *
 
 # Initialize socket
 PORT = 8080
-SERVER = '192.168.0.190'
+SERVER = '172.20.10.2'
 server = ServerSocket(SERVER, PORT)
 
 # Initialize pygame
@@ -31,7 +31,7 @@ def handle_client(conn, id):
     conn.send(id)
 
     # Initialize player
-    game_state["players"][str(id)] = Player((80, 80))
+    game_state["players"][str(id)] = Player((80, 80), team_num=(id % 2))
     my_player = game_state["players"][str(id)]
 
     while True:
@@ -58,12 +58,17 @@ def handle_client(conn, id):
         speech = client_inputs.get("speech", None)
         if speech == "switch":
             print("switch")
-            my_player.toggle_mount(game_state["slingshots"][1])
+            my_player.toggle_mount(game_state["slingshots"][my_player.team_num])
 
         # Image Processing
         angle = client_inputs.get("angle", None)
         if my_player.state == PLAYER_SHOOTING:
-            my_player.weapon.angle = angle
+            # my_player.weapon.angle = angle
+            if angle != None:
+                if my_player.team_num == 0:
+                    my_player.weapon.angle = -angle + 180
+                else:
+                    my_player.weapon.angle = angle
 
         for player in game_state["players"].values():
             player.update()
