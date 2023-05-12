@@ -31,7 +31,8 @@ def handle_client(conn, id):
     conn.send(id)
 
     # Initialize player
-    game_state["players"][str(id)] = Player((80, 80), team_num=(id % 2))
+    my_team_num = id % 2
+    game_state["players"][str(id)] = Player(TEAM0_SPAWN if my_team_num == 0 else TEAM1_SPAWN, team_num=my_team_num)
     my_player = game_state["players"][str(id)]
 
     while True:
