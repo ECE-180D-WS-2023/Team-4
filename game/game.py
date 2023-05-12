@@ -543,6 +543,33 @@ def main_menu():
     clicking_sound = mixer.Sound('assets/music/button_clicked.mp3')
     clicking_sound.set_volume(1.5)
 
+    # Interactive character
+    random_int = random.randint(1,3)
+    sprite_scale = 5
+    frame_col = 0
+    animation_cooldown = 70
+    character_surf = pygame.Surface((PLAYER_WIDTH*sprite_scale, PLAYER_HEIGHT*sprite_scale))
+    character_rect = character_surf.get_rect()
+    character_rect.center = (200, 1250) # initial position
+    
+    # Set up the jump
+    jump_height = 3
+    is_jumping = False
+    jump_count = 0
+    jump_speed = 40
+    
+
+    if random_int == 1:
+        sprite_image = pygame.image.load("assets/players/student.png").convert_alpha()
+    elif random_int == 2:
+        sprite_image = pygame.image.load("assets/players/soldier.png").convert_alpha()
+    elif random_int == 3:
+        sprite_image = pygame.image.load("assets/players/enchantress.png").convert_alpha()
+    
+    animation_list = SpriteSheet(sprite_image).get_animation_list([3, 3, 3, 3], (PLAYER_WIDTH,PLAYER_HEIGHT), sprite_scale)
+    mask = pygame.mask.from_surface(animation_list[2][frame_col])
+    last_update = pygame.time.get_ticks()
+
     while True:
         SCREEN.blit(STATIC_BACKGROUND, (0, 0))
         SCREEN.blit(BG_5, (background_5, 0))
@@ -567,6 +594,8 @@ def main_menu():
             button.changeColor(MENU_MOUSE_POS)
             button.hoverNoise(MENU_MOUSE_POS)
             button.update(SCREEN)
+        
+       
 
         # event after clicking
         for event in pygame.event.get():
@@ -587,10 +616,40 @@ def main_menu():
                     clicking_sound.play()
                     pygame.quit()
                     sys.exit()
+            elif event.type == KEYDOWN:
+                    if event.key == K_SPACE:
+                        if not is_jumping:
+                            jump_start = pygame.time.get_ticks()
+                            is_jumping = True
+                            jump_count = 0
+        
+         # Update moving character
+
+        if is_jumping:
+            character_rect.centery -= jump_speed*2
+            jump_count += 1
+            if jump_count >= jump_height:
+                is_jumping = False
+        else:
+            if jump_count > 0:
+                character_rect.centery += jump_speed*2
+                jump_count -= 1
+            
+
+        current_time = pygame.time.get_ticks()
+        if current_time - last_update >= animation_cooldown:
+            frame_col += 1
+            last_update = current_time
+            if frame_col >= len(animation_list[2]):
+                frame_col = 0
+        SCREEN.blit(animation_list[2][frame_col], character_rect)
+        mask = pygame.mask.from_surface(animation_list[2][frame_col])
+
+            
 
         pygame.display.update()
         
-        clock.tick(60)
+        clock.tick(100)
 
 def introduction():
 
@@ -649,7 +708,7 @@ def introduction():
         logo_copy.set_alpha(logo_alpha)
         SCREEN.blit(logo_copy, (SCREEN_WIDTH // 2 - logo_copy.get_width() // 2, SCREEN_HEIGHT // 2 - logo_copy.get_height() // 2))
 
-        label = get_font(40).render("Veggie Wars Co.", True, (255, 255, 255))
+        label = get_font(40).render("Veggie Wars Gaming", True, (255, 255, 255))
         label.set_alpha(label_alpha)
         label_rect = label.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + logo.get_height() // 2 + 20))
         SCREEN.blit(label, label_rect)
