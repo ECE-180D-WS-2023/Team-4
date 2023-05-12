@@ -61,31 +61,43 @@ class PlayerCard(Button):
 	def __init__(self, image, pos, text_input, font, base_color, hovering_color, noise_played=False):
 		super().__init__(image, pos, text_input, font, base_color, hovering_color, noise_played)
 		# Spritesheet and character name text box
-		self.scale = 8
-		self.surf = pygame.Surface((PLAYER_WIDTH*self.scale, PLAYER_HEIGHT*self.scale))
+		self.sprite_scale = 8
+		self.background_scale = 10
+
+		# Surface and rect
+		self.surf = pygame.Surface((PLAYER_WIDTH*self.background_scale, PLAYER_HEIGHT*self.background_scale))
+		self.surf_img = pygame.image.load('assets/pause-phase/select-surface.png').convert_alpha()
 		self.rect = self.surf.get_rect()
 		self.rect.center = pos
+
+		# Sprite animation
 		self.frame_col = 0
-		self.image=image.convert_alpha()
-		self.animation_list = SpriteSheet(self.image).get_animation_list([3], (PLAYER_WIDTH,PLAYER_HEIGHT), self.scale)
+		self.sprite_image=image.convert_alpha()
+		self.animation_list = SpriteSheet(self.sprite_image).get_animation_list([3], (PLAYER_WIDTH,PLAYER_HEIGHT), self.sprite_scale)
 		self.mask = pygame.mask.from_surface(self.animation_list[0][self.frame_col])
 		self.animation_cooldown = 170
 		self.last_update = pygame.time.get_ticks()
 		self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos-20))
 
-		# Hovering Effects
+		# Hovering text box
 		self.hoverbox_width = 500
 		self.hoverbox_height = 1000
 		self.hoverbox_surf = pygame.Surface((self.hoverbox_width, self.hoverbox_height))
 		self.hoverbox_surf.fill((255,255,255))
 	
 	def update(self, screen):
+		# Sprite animation
 		self.current_time = pygame.time.get_ticks()
 		if self.current_time - self.last_update >= self.animation_cooldown:
 			self.frame_col += 1
 			self.last_update = self.current_time
 			if self.frame_col >= len(self.animation_list[0]):
 				self.frame_col = 0
+
+		# Background
+		screen.blit(self.surf_img, self.rect)
+
+		# Animation
 		screen.blit(self.animation_list[0][self.frame_col], self.rect)
 		screen.blit(self.text, self.text_rect)
 		self.mask = pygame.mask.from_surface(self.animation_list[0][self.frame_col])

@@ -73,8 +73,7 @@ def play():
 
 def choosePlayer():
 
-    background = pygame.image.load("assets/grass.png")
-    dimmer = Dimmer(keepalive=True)
+    background = pygame.image.load("assets/pause-phase/choose-player-background.png")
     running = True
 
     STUDENT_BUTTON = StudentCard(image=pygame.image.load("assets/players/student.png"), pos=(500, 500),
@@ -113,7 +112,7 @@ def choosePlayer():
             button.changeColor(CHOOSEPLAYER_MOUSE_POS)
             button.hoverNoise(CHOOSEPLAYER_MOUSE_POS)
             button.update(SCREEN)
-            button.hoverShow(CHOOSEPLAYER_MOUSE_POS, SCREEN)
+            # button.hoverShow(CHOOSEPLAYER_MOUSE_POS, SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -151,7 +150,7 @@ def choosePlayer():
 
         if input_active:
             cursor_timer += pygame.time.get_ticks() % 1000
-            if cursor_timer > 20000:
+            if cursor_timer > 3000:
                 cursor_active = not cursor_active
                 cursor_timer = 0
             if cursor_active:
@@ -593,5 +592,70 @@ def main_menu():
         
         clock.tick(60)
 
+def introduction():
 
-main_menu()
+    logo = pygame.image.load("assets/puzzle.png")
+    background = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+    background.fill((0, 0, 0))
+
+    fade_in_duration = 2000  # in milliseconds
+    fade_out_duration = 2000  # in milliseconds
+
+    logo_alpha_start = 0
+    logo_alpha_end = 255
+    label_alpha_start = 0
+    label_alpha_end = 255
+
+    clock = pygame.time.Clock()
+    start_time = pygame.time.get_ticks()
+
+
+    # progress bar
+    frame_col = 0
+    progress_surf = pygame.Surface((96, 32))
+    sprite_img = pygame.image.load("assets/menu/progress_bar.png")
+    progress_rect = progress_surf.get_rect()
+    progress_rect.center = (SCREEN_WIDTH/3, SCREEN_HEIGHT/2)
+    animation_list = SpriteSheet(sprite_img).get_animation_list([6], (96, 32), 5)
+    mask = pygame.mask.from_surface(animation_list[0][frame_col])
+    animation_cooldown = 170
+    last_update = start_time
+
+    while True:
+        elapsed_time = pygame.time.get_ticks() - start_time
+
+        if elapsed_time < fade_in_duration:
+            logo_alpha = logo_alpha_start + int((logo_alpha_end - logo_alpha_start) * elapsed_time / fade_in_duration)
+            label_alpha = label_alpha_start + int((label_alpha_end - label_alpha_start) * elapsed_time / fade_in_duration)
+            # print("fade in ------")
+        elif elapsed_time < (fade_in_duration + fade_out_duration):
+            logo_alpha = logo_alpha_end - int((logo_alpha_end - logo_alpha_start) * (elapsed_time - fade_in_duration) / fade_out_duration)
+            label_alpha = label_alpha_end - int((label_alpha_end - label_alpha_start) * (elapsed_time - fade_in_duration) / fade_out_duration)
+            # print("fade out!")
+        else:
+            print("progress")
+            current_time = pygame.time.get_ticks()
+            if current_time - last_update >= animation_cooldown:
+                frame_col += 1
+                last_update = current_time
+                if frame_col >= len(animation_list[0]):
+                    break
+            SCREEN.blit(animation_list[0][frame_col], progress_rect)
+            mask = pygame.mask.from_surface(animation_list[0][frame_col])
+
+        logo_copy = logo.copy()
+        logo_copy.set_alpha(logo_alpha)
+        SCREEN.blit(logo_copy, (SCREEN_WIDTH // 2 - logo.get_width() // 2, SCREEN_HEIGHT // 2 - logo.get_height() // 2))
+
+        label = get_font(40).render("Veggie Group", True, (255, 255, 255, label_alpha))
+        label_rect = label.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + logo.get_height() // 2 + 20))
+        SCREEN.blit(label, label_rect)
+
+        pygame.display.flip()
+        
+        clock.tick(60)
+
+    pygame.time.delay(2000)
+    main_menu()
+
+introduction()
