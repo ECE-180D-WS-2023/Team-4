@@ -594,7 +594,7 @@ def main_menu():
 
 def introduction():
 
-    logo = pygame.image.load("assets/puzzle.png")
+    logo = pygame.image.load("assets/puzzle.png").convert_alpha()
     background = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
     background.fill((0, 0, 0))
 
@@ -612,32 +612,34 @@ def introduction():
 
     # progress bar
     frame_col = 0
-    progress_surf = pygame.Surface((96, 32))
+    progress_surf = pygame.Surface((480, 320))
     sprite_img = pygame.image.load("assets/menu/progress_bar.png")
     progress_rect = progress_surf.get_rect()
-    progress_rect.center = (SCREEN_WIDTH/3, SCREEN_HEIGHT/2)
-    animation_list = SpriteSheet(sprite_img).get_animation_list([6], (96, 32), 5)
+    progress_rect.center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
+    animation_list = SpriteSheet(sprite_img).get_animation_list([8], (480, 320), 1)
     mask = pygame.mask.from_surface(animation_list[0][frame_col])
-    animation_cooldown = 170
+    animation_cooldown = 500
     last_update = start_time
 
     while True:
+
+        SCREEN.fill((0,0,0))
         elapsed_time = pygame.time.get_ticks() - start_time
 
         if elapsed_time < fade_in_duration:
             logo_alpha = logo_alpha_start + int((logo_alpha_end - logo_alpha_start) * elapsed_time / fade_in_duration)
             label_alpha = label_alpha_start + int((label_alpha_end - label_alpha_start) * elapsed_time / fade_in_duration)
-            # print("fade in ------")
         elif elapsed_time < (fade_in_duration + fade_out_duration):
             logo_alpha = logo_alpha_end - int((logo_alpha_end - logo_alpha_start) * (elapsed_time - fade_in_duration) / fade_out_duration)
             label_alpha = label_alpha_end - int((label_alpha_end - label_alpha_start) * (elapsed_time - fade_in_duration) / fade_out_duration)
-            # print("fade out!")
         else:
-            print("progress")
             current_time = pygame.time.get_ticks()
             if current_time - last_update >= animation_cooldown:
                 frame_col += 1
                 last_update = current_time
+                if frame_col == len(animation_list[0])-1:
+                    # Yes this is intentional, lol
+                    pygame.time.delay(2500)
                 if frame_col >= len(animation_list[0]):
                     break
             SCREEN.blit(animation_list[0][frame_col], progress_rect)
@@ -645,17 +647,18 @@ def introduction():
 
         logo_copy = logo.copy()
         logo_copy.set_alpha(logo_alpha)
-        SCREEN.blit(logo_copy, (SCREEN_WIDTH // 2 - logo.get_width() // 2, SCREEN_HEIGHT // 2 - logo.get_height() // 2))
+        SCREEN.blit(logo_copy, (SCREEN_WIDTH // 2 - logo_copy.get_width() // 2, SCREEN_HEIGHT // 2 - logo_copy.get_height() // 2))
 
-        label = get_font(40).render("Veggie Group", True, (255, 255, 255, label_alpha))
+        label = get_font(40).render("Veggie Wars Co.", True, (255, 255, 255))
+        label.set_alpha(label_alpha)
         label_rect = label.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + logo.get_height() // 2 + 20))
         SCREEN.blit(label, label_rect)
 
-        pygame.display.flip()
+        pygame.display.update()
         
-        clock.tick(60)
+        clock.tick(120)
 
-    pygame.time.delay(2000)
+    pygame.time.delay(1000)
     main_menu()
 
 introduction()
