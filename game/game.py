@@ -708,7 +708,7 @@ def introduction():
         logo_copy.set_alpha(logo_alpha)
         SCREEN.blit(logo_copy, (SCREEN_WIDTH // 2 - logo_copy.get_width() // 2, SCREEN_HEIGHT // 2 - logo_copy.get_height() // 2))
 
-        label = get_font(40).render("Veggie Wars Gaming", True, (255, 255, 255))
+        label = pygame.font.Font("assets/fonts/introduction_font.ttf", 40).render("Veggie Wars Gaming", True, (255, 255, 255))
         label.set_alpha(label_alpha)
         label_rect = label.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + logo.get_height() // 2 + 20))
         SCREEN.blit(label, label_rect)
