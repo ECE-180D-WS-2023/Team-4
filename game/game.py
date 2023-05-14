@@ -75,16 +75,27 @@ def choosePlayer():
 
     # blit an universal background
     background = pygame.image.load("assets/pause-phase/choose-player.png")
-    running = True
 
-    STUDENT_BUTTON = StudentCard(image=pygame.image.load("assets/players/student.png"), pos=(500, 500),
+    book_animation = Animation((SCREEN_WIDTH/2,SCREEN_HEIGHT/2), pygame.image.load("assets/pause-phase/choose-player.png").convert_alpha(), 
+                                [6], (2560, 1600), 1, pause_frame=[0,5])
+
+    STUDENT_PLAYERCARD = StudentCard(image=pygame.image.load("assets/players/student.png"), pos=(1785, 677),
                              text_input="STUDENT", font=get_font(30), base_color="#d7fcd4", hovering_color="White")
 
-    SOLDIER_BUTTON = SoldierCard(image=pygame.image.load("assets/players/soldier.png"), pos=(SCREEN_WIDTH/2, 500),
+    SOLDIER_PLAYERCARD = SoldierCard(image=pygame.image.load("assets/players/soldier.png"), pos=(1785, 677),
                             text_input="SOLDIER", font=get_font(30), base_color="#d7fcd4", hovering_color="White")
 
-    ENCHANTRESS_BUTTON = EnchantressCard(image=pygame.image.load("assets/players/enchantress.png"), pos=(SCREEN_WIDTH - 500, 500),
+    ENCHANTRESS_PLAYERCARD = EnchantressCard(image=pygame.image.load("assets/players/enchantress.png"), pos=(1785, 677),
                                text_input="ENCHANTRESS", font=get_font(30), base_color="#d7fcd4", hovering_color="White")
+
+    IMREADY_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png"), pos=(1800, 1225),
+                               text_input="I'M READY", font=get_font(13), base_color="#d7fcd4", hovering_color="White")
+
+    RIGHT_ARROW = Button(image=pygame.image.load("assets/pause-phase/right-arrow.png"), pos=(1985, 675),
+                                text_input=None, font=None, base_color=None, hovering_color=None)
+
+    LEFT_ARROW = Button(image=pygame.image.load("assets/pause-phase/left-arrow.png"), pos=(1592, 675),
+                                text_input=None, font=None, base_color=None, hovering_color=None)
 
     input_box_rect = pygame.Rect(1690,1114,200,50)
     input_text = ""
@@ -101,34 +112,66 @@ def choosePlayer():
     label_rect.x = input_box_rect.x
     label_rect.y = input_box_rect.y - label_rect.height - 5
 
-    CONTINUE_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png"), pos=(1800, 1225),
-                               text_input="I'M READY", font=get_font(13), base_color="#d7fcd4", hovering_color="White")
+    # PlayerCard gallery
+    playercard_id = 0
+    playercards = [STUDENT_PLAYERCARD, SOLDIER_PLAYERCARD, ENCHANTRESS_PLAYERCARD]
 
+    Phase1_sprites = []
+    book_resume_signal = False
+
+    running = True
     while running:
         CHOOSEPLAYER_MOUSE_POS = pygame.mouse.get_pos()
-        SCREEN.blit(background, (0, 0))
-        # dimmer.dim(darken_factor=200, color_filter=(0, 0, 0))
 
-        for button in [STUDENT_BUTTON, SOLDIER_BUTTON, ENCHANTRESS_BUTTON, CONTINUE_BUTTON]:
+        [stop_flag, pause_flag] = book_animation.update_norepeat(SCREEN, resume_signal=book_resume_signal)
+
+        # reset resume flag
+        if pause_flag == False:
+            book_resume_signal = False
+            
+        # Update playercard gallery
+        playercards[playercard_id].is_active = True
+        for playercard in playercards:
+            if playercard.is_active:
+                playercard.changeColor(CHOOSEPLAYER_MOUSE_POS)
+                playercard.hoverNoise(CHOOSEPLAYER_MOUSE_POS)
+                playercard.update(SCREEN)
+
+        for button in [IMREADY_BUTTON]:
             button.changeColor(CHOOSEPLAYER_MOUSE_POS)
             button.hoverNoise(CHOOSEPLAYER_MOUSE_POS)
             button.update(SCREEN)
             # button.hoverShow(CHOOSEPLAYER_MOUSE_POS, SCREEN)
 
+        for arrow in [RIGHT_ARROW, LEFT_ARROW]:
+            arrow.update(SCREEN)
+
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if STUDENT_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                if STUDENT_PLAYERCARD.checkForInput(CHOOSEPLAYER_MOUSE_POS):
                     player = Student(
                         (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
                     return player
-                elif SOLDIER_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                elif SOLDIER_PLAYERCARD.checkForInput(CHOOSEPLAYER_MOUSE_POS):
                     player = Soldier((80, 80), (2.5, 2.5), 1,
                                      PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
                     return player
-                elif ENCHANTRESS_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                elif ENCHANTRESS_PLAYERCARD.checkForInput(CHOOSEPLAYER_MOUSE_POS):
                     player = Enchantress(
                         (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
                     return player
+                elif RIGHT_ARROW.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                    playercards[playercard_id].is_active = False
+                    playercard_id += 1
+                    if playercard_id == len(playercards):
+                        playercard_id = 0
+                elif LEFT_ARROW.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                    playercards[playercard_id].is_active = False
+                    playercard_id -= 1
+                    if playercard_id == -1:
+                        playercard_id = len(playercards)-1
+                elif IMREADY_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                    book_resume_signal = True
                 elif input_box_rect.collidepoint(event.pos):
                     input_active = True
                     cursor_active = True
@@ -160,7 +203,7 @@ def choosePlayer():
                 cursor_rect.x = input_box_rect.x + 50 + input_surface.get_width()
                 cursor_rect.y = input_box_rect.y + 5
                 SCREEN.blit(cursor_surface, cursor_rect)
-        
+
         pygame.display.update()
         clock.tick(60)
 
@@ -239,7 +282,7 @@ def tutorials():
         v_type = random.choice(veggies_list)
         veggie = v_type((v_x, v_y), (0, 0), 1)
         veggies.add(veggie)
-    
+
     while running:
         try:
             SCREEN.blit(TUTORIALS_BG, (0, 0))
@@ -299,7 +342,7 @@ def tutorials():
                 elif event.type == pygame.JOYBUTTONUP:
                     if not pygame.joystick.Joystick(0).get_button(3):
                         speech_recognizer.mute()
-                
+
 
             if len(veggies) < MAX_VEGGIES:
                 v_x = random.randint(0, SCREEN_WIDTH - VEGGIE_WIDTH)
@@ -392,11 +435,11 @@ def gameover():
 
     EXIT_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png"), pos=(SCREEN_WIDTH/2, 800),
                                text_input="EXIT", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
-    
+
     # Button clicking sound effect
     clicking_sound = mixer.Sound('assets/music/button_clicked.mp3')
     clicking_sound.set_volume(1.5)
-    
+
     while running:
         SCREEN.blit(background, (0, 0))
 
@@ -477,11 +520,11 @@ def sub_menu():
 
     QUIT_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png"), pos=(2240, 58),
                                text_input="QUIT", font=get_font(15), base_color="#d7fcd4", hovering_color="White")
-    
+
     # Button clicking sound effect
     clicking_sound = mixer.Sound('assets/music/button_clicked.mp3')
     clicking_sound.set_volume(1.5)
-    
+
     while running:
         SCREEN.blit(background, (0, 0))
 
@@ -552,13 +595,13 @@ def main_menu():
     character_surf = pygame.Surface((PLAYER_WIDTH*sprite_scale, PLAYER_HEIGHT*sprite_scale))
     character_rect = character_surf.get_rect()
     character_rect.center = (200, 1250) # initial position
-    
+
     # Set up the jump
     jump_height = 3
     is_jumping = False
     jump_count = 0
     jump_speed = 40
-    
+
 
     if random_int == 1:
         sprite_image = pygame.image.load("assets/players/student.png").convert_alpha()
@@ -566,7 +609,7 @@ def main_menu():
         sprite_image = pygame.image.load("assets/players/soldier.png").convert_alpha()
     elif random_int == 3:
         sprite_image = pygame.image.load("assets/players/enchantress.png").convert_alpha()
-    
+
     animation_list = SpriteSheet(sprite_image).get_animation_list([3, 3, 3, 3], (PLAYER_WIDTH,PLAYER_HEIGHT), sprite_scale)
     mask = pygame.mask.from_surface(animation_list[2][frame_col])
     last_update = pygame.time.get_ticks()
@@ -595,8 +638,8 @@ def main_menu():
             button.changeColor(MENU_MOUSE_POS)
             button.hoverNoise(MENU_MOUSE_POS)
             button.update(SCREEN)
-        
-       
+
+
 
         # event after clicking
         for event in pygame.event.get():
@@ -623,7 +666,7 @@ def main_menu():
                             jump_start = pygame.time.get_ticks()
                             is_jumping = True
                             jump_count = 0
-        
+
          # Update moving character
 
         if is_jumping:
@@ -635,7 +678,7 @@ def main_menu():
             if jump_count > 0:
                 character_rect.centery += jump_speed*2
                 jump_count -= 1
-            
+
 
         current_time = pygame.time.get_ticks()
         if current_time - last_update >= animation_cooldown:
@@ -646,10 +689,10 @@ def main_menu():
         SCREEN.blit(animation_list[2][frame_col], character_rect)
         mask = pygame.mask.from_surface(animation_list[2][frame_col])
 
-            
+
 
         pygame.display.update()
-        
+
         clock.tick(100)
 
 def introduction():
@@ -671,17 +714,12 @@ def introduction():
 
 
     # progress bar
-    frame_col = 0
-    progress_surf = pygame.Surface((480, 320))
-    sprite_img = pygame.image.load("assets/menu/progress_bar.png")
-    progress_rect = progress_surf.get_rect()
-    progress_rect.center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
-    animation_list = SpriteSheet(sprite_img).get_animation_list([8], (480, 320), 1)
-    mask = pygame.mask.from_surface(animation_list[0][frame_col])
-    animation_cooldown = 500
-    last_update = start_time
+    loadingbar_animation = Animation((SCREEN_WIDTH/2, SCREEN_HEIGHT/2), pygame.image.load("assets/menu/progress_bar.png")
+                                     ,[8], (480, 320), 1, animation_cooldown=500)
+    
+    stop_flag = False
 
-    while True:
+    while not stop_flag:
 
         SCREEN.fill((0,0,0))
         elapsed_time = pygame.time.get_ticks() - start_time
@@ -693,17 +731,7 @@ def introduction():
             logo_alpha = logo_alpha_end - int((logo_alpha_end - logo_alpha_start) * (elapsed_time - fade_in_duration) / fade_out_duration)
             label_alpha = label_alpha_end - int((label_alpha_end - label_alpha_start) * (elapsed_time - fade_in_duration) / fade_out_duration)
         else:
-            current_time = pygame.time.get_ticks()
-            if current_time - last_update >= animation_cooldown:
-                frame_col += 1
-                last_update = current_time
-                if frame_col == len(animation_list[0])-1:
-                    # Yes this is intentional, lol
-                    pygame.time.delay(2500)
-                if frame_col >= len(animation_list[0]):
-                    break
-            SCREEN.blit(animation_list[0][frame_col], progress_rect)
-            mask = pygame.mask.from_surface(animation_list[0][frame_col])
+            [stop_flag, pause_flag] = loadingbar_animation.update_norepeat(SCREEN, 2000)
 
         logo_copy = logo.copy()
         logo_copy.set_alpha(logo_alpha)
@@ -715,10 +743,9 @@ def introduction():
         SCREEN.blit(label, label_rect)
 
         pygame.display.update()
-        
-        clock.tick(120)
 
-    pygame.time.delay(1000)
+        clock.tick(120)
+        
     main_menu()
 
 introduction()
