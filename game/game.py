@@ -39,8 +39,8 @@ STATIC_BACKGROUND = pygame.image.load("assets/menu/static-background.png")
 BG_5 = pygame.image.load("assets/menu/5.png")
 BG_6 = pygame.image.load("assets/menu/6.png")
 
-def get_font(size):
-    return pygame.font.Font("assets/font.ttf", size)
+def get_font(size, font="assets/font.ttf"):
+    return pygame.font.Font(font, size)
 
 
 def play():
@@ -73,7 +73,8 @@ def play():
 
 def choosePlayer():
 
-    background = pygame.image.load("assets/pause-phase/choose-player-background.png")
+    # blit an universal background
+    background = pygame.image.load("assets/pause-phase/choose-player.png")
     running = True
 
     STUDENT_BUTTON = StudentCard(image=pygame.image.load("assets/players/student.png"), pos=(500, 500),
@@ -85,7 +86,7 @@ def choosePlayer():
     ENCHANTRESS_BUTTON = EnchantressCard(image=pygame.image.load("assets/players/enchantress.png"), pos=(SCREEN_WIDTH - 500, 500),
                                text_input="ENCHANTRESS", font=get_font(30), base_color="#d7fcd4", hovering_color="White")
 
-    input_box_rect = pygame.Rect(1080,200,400,40)
+    input_box_rect = pygame.Rect(1690,1114,200,50)
     input_text = ""
     input_active = False
 
@@ -94,21 +95,21 @@ def choosePlayer():
     cursor_timer = 0
 
     # Set up the label
-    label_text = "Enter Player Name:"
-    label_surface = get_font(30).render(label_text, True, (0,0,0))
+    label_text = "Enter Your Name:"
+    label_surface = get_font(30, "assets/fonts/inventory_font.ttf").render(label_text, True, (0,0,0))
     label_rect = label_surface.get_rect()
     label_rect.x = input_box_rect.x
     label_rect.y = input_box_rect.y - label_rect.height - 5
 
-    BACK_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png"), pos=(SCREEN_WIDTH/2, 650),
-                               text_input="BACK", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
+    CONTINUE_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png"), pos=(1800, 1225),
+                               text_input="I'M READY", font=get_font(13), base_color="#d7fcd4", hovering_color="White")
 
     while running:
         CHOOSEPLAYER_MOUSE_POS = pygame.mouse.get_pos()
         SCREEN.blit(background, (0, 0))
         # dimmer.dim(darken_factor=200, color_filter=(0, 0, 0))
 
-        for button in [STUDENT_BUTTON, SOLDIER_BUTTON, ENCHANTRESS_BUTTON]:
+        for button in [STUDENT_BUTTON, SOLDIER_BUTTON, ENCHANTRESS_BUTTON, CONTINUE_BUTTON]:
             button.changeColor(CHOOSEPLAYER_MOUSE_POS)
             button.hoverNoise(CHOOSEPLAYER_MOUSE_POS)
             button.update(SCREEN)
@@ -143,9 +144,9 @@ def choosePlayer():
                     elif event.key == pygame.K_BACKSPACE:
                         input_text = input_text[:-1]
 
-        pygame.draw.rect(SCREEN, (0,0,0), input_box_rect, 2)
-        input_surface = get_font(30).render(input_text, True, (0,0,0))
-        SCREEN.blit(input_surface, (input_box_rect.x + 5, input_box_rect.y + 5))
+        # pygame.draw.rect(SCREEN, (0,0,0), input_box_rect, 2)
+        input_surface = get_font(50, "assets/fonts/inventory_font.ttf").render(input_text, True, (255,255,255))
+        SCREEN.blit(input_surface, (input_box_rect.x + 50, input_box_rect.y + 5))
         SCREEN.blit(label_surface, label_rect)
 
         if input_active:
@@ -154,9 +155,9 @@ def choosePlayer():
                 cursor_active = not cursor_active
                 cursor_timer = 0
             if cursor_active:
-                cursor_surface = get_font(30).render("|", True, (0,0,0))
+                cursor_surface = get_font(50).render("|", True, (0,0,0))
                 cursor_rect = cursor_surface.get_rect()
-                cursor_rect.x = input_box_rect.x + 5 + input_surface.get_width()
+                cursor_rect.x = input_box_rect.x + 50 + input_surface.get_width()
                 cursor_rect.y = input_box_rect.y + 5
                 SCREEN.blit(cursor_surface, cursor_rect)
         
@@ -459,23 +460,23 @@ def options():
 
 def sub_menu():
 
-    background = pygame.image.load("assets/grass.png")
-    dimmer = Dimmer(keepalive=True)
+    background = pygame.image.load("assets/book_background.png")
+    # dimmer = Dimmer(keepalive=True)
     running = True
 
     # Initialize buttons
 
-    RESUME_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH/2, 350),
-                             text_input="RESUME", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+    RESUME_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png"), pos=(1730, 58),
+                             text_input="RESUME", font=get_font(15), base_color="#d7fcd4", hovering_color="White")
 
-    OPTIONS_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH/2, 500),
-                            text_input="OPTIONS", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+    OPTIONS_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png"), pos=(1900, 58),
+                            text_input="OPTIONS", font=get_font(15), base_color="#d7fcd4", hovering_color="White")
 
-    MAIN_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH/2, 650),
-                              text_input="MAIN MENU", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+    MAIN_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png"), pos=(2070, 58),
+                              text_input="MAIN MENU", font=get_font(12), base_color="#d7fcd4", hovering_color="White")
 
-    QUIT_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png"), pos=(SCREEN_WIDTH/2, 800),
-                               text_input="QUIT", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
+    QUIT_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png"), pos=(2240, 58),
+                               text_input="QUIT", font=get_font(15), base_color="#d7fcd4", hovering_color="White")
     
     # Button clicking sound effect
     clicking_sound = mixer.Sound('assets/music/button_clicked.mp3')
@@ -485,7 +486,7 @@ def sub_menu():
         SCREEN.blit(background, (0, 0))
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
-        dimmer.dim(darken_factor=200, color_filter=(0, 0, 0))
+        # dimmer.dim(darken_factor=200, color_filter=(0, 0, 0))
 
         # Initialize main text box
         MENU_TEXT = get_font(150).render("Paused", True, "#b68f40")

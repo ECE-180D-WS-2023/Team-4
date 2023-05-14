@@ -39,3 +39,35 @@ class SpriteSheet():
             animation_list.append(temp_img_list)
         
         return animation_list
+    
+
+class Animation(SpriteSheet):
+    def __init__(self, pos, image, animation_steps, frame_size, scale, animation_cooldown=170, pause=False):
+        '''
+        image: pygame.image object after calling convert_alpha()
+
+        '''
+        self.animation_list = self.get_animation_list(animation_steps, frame_size, scale)
+        self.last_update = pygame.time.get_ticks()
+        self.animation_cooldown = animation_cooldown
+        self.frame_col = 0
+        self.rect = image.get_rect(center=pos)
+        self.pause = pause
+        super().__init__(image)
+
+
+    def update(self, screen):
+        '''
+        blit action on to screen
+        
+
+        if self.pause is True, we blit the screen with old frame.
+        '''
+        if not self.pause:
+            self.current_time = pygame.time.get_ticks()
+            if self.current_time - self.last_update >= self.animation_cooldown:
+                self.frame_col += 1
+                self.last_update = self.current_time
+                if self.frame_col >= len(self.animation_list[0]):
+                    self.frame_col = 0
+        screen.blit(self.animation_list[0][self.frame_col], self.rect)
