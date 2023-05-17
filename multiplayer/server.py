@@ -1,5 +1,7 @@
 import pygame
+import random
 import threading
+import time
 from constants import *
 from network import *
 from player import *
@@ -18,13 +20,48 @@ clock = pygame.time.Clock()
 
 game_state = {
     "players": {},
-    "veggies": [],
+    "veggies": {
+        0: [],  # team 0
+        1: [],  # team 1
+    },
     "shots": [],
     "slingshots": [
         Slingshot((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4))),
         Slingshot((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4))),
     ],
 }
+
+def run_game():
+    team_boundaries = {
+        0: {
+            "top": 0,
+            "bottom": SCREEN_HEIGHT / 2
+        },
+        1: {
+            "top": SCREEN_HEIGHT / 2,
+            "bottom": SCREEN_HEIGHT
+        }
+    }
+    spawn_times = {
+        0: [],
+        1: []
+    }
+    veggies_list = Veggie.__subclasses__()
+    while True:
+        for team, veggies in game_state["veggies"].items():
+            # Add new spawn time for veggies
+            if len(spawn_times[team]) < MAX_VEGGIES - len(veggies):
+                spawn_times[team].append(time.time() + random.uniform(1, 4))
+            # Add new veggies if past their spawn time
+            for spawn_time in list(spawn_times[team]):
+                if time.time() > spawn_time:
+                    v_x = random.randint(0, SCREEN_WIDTH - VEGGIE_WIDTH)
+                    v_y = random.randint(team_boundaries[team]["top"], team_boundaries[team]["bottom"])
+                    v_type = random.choice(veggies_list)
+                    game_state["veggies"][team].append(v_type((v_x, v_y)))
+                    spawn_times[team].remove(spawn_time)
+
+        clock.tick(20)
 
 def handle_client(conn, id):
     # Send client id
@@ -49,6 +86,8 @@ def handle_client(conn, id):
             if 0 in js_buttondown:
                 if my_player.state == PLAYER_SHOOTING:
                     game_state["shots"].append(my_player.shoot())
+            elif 1 in js_buttondown:
+                my_player.harvest(game_state["veggies"][my_player.team_num])
 
         # Keyboard
         keyboard = client_inputs.get("keyboard", [])
@@ -73,8 +112,9 @@ def handle_client(conn, id):
 
         for player in game_state["players"].values():
             player.update()
-        for veggie in game_state["veggies"]:
-            veggie.update()
+        for veggies in game_state["veggies"].values():
+            for veggie in veggies:
+                veggie.update()
         for shot in game_state["shots"]:
             shot.update()
 
@@ -84,6 +124,9 @@ def handle_client(conn, id):
     conn.close()
 
 def main():
+    game_logic_thread = threading.Thread(target=run_game)
+    game_logic_thread.start()
+
     id = 0
     running = True
     while running:

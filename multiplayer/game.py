@@ -15,12 +15,19 @@ class Game:
         self.show_backpack = False
         self.background = pygame.image.load("assets/grass.png")
         self.spritesheets = {
-            "Player": SpriteSheet("assets/players/engineer.png"),
+            # Players
             "Engineer": SpriteSheet("assets/players/engineer.png"),
             "Soldier": SpriteSheet("assets/players/soldier.png"),
-            "Veggie": SpriteSheet("assets/veggies/carrot-big.png"),
+            # Weapons
+            "Cannon": SpriteSheet("assets/players/cannon.png"),
+            # Veggies
+            "Carrot": SpriteSheet("assets/veggies/carrot-big.png"),
+            "Mushroom": SpriteSheet("assets/veggies/mushroom.png"),
+            "Cabbage": SpriteSheet("assets/veggies/cabbage.png"),
+            "Potato": SpriteSheet("assets/veggies/potato.png"),
+            "YellowBellPepper": SpriteSheet("assets/veggies/yellow-bell-pepper.png"),
+            # Slingshots
             "Slingshot": SpriteSheet("assets/slingshot_station.png"),
-            "Weapon": SpriteSheet("assets/players/cannon.png"),
         }
         self.speech_recognizer = SpeechRecognizer()
         self.speech_recognizer.start()
@@ -43,7 +50,7 @@ class Game:
                     self.speech_recognizer.unmute()
                     print("unmute")
             elif event.type == pygame.JOYBUTTONUP:
-                if not pygame.joystick.Joystick(0).get_button(3):
+                if event.button == 3:
                     self.speech_recognizer.mute()
                     print("mute")
 
@@ -72,8 +79,9 @@ class Game:
                 screen.blit(self.spritesheets[player.__class__.__name__].get_image(0, 0, PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_SCALE), player.rect)
                 if player.weapon:
                     blitRotate(screen, self.spritesheets[player.weapon.__class__.__name__].get_image(0, 0, 67, 150), player.weapon.rect.center, (34,170), player.weapon.angle)
-            for veggie in self.state["veggies"]:
-                screen.blit(self.spritesheets[veggie.__class__.__name__].get_image(0, 0, VEGGIE_WIDTH, VEGGIE_HEIGHT, VEGGIE_SCALE), veggie.rect)
+            for veggies in self.state["veggies"].values():
+                for veggie in veggies:
+                    screen.blit(self.spritesheets[veggie.__class__.__name__].get_image(0, 0, VEGGIE_WIDTH, VEGGIE_HEIGHT, VEGGIE_SCALE), veggie.rect)
             for shot in self.state["shots"]:
                 screen.blit(self.spritesheets[shot.__class__.__name__].get_image(0, 0, SHOT_WIDTH, SHOT_HEIGHT, SHOT_SCALE), shot.rect)
             for slingshot in self.state["slingshots"]:
