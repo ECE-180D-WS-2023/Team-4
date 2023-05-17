@@ -8,7 +8,7 @@ from veggie import *
 
 # Initialize socket
 PORT = 8080
-SERVER = '172.20.10.2'
+SERVER = '192.168.0.190'
 client = ClientSocket(SERVER, PORT)
 
 # Initialize pygame
@@ -25,10 +25,12 @@ def handle_server():
         game.state = client.receive()
 
 def main():
-    thread = threading.Thread(target=handle_server)
-    thread.start()
+    # thread = threading.Thread(target=handle_server)
+    # thread.start()
     while game.running:
         game.handle_inputs()
+        client.send(game.inputs)
+        game.state = client.receive()
         game.draw(screen)
         pygame.display.flip()
         clock.tick(60)
