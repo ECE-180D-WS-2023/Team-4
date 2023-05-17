@@ -11,7 +11,7 @@ from weapon import *
 
 # Initialize socket
 PORT = 8080
-SERVER = '172.20.10.2'
+SERVER = '192.168.0.190'
 server = ServerSocket(SERVER, PORT)
 
 # Initialize pygame
@@ -69,7 +69,7 @@ def handle_client(conn, id):
 
     # Initialize player
     my_team_num = id % 2
-    game_state["players"][str(id)] = Player(TEAM0_SPAWN if my_team_num == 0 else TEAM1_SPAWN, team_num=my_team_num)
+    game_state["players"][str(id)] = Engineer(TEAM0_SPAWN if my_team_num == 0 else TEAM1_SPAWN, team_num=my_team_num)
     my_player = game_state["players"][str(id)]
 
     while True:
@@ -84,8 +84,7 @@ def handle_client(conn, id):
         js_buttondown = client_inputs.get("js_buttondown", False)
         if js_buttondown:
             if 0 in js_buttondown:
-                if my_player.state == PLAYER_SHOOTING:
-                    game_state["shots"].append(my_player.shoot())
+                my_player.shoot(game_state["shots"])
             elif 1 in js_buttondown:
                 my_player.harvest(game_state["veggies"][my_player.team_num])
 
