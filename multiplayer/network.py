@@ -31,7 +31,10 @@ class Socket:
         except Exception as e:
             print(e)
             return False
-        message = self.socket.recv(msg_length)
+        message = bytearray()
+        while len(message) < msg_length:
+            chunk = self.socket.recv(msg_length)
+            message.extend(chunk)
         return pickle.loads(message)
 
 class ClientSocket(Socket):
