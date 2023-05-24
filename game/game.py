@@ -39,7 +39,7 @@ STATIC_BACKGROUND = pygame.image.load("assets/menu/static-background.png")
 BG_5 = pygame.image.load("assets/menu/5.png")
 BG_6 = pygame.image.load("assets/menu/6.png")
 
-def get_font(size, font="assets/font.ttf"):
+def get_font(size, font="assets/fonts/font.ttf"):
     return pygame.font.Font(font, size)
 
 
@@ -78,7 +78,11 @@ def choosePlayer():
 
     book_animation = Animation((SCREEN_WIDTH/2,SCREEN_HEIGHT/2), pygame.image.load("assets/pause-phase/choose-player.png").convert_alpha(), 
                                 [6], (2560, 1600), 1, pause_frame=[0,5])
+    
+    # text_appear_animation = Animation((SCREEN_WIDTH/2, SCREEN_HEIGHT/2), pygame.image.load("assets/pause-phase/reveal-message.png").convert_alpha(),
+                                 # [13], (SCREEN_WIDTH, SCREEN_HEIGHT), 1, pause_frame=[0, 12], animation_cooldown=90)
 
+    # Phase 1
     STUDENT_PLAYERCARD = StudentCard(image=pygame.image.load("assets/players/student.png"), pos=(1785, 677),
                              text_input="STUDENT", font=get_font(30), base_color="#d7fcd4", hovering_color="White")
 
@@ -96,6 +100,11 @@ def choosePlayer():
 
     LEFT_ARROW = Button(image=pygame.image.load("assets/pause-phase/left-arrow.png"), pos=(1592, 675),
                                 text_input=None, font=None, base_color=None, hovering_color=None)
+    
+
+    # Phase 2
+    CONTINUE_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png"), pos=(1800, 1225),
+                               text_input="FIGHT!", font=get_font(13), base_color="#d7fcd4", hovering_color="White")
 
     input_box_rect = pygame.Rect(1690,1114,200,50)
     input_text = ""
@@ -116,7 +125,8 @@ def choosePlayer():
     playercard_id = 0
     playercards = [STUDENT_PLAYERCARD, SOLDIER_PLAYERCARD, ENCHANTRESS_PLAYERCARD]
 
-    Phase1_sprites = []
+    phase1 = True
+    phase2 = False
     book_resume_signal = False
 
     running = True
@@ -128,81 +138,99 @@ def choosePlayer():
         # reset resume flag
         if pause_flag == False:
             book_resume_signal = False
+        
+        if phase1:
+            # Update playercard gallery
+            playercards[playercard_id].is_active = True
+            for playercard in playercards:
+                if playercard.is_active:
+                    playercard.changeColor(CHOOSEPLAYER_MOUSE_POS)
+                    playercard.hoverNoise(CHOOSEPLAYER_MOUSE_POS)
+                    playercard.update(SCREEN)
+
+            for button in [IMREADY_BUTTON]:
+                button.changeColor(CHOOSEPLAYER_MOUSE_POS)
+                button.hoverNoise(CHOOSEPLAYER_MOUSE_POS)
+                button.update(SCREEN)
+                # button.hoverShow(CHOOSEPLAYER_MOUSE_POS, SCREEN)
+
+            for arrow in [RIGHT_ARROW, LEFT_ARROW]:
+                arrow.update(SCREEN)
+
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if STUDENT_PLAYERCARD.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                        player = Student(
+                            (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
+                        return player
+                    elif SOLDIER_PLAYERCARD.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                        player = Soldier((80, 80), (2.5, 2.5), 1,
+                                        PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
+                        return player
+                    elif ENCHANTRESS_PLAYERCARD.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                        player = Enchantress(
+                            (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
+                        return player
+                    elif RIGHT_ARROW.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                        playercards[playercard_id].is_active = False
+                        playercard_id += 1
+                        if playercard_id == len(playercards):
+                            playercard_id = 0
+                    elif LEFT_ARROW.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                        playercards[playercard_id].is_active = False
+                        playercard_id -= 1
+                        if playercard_id == -1:
+                            playercard_id = len(playercards)-1
+                    elif IMREADY_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                        book_resume_signal = True
+                        phase1 = False
+                        phase2 = True
+                    elif input_box_rect.collidepoint(event.pos):
+                        input_active = True
+                        cursor_active = True
+                        cursor_timer = pygame.time.get_ticks()
+                    else:
+                        msg_resume_signal = True
+                        input_active = False
+                        cursor_active = False
+
+                elif event.type == KEYDOWN:
+                    if input_active:
+                        if event.unicode.isprintable():
+                            input_text += event.unicode
+                        elif event.key == pygame.K_BACKSPACE:
+                            input_text = input_text[:-1]
+
+            # pygame.draw.rect(SCREEN, (0,0,0), input_box_rect, 2)
+            input_surface = get_font(50, "assets/fonts/inventory_font.ttf").render(input_text, True, (255,255,255))
+            SCREEN.blit(input_surface, (input_box_rect.x + 50, input_box_rect.y + 5))
+            SCREEN.blit(label_surface, label_rect)
+
+            if input_active:
+                cursor_timer += pygame.time.get_ticks() % 1000
+                if cursor_timer > 3000:
+                    cursor_active = not cursor_active
+                    cursor_timer = 0
+                if cursor_active:
+                    cursor_surface = get_font(50).render("|", True, (0,0,0))
+                    cursor_rect = cursor_surface.get_rect()
+                    cursor_rect.x = input_box_rect.x + 50 + input_surface.get_width()
+                    cursor_rect.y = input_box_rect.y + 5
+                    SCREEN.blit(cursor_surface, cursor_rect)
+
+        # Phase 2
+        elif phase2:
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if CONTINUE_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                        player = Student(
+                            (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
+                        return player
             
-        # Update playercard gallery
-        playercards[playercard_id].is_active = True
-        for playercard in playercards:
-            if playercard.is_active:
-                playercard.changeColor(CHOOSEPLAYER_MOUSE_POS)
-                playercard.hoverNoise(CHOOSEPLAYER_MOUSE_POS)
-                playercard.update(SCREEN)
-
-        for button in [IMREADY_BUTTON]:
-            button.changeColor(CHOOSEPLAYER_MOUSE_POS)
-            button.hoverNoise(CHOOSEPLAYER_MOUSE_POS)
-            button.update(SCREEN)
-            # button.hoverShow(CHOOSEPLAYER_MOUSE_POS, SCREEN)
-
-        for arrow in [RIGHT_ARROW, LEFT_ARROW]:
-            arrow.update(SCREEN)
-
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if STUDENT_PLAYERCARD.checkForInput(CHOOSEPLAYER_MOUSE_POS):
-                    player = Student(
-                        (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
-                    return player
-                elif SOLDIER_PLAYERCARD.checkForInput(CHOOSEPLAYER_MOUSE_POS):
-                    player = Soldier((80, 80), (2.5, 2.5), 1,
-                                     PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
-                    return player
-                elif ENCHANTRESS_PLAYERCARD.checkForInput(CHOOSEPLAYER_MOUSE_POS):
-                    player = Enchantress(
-                        (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
-                    return player
-                elif RIGHT_ARROW.checkForInput(CHOOSEPLAYER_MOUSE_POS):
-                    playercards[playercard_id].is_active = False
-                    playercard_id += 1
-                    if playercard_id == len(playercards):
-                        playercard_id = 0
-                elif LEFT_ARROW.checkForInput(CHOOSEPLAYER_MOUSE_POS):
-                    playercards[playercard_id].is_active = False
-                    playercard_id -= 1
-                    if playercard_id == -1:
-                        playercard_id = len(playercards)-1
-                elif IMREADY_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
-                    book_resume_signal = True
-                elif input_box_rect.collidepoint(event.pos):
-                    input_active = True
-                    cursor_active = True
-                    cursor_timer = pygame.time.get_ticks()
-                else:
-                    input_active = False
-                    cursor_active = False
-
-            elif event.type == KEYDOWN:
-                if input_active:
-                    if event.unicode.isprintable():
-                        input_text += event.unicode
-                    elif event.key == pygame.K_BACKSPACE:
-                        input_text = input_text[:-1]
-
-        # pygame.draw.rect(SCREEN, (0,0,0), input_box_rect, 2)
-        input_surface = get_font(50, "assets/fonts/inventory_font.ttf").render(input_text, True, (255,255,255))
-        SCREEN.blit(input_surface, (input_box_rect.x + 50, input_box_rect.y + 5))
-        SCREEN.blit(label_surface, label_rect)
-
-        if input_active:
-            cursor_timer += pygame.time.get_ticks() % 1000
-            if cursor_timer > 3000:
-                cursor_active = not cursor_active
-                cursor_timer = 0
-            if cursor_active:
-                cursor_surface = get_font(50).render("|", True, (0,0,0))
-                cursor_rect = cursor_surface.get_rect()
-                cursor_rect.x = input_box_rect.x + 50 + input_surface.get_width()
-                cursor_rect.y = input_box_rect.y + 5
-                SCREEN.blit(cursor_surface, cursor_rect)
+            for button in [CONTINUE_BUTTON]:
+                button.changeColor(CHOOSEPLAYER_MOUSE_POS)
+                button.hoverNoise(CHOOSEPLAYER_MOUSE_POS)
+                button.update(SCREEN)
 
         pygame.display.update()
         clock.tick(60)
@@ -503,7 +531,7 @@ def options():
 
 def sub_menu():
 
-    background = pygame.image.load("assets/book_background.png")
+    background = pygame.image.load("assets/pause-phase/book_background.png")
     # dimmer = Dimmer(keepalive=True)
     running = True
 
@@ -697,7 +725,7 @@ def main_menu():
 
 def introduction():
 
-    logo = pygame.image.load("assets/puzzle.png").convert_alpha()
+    logo = pygame.image.load("assets/menu/puzzle.png").convert_alpha()
     background = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
     background.fill((0, 0, 0))
 
@@ -742,6 +770,7 @@ def introduction():
         label_rect = label.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + logo.get_height() // 2 + 20))
         SCREEN.blit(label, label_rect)
 
+        # pygame.event.pump()
         pygame.display.update()
 
         clock.tick(120)

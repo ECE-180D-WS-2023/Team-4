@@ -25,7 +25,7 @@ class Player(GameObject):
         self.state = state
         self.backpack = collections.deque()
         self.weight = role
-        font = pygame.font.Font("assets/font.ttf", 15)
+        font = pygame.font.Font("assets/fonts/font.ttf", 15)
         self.name = name
         self.name_surface = font.render(self.name, True, (255, 255, 255))
         self.health = health
