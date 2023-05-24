@@ -15,6 +15,7 @@ import time
 import math
 from integrations.speech_recognition import *
 from Dimmer import *
+from Instructions import *
 
 mixer.init()           # music
 pygame.init()          # Start game
@@ -164,7 +165,6 @@ def choosePlayer():
         pygame.display.update()
         clock.tick(60)
 
-
 def tutorials():
     """
     MODE: TUTORIALS
@@ -239,12 +239,20 @@ def tutorials():
         v_type = random.choice(veggies_list)
         veggie = v_type((v_x, v_y), (0, 0), 1)
         veggies.add(veggie)
-    
+
+    instruction_state = 3
     while running:
         try:
             SCREEN.blit(TUTORIALS_BG, (0, 0))
 
             pressed_keys = pygame.key.get_pressed()   # Keyboard input
+            if (player1.state != PLAYER_SHOOTING):
+                if len(player1.backpack) < 1 and instruction_state != 0:
+                    instructions = Instructions('Walk to a Veggie and Press B to Harvest.')
+                    instruction_state = 0
+                elif len(player1.backpack) >= 1 and instruction_state != 1:
+                    instructions = Instructions('Walk to the Rock, hold X, say Switch, release X')
+                    instruction_state = 1
 
             # Audio Input
             # if audio_list[0] == "switch":
@@ -291,6 +299,7 @@ def tutorials():
                         player1.attack(angle, (shots, all_sprites))
                     if pygame.joystick.Joystick(0).get_button(0):
                         player1.harvest(veggies)
+
                     # if pygame.joystick.Joystick(0).get_button(3):
                     #     player1.toggle_mount(slingshot1)
                     if pygame.joystick.Joystick(0).get_button(3):
@@ -309,6 +318,12 @@ def tutorials():
                 veggies.add(veggie)
 
             if player1.state == PLAYER_SHOOTING:
+                if instruction_state != 2 and len(player1.backpack) >= 1:
+                    instructions = Instructions('Stay 3ft from the Camera. \n Make sure your nose and right wrist are visible. \n Aim your Slingshot like a gun. \n Press A to fire.')
+                    instruction_state = 2
+                elif instruction_state != 3 and len(player1.backpack) < 1:
+                    instructions = Instructions('No ammo. To unmount the slingshot: Hold X. Say Switch. Release X.')
+                    instruction_state = 3
                 if not is_shooting_music:
                     pygame.mixer.music.load('assets/music/not-afraid.mp3')
                     pygame.mixer.music.play(-1)
@@ -353,6 +368,7 @@ def tutorials():
                 base.update(shots, SCREEN)
             for shot in shots:
                 shot.update(SCREEN)
+            instructions.update(SCREEN)
 
             # show mask
             # for sprite in all_sprites:
