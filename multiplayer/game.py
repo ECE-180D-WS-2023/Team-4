@@ -83,18 +83,3 @@ class Game:
                     team = list(team.values())
                 for object in team:
                     object.draw(self.spritesheets, screen)
-
-        # try:
-        #     for player in self.state["players"].values():
-        #         screen.blit(self.spritesheets[player.__class__.__name__].get_image(0, 0, PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_SCALE), player.rect)
-        #         if player.weapon:
-        #             blitRotate(screen, self.spritesheets[player.weapon.__class__.__name__].get_image(0, 0, 67, 150), player.weapon.rect.center, (34,170), player.weapon.angle)
-        #     for veggies in self.state["veggies"].values():
-        #         for veggie in veggies:
-        #             screen.blit(self.spritesheets[veggie.__class__.__name__].get_image(0, 0, VEGGIE_WIDTH, VEGGIE_HEIGHT, VEGGIE_SCALE), veggie.rect)
-        #     for shot in self.state["shots"]:
-        #         screen.blit(self.spritesheets[shot.__class__.__name__].get_image(0, 0, SHOT_WIDTH, SHOT_HEIGHT, SHOT_SCALE), shot.rect)
-        #     for slingshot in self.state["slingshots"]:
-        #         screen.blit(self.spritesheets[slingshot.__class__.__name__].get_image(0, 0, VEGGIE_WIDTH, VEGGIE_HEIGHT, 1), slingshot.rect)
-        # except Exception as e:
-        #     print("[DRAW]:", e)
