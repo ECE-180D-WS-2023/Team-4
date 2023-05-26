@@ -53,6 +53,15 @@ class Player(GameObject):
         if self.state == PLAYER_WALKING:
             self.rect.center += self.direction * self.vel
 
+        if self.rect.left < 0:
+            self.rect.left = 0
+        if self.rect.right > SCREEN_WIDTH:
+            self.rect.right = SCREEN_WIDTH
+        if self.rect.top < 0:
+            self.rect.top = 0
+        if self.rect.bottom > SCREEN_HEIGHT:
+            self.rect.bottom = SCREEN_HEIGHT
+
 class Engineer(Player):
     power = 5
     strength = 5
