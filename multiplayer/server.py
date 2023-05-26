@@ -7,6 +7,7 @@ from network import *
 from player import *
 from veggie import *
 from slingshot import *
+from base import *
 from weapon import *
 
 def game_thread(game_state):
@@ -91,19 +92,14 @@ def client_thread(conn, id, game_state):
                 else:
                     my_player.weapon.angle = angle
 
+        # Update positions
         for group in game_state.values():
-            for team in group:
-                if isinstance(team, dict):
-                    team = list(team.values())
-                for object in team:
-                    object.update()
-        # for player in game_state["players"].values():
-        #     player.update()
-        # for veggies in game_state["veggies"].values():
-        #     for veggie in veggies:
-        #         veggie.update()
-        # for shot in game_state["shots"]:
-        #     shot.update()
+            for team_num, team_objects in enumerate(group):
+                team_objects_list = team_objects
+                if isinstance(team_objects, dict):
+                    team_objects_list = list(team_objects.values())
+                for object in team_objects_list:
+                        object.update()
 
         conn.send(game_state)
         clock.tick(60)
@@ -132,8 +128,12 @@ def run(address="192.168.0.190", port=8080):
             [], # team 1
         ],
         "slingshots": [
-            [Slingshot((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4)))],
-            [Slingshot((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4)))],
+            [Slingshot((SCREEN_WIDTH/2 + 200, SCREEN_HEIGHT*(1/4)))],
+            [Slingshot((SCREEN_WIDTH/2 - 200, SCREEN_HEIGHT*(3/4)))],
+        ],
+        "bases": [
+            [Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4)))],
+            [Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4)))],
         ],
     }
 

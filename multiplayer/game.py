@@ -28,6 +28,8 @@ class Game:
             "YellowBellPepper": SpriteSheet("assets/veggies/yellow-bell-pepper.png").get_animation_list((VEGGIE_WIDTH, VEGGIE_HEIGHT), VEGGIE_SCALE),
             # Slingshots
             "Slingshot": SpriteSheet("assets/slingshot_station.png").get_animation_list((SLINGSHOT_WIDTH, SLINGSHOT_HEIGHT), SLINGSHOT_SCALE),
+            # Bases
+            "Base": SpriteSheet("assets/base2.png").get_animation_list((BASE_HEIGHT, BASE_HEIGHT), BASE_SCALE),
         }
         self.speech_recognizer = SpeechRecognizer()
         self.speech_recognizer.start()
