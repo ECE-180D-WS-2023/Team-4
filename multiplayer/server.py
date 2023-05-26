@@ -101,6 +101,10 @@ def client_thread(conn, id, game_state):
                 for object in team_objects_list:
                         object.update()
 
+        # Check for hits
+        for shot in game_state["shots"][my_team_num]:
+            shot.check_collision(game_state["bases"][(my_team_num + 1) % 2])
+
         conn.send(game_state)
         clock.tick(60)
 

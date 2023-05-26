@@ -17,6 +17,16 @@ class Veggie(GameObject):
     #         or self.rect.top <= 0
     #         or self.rect.bottom >= SCREEN_HEIGHT):
     #         self.kill()
+    def check_collision(self, objects):
+        for object in objects:
+            if self.rect.colliderect(object.rect):
+                self.hit(object)
+
+    def hit(self, object):
+        object.health -= self.damage
+        self.kill = True
+        print("hit:", object.health)
+
 
 class Carrot(Veggie):
     ...
