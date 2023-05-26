@@ -16,8 +16,10 @@ class GameObject:
     def pos(self, pos):
         self.rect.center = pos
 
-    def draw(self, spritesheets, screen):
+    def draw(self, spritesheets, screen, debug=False):
         screen.blit(spritesheets[self.__class__.__name__][self.frame[0]][self.frame[1]], self.rect)
+        if debug:
+            pygame.draw.rect(screen, (255, 255, 255), self.rect, 2)
 
     def update(self):
         self.rect.center += self.direction * self.vel
