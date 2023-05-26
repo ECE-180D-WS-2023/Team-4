@@ -100,6 +100,11 @@ def client_thread(conn, id, game_state):
                     team_objects_list = list(team_objects.values())
                 for object in team_objects_list:
                         object.update()
+                # Remove any dead objects
+                if isinstance(team_objects, dict):
+                    group[team_num] = {key: obj for key, obj in group[team_num].items() if getattr(obj, "kill", False) == False}
+                else:
+                    group[team_num] = [obj for obj in team_objects if getattr(obj, "kill", False) == False]
 
         # Check for hits
         for shot in game_state["shots"][my_team_num]:
