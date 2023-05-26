@@ -7,8 +7,12 @@ from player import *
 from veggie import *
 
 # Initialize socket
+import sys
 PORT = 8080
-SERVER = '192.168.0.190'
+if len(sys.argv) > 1:
+    SERVER = sys.argv[1]
+else:
+    SERVER = '192.168.0.190'
 client = ClientSocket(SERVER, PORT)
 
 # Initialize pygame

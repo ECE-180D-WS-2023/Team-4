@@ -152,4 +152,8 @@ def run(address="192.168.0.190", port=8080):
         print(f"[NEW CONNECTION #{threading.active_count() - 1}] {addr} connected")
 
 if __name__ == "__main__":
-    run()
+    import sys
+    if len(sys.argv) > 1:
+        run(sys.argv[1])
+    else:
+        run()
