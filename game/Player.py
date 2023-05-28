@@ -73,14 +73,18 @@ class Player(GameObject):
                 veggie.kill()
 
     def toggle_mount(self, slingshot):
-        if self.mounted:
+        self.slingshot = slingshot
+        if self.mounted and self.team_num == self.slingshot.team_num:
             self.mounted = False
+            self.slingshot.mounted = False 
             self.state = PLAYER_WALKING
             
         elif pygame.sprite.collide_rect(self, slingshot):
             if pygame.sprite.spritecollide(self, [slingshot], False, pygame.sprite.collide_mask):
                 self.mounted = True
-                self.pos = slingshot.pos
+                self.slingshot.mounted = True
+                self.pos_x = slingshot.pos[0]
+                self.pos_y = slingshot.pos[1] - 20
                 self.state = PLAYER_SHOOTING
 
     def update(self, js_action, angle, screen):
@@ -109,6 +113,7 @@ class Player(GameObject):
             player_rect_width = PLAYER_WIDTH*PLAYER_SCALE
             player_rect_height = PLAYER_HEIGHT*PLAYER_SCALE
 
+            # Boundary logic
             if self.pos_x < player_rect_width/2:
                 self.pos_x = player_rect_width/2
             if self.pos_x > SCREEN_WIDTH - player_rect_width/2:
@@ -118,11 +123,45 @@ class Player(GameObject):
             if self.pos_y > SCREEN_HEIGHT - player_rect_height/2:
                 self.pos_y = SCREEN_HEIGHT - player_rect_height/2
 
+            # River
+            if self.team_num == 0:
+                # bottom left corner
+                if self.pos_x < player_rect_width and self.pos_y > 736 - player_rect_height:
+                    if self.pos_x > 736 - self.pos_y:
+                        self.pos_x = player_rect_width
+                    else:
+                        self.pos_y = 736 - player_rect_height
+                # bottom right corner
+                elif self.pos_x > SCREEN_WIDTH-player_rect_width and self.pos_y > 736 - player_rect_height:
+                    if SCREEN_WIDTH - self.pos_x < 736 - self.pos_y:
+                        self.pos_y = 736 - player_rect_height
+                    else:
+                        self.pos_x = SCREEN_WIDTH - player_rect_width
+                if self.pos_y > 736 - player_rect_height/2:
+                    self.pos_y = 736 - player_rect_height/2
+            elif self.team_num == 1:
+                # top left corner
+                if self.pos_x < player_rect_width and self.pos_y < 820 + player_rect_height:
+                    if self.pos_x > self.pos_y - 820:
+                        self.pos_x = player_rect_width
+                    else:
+                        self.pos_y = 820 + player_rect_height
+                # top right corner
+                elif self.pos_x > SCREEN_WIDTH-player_rect_width and self.pos_y < 820 + player_rect_height:
+                    if SCREEN_WIDTH - self.pos_x < self.pos_y - 820:
+                        self.pos_y = 820 + player_rect_height
+                    else:
+                        self.pos_x = SCREEN_WIDTH - player_rect_width
+                if self.pos_y < 820 + player_rect_height/2:
+                    self.pos_y = 820 + player_rect_height/2
+
             action = actions[-1] if (len(actions) > 0) else None
             super().update(screen, action)
             return
 
         elif self.state == PLAYER_SHOOTING:
+            self.pos_x = self.slingshot.pos[0]
+            self.pos_y = self.slingshot.pos[1] - 20
             aiming_indicator = pygame.image.load("assets/players/cannon.png")
             self.blitRotate(screen,
                             aiming_indicator,

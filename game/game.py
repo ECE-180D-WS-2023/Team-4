@@ -120,15 +120,15 @@ def choosePlayer():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if STUDENT_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
                     player = Student(
-                        (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
+                        (80, 1000), (2.5, 2.5), 1, PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
                     return player
                 elif SOLDIER_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
-                    player = Soldier((80, 80), (2.5, 2.5), 1,
+                    player = Soldier((80, 80), (2.5, 2.5), 0,
                                      PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
                     return player
                 elif ENCHANTRESS_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
                     player = Enchantress(
-                        (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
+                        (80, 80), (2.5, 2.5), 0, PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
                     return player
                 elif input_box_rect.collidepoint(event.pos):
                     input_active = True
@@ -189,7 +189,8 @@ def tutorials():
     player1 = choosePlayer()
     base1 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4)), (3, 3), 1, img = "assets/base1.png", health = 20, shield = 0)
     base2 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4)), (3, 3), 2, img = "assets/base2.png", health = 20, shield = 0)
-    slingshot1 = Slingshot((900, 1000), (0, 0), 1)
+    slingshot1 = Slingshot((1400, 490), SLINGSHOT_VELOCITY, 0)
+    slingshot2 = Slingshot((750, 1090), SLINGSHOT_VELOCITY, 1)
 
 
     # Initialize sprite groups
@@ -201,11 +202,11 @@ def tutorials():
     shots = pygame.sprite.Group()
     effects = pygame.sprite.Group()
 
-    all_sprites.add([base1, base2, slingshot1])
+    all_sprites.add([base1, base2, slingshot1, slingshot2])
     # Add player1 to players group
     players.add([player1])
     bases.add([base1, base2])                     # Add base1 to bases group
-    slingshots.add([slingshot1])
+    slingshots.add([slingshot1, slingshot2])
 
     running_threads = threading.Event()
     running = True
@@ -221,7 +222,7 @@ def tutorials():
                                         running_threads, angle_queue])
     image_processor = ImageProcessor()
 
-    TUTORIALS_BG = pygame.image.load("assets/objects_2.5.png").convert_alpha()
+    TUTORIALS_BG = pygame.image.load("assets/river_map1_rail.png").convert_alpha()
     TUTORIALS_BG = pygame.transform.scale(TUTORIALS_BG, (2560, 1600))
 
     # audio_list = ["Eddie"]
@@ -235,7 +236,7 @@ def tutorials():
     veggies_list = Veggie.__subclasses__()
     for _ in range(MAX_VEGGIES):
         v_x = random.randint(0, SCREEN_WIDTH - VEGGIE_WIDTH)
-        v_y = random.randint(0, SCREEN_HEIGHT - VEGGIE_HEIGHT)
+        v_y = random.randint(VEGGIE_HEIGHT+team_boundaries[1]["top"], team_boundaries[1]["bottom"]-VEGGIE_HEIGHT)
         v_type = random.choice(veggies_list)
         veggie = v_type((v_x, v_y), (0, 0), 1)
         veggies.add(veggie)
@@ -243,6 +244,7 @@ def tutorials():
     instruction_state = 3
     while running:
         try:
+            TUTORIALS_MOUSE_POS = pygame.mouse.get_pos()
             SCREEN.blit(TUTORIALS_BG, (0, 0))
 
             pressed_keys = pygame.key.get_pressed()   # Keyboard input
@@ -275,7 +277,8 @@ def tutorials():
                         elif paused == "main menu":
                             raise TypeError
                     if event.key == K_RETURN:
-                        player1.toggle_mount(slingshot1)
+                        for slingshot in slingshots:
+                            player1.toggle_mount(slingshot)
                     if event.key == K_SPACE:
                         player1.harvest(veggies)
                     if event.key == K_TAB:
@@ -293,6 +296,8 @@ def tutorials():
                             Timer_on = True
                             effect_start_time = pygame.time.get_ticks()
                             player1.promote()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    print(TUTORIALS_MOUSE_POS)
                 # Attack
                 elif event.type == pygame.JOYBUTTONDOWN:
                     if pygame.joystick.Joystick(0).get_button(1):
@@ -308,11 +313,11 @@ def tutorials():
                 elif event.type == pygame.JOYBUTTONUP:
                     if not pygame.joystick.Joystick(0).get_button(3):
                         speech_recognizer.mute()
-                
+
 
             if len(veggies) < MAX_VEGGIES:
-                v_x = random.randint(0, SCREEN_WIDTH - VEGGIE_WIDTH)
-                v_y = random.randint(0, SCREEN_HEIGHT - VEGGIE_HEIGHT)
+                v_x = random.randint(VEGGIE_WIDTH, SCREEN_WIDTH - VEGGIE_WIDTH)
+                v_y = random.randint(VEGGIE_HEIGHT+team_boundaries[1]["top"], team_boundaries[1]["bottom"]-VEGGIE_HEIGHT)
                 v_type = random.choice(veggies_list)
                 veggie = v_type((v_x, v_y), (0, 0), 1)
                 veggies.add(veggie)
@@ -360,10 +365,10 @@ def tutorials():
             # Refresh screen and display objects
             for veggie in veggies:
                 veggie.update(SCREEN)
-            for slingshot in slingshots:
-                slingshot.update(SCREEN)
             for player in players:
                 player.update([x_speed, y_speed], angle, SCREEN)
+            for slingshot in slingshots:
+                slingshot.update(SCREEN)
             for base in bases:
                 base.update(shots, SCREEN)
             for shot in shots:
