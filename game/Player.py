@@ -1,4 +1,5 @@
 from GameObject import GameObject
+from Weapons import *
 from Spritesheet import SpriteSheet
 from constants import *
 import math
@@ -30,6 +31,7 @@ class Player(GameObject):
         self.name_surface = font.render(self.name, True, (255, 255, 255))
         self.health = health
         self.mounted = False
+        self.weapon = Newb_Crossbow(pos=pos, team_num=team_num)
     
     
 
@@ -162,12 +164,14 @@ class Player(GameObject):
         elif self.state == PLAYER_SHOOTING:
             self.pos_x = self.slingshot.pos[0]
             self.pos_y = self.slingshot.pos[1] - 20
-            aiming_indicator = pygame.image.load("assets/players/cannon.png")
-            self.blitRotate(screen,
-                            aiming_indicator,
-                            (self.pos[0], self.pos[1]),
-                            (34,160),
-                            angle)
+            self.weapon.pos = self.pos
+            self.weapon.blitRotate(screen, self.weapon.img, self.weapon.pos, self.weapon.pivot, angle)
+            #aiming_indicator = pygame.image.load("assets/players/cannon.png")
+            # self.blitRotate(screen,
+            #                 aiming_indicator,
+            #                 (self.pos[0], self.pos[1]),
+            #                 (34,160),
+            #                 angle)
             super().update(screen)
             return
         

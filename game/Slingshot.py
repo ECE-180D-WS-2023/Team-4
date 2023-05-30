@@ -3,7 +3,7 @@ from constants import *
 
 class Slingshot(GameObject):
     def __init__(self, pos, vel, team_num: int) -> None:
-        super().__init__((SLINGSHOT_WIDTH, SLINGSHOT_HEIGHT), pos, vel, team_num, img='assets/trolly.png', scale=1.5)
+        super().__init__((TROLLY_WIDTH, TROLLY_HEIGHT), pos, vel, team_num, img='assets/trolly.png', scale=1.5)
         self.mounted = False
 
     def update(self, screen, action=None):

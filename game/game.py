@@ -261,8 +261,8 @@ def tutorials():
     player1 = choosePlayer()
     base1 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4)), (3, 3), 1, img = "assets/base1.png", health = 20, shield = 0)
     base2 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4)), (3, 3), 2, img = "assets/base2.png", health = 20, shield = 0)
-    slingshot1 = Slingshot((1400, 490), SLINGSHOT_VELOCITY, 0)
-    slingshot2 = Slingshot((750, 1090), SLINGSHOT_VELOCITY, 1)
+    slingshot1 = Slingshot((1400, 490), TROLLY_VELOCITY, 0)
+    slingshot2 = Slingshot((750, 1090), TROLLY_VELOCITY, 1)
 
 
     # Initialize sprite groups

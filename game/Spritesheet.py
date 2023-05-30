@@ -112,37 +112,6 @@ class Animation(SpriteSheet):
             screen.blit(self.animation_list[0][self.frame_col], self.rect)
             return [self.stop_flag, self.pause_flag]
 
-
-        # self.current_time = pygame.time.get_ticks()
-        # if self.current_time - self.last_update >= self.animation_cooldown:
-        #     self.frame_col += 1
-        #     self.last_update = self.current_time
-
-        #     if self.frame_col in self.stop_frame:
-        #         stop_flag = True   # alert main program stop flag
-        #         screen.blit(self.animation_list[0][self.frame_col], self.rect)   # blit the previous frame
-        #         flags = [stop_flag, pause_flag]
-        #         return flags
-        #     elif self.frame_col in self.pause_frame :
-        #         pause_flag = True
-        #         screen.blit(self.animation_list[0][self.frame_col-1], self.rect)
-
-        # if pause_flag:
-        #     screen.blit(self.animation_list[0][self.frame_col], self.rect)
-        # else:
-        #     self.current_time = pygame.time.get_ticks()
-        #     if self.current_time - self.last_update >= self.animation_cooldown:
-        #         self.frame_col += 1
-        #         self.last_update = self.current_time
-        #         if self.frame_col == len(self.animation_list[0])-1:
-        #             pygame.time.delay(lag)
-        #         if self.frame_col >= len(self.animation_list[0]):
-        #             stop_flag = True
-        #             screen.blit(self.animation_list[0][self.frame_col-1], self.rect)
-        #             return stop_flag
-        #     screen.blit(self.animation_list[0][self.frame_col], self.rect)
-        # return stop_flag
-
     def repeat(self, screen):
         '''
         Repeatedly blit action on to screen
