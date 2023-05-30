@@ -33,6 +33,18 @@ PLAYER_SHOOTING = 2
 
 WEIGHT_FACTOR = 0.2
 
+# Team
+team_boundaries = {
+        0: {
+            "top": 0,
+            "bottom": 736 - PLAYER_HEIGHT*PLAYER_SCALE
+        },
+        1: {
+            "top": 853 + PLAYER_HEIGHT*PLAYER_SCALE,
+            "bottom": SCREEN_HEIGHT
+        }
+    }
+
 # Veggies
 VEGGIE_WIDTH = 32
 VEGGIE_HEIGHT = 32
@@ -46,10 +58,15 @@ CABBAGE_DAMAGE = 10
 PUMPKIN_DAMAGE = 15
 VEGGIE_VELOCITY = 10
 
-# Slingshots
-SLINGSHOT_WIDTH = 32
-SLINGSHOT_HEIGHT = 32
-SLINGSHOT_SCALE = 1
+# Weapons
+TROLLY_VELOCITY = (0.5,0)
+TROLLY_WIDTH = 48
+TROLLY_HEIGHT = 32
+WEAPON_HEIGHT = 32
+WEAPON_WIDTH = 32
+WEAPON_SCALE = 1
+
+
 
 # Shots
 SHOT_WIDTH = 32
