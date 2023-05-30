@@ -21,20 +21,25 @@ class Button():
 		self.image = image
 		self.x_pos = pos[0]
 		self.y_pos = pos[1]
-		self.font = font
+
 		self.base_color, self.hovering_color = base_color, hovering_color
+
+		self.font = font
 		self.text_input = text_input
-		self.text = self.font.render(self.text_input, True, self.base_color)
+		if self.text_input is not None:
+			self.text = self.font.render(self.text_input, True, self.base_color)
+			self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos))
 		if self.image is None:
 			self.image = self.text
 		self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
-		self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos))
+		
 		self.noise_played = noise_played
 
 	def update(self, screen):
 		if self.image is not None:
 			screen.blit(self.image, self.rect)
-		screen.blit(self.text, self.text_rect)
+		if self.text_input is not None:
+			screen.blit(self.text, self.text_rect)
 
 	def checkForInput(self, position):
 		if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
@@ -42,10 +47,11 @@ class Button():
 		return False
 
 	def changeColor(self, position):
-		if self.checkForInput(position):
-			self.text = self.font.render(self.text_input, True, self.hovering_color)
-		else:
-			self.text = self.font.render(self.text_input, True, self.base_color)
+		if self.text_input:
+			if self.checkForInput(position):
+				self.text = self.font.render(self.text_input, True, self.hovering_color)
+			else:
+				self.text = self.font.render(self.text_input, True, self.base_color)
 
 	def hoverNoise(self, position):
 		if self.checkForInput(position):
@@ -61,34 +67,44 @@ class PlayerCard(Button):
 	def __init__(self, image, pos, text_input, font, base_color, hovering_color, noise_played=False):
 		super().__init__(image, pos, text_input, font, base_color, hovering_color, noise_played)
 		# Spritesheet and character name text box
-		self.scale = 8
-		self.surf = pygame.Surface((PLAYER_WIDTH*self.scale, PLAYER_HEIGHT*self.scale))
+		self.sprite_scale = 5
+		self.background_scale = 5
+
+		# Surface and rect
+		self.surf = pygame.Surface((PLAYER_WIDTH*self.background_scale, PLAYER_HEIGHT*self.background_scale))
+		self.surf_img = None
+		# self.surf_img = pygame.image.load('assets/pause-phase/select-surface.png').convert_alpha()
 		self.rect = self.surf.get_rect()
 		self.rect.center = pos
-		self.frame_col = 0
-		self.image=image.convert_alpha()
-		self.animation_list = SpriteSheet(self.image).get_animation_list([3], (PLAYER_WIDTH,PLAYER_HEIGHT), self.scale)
-		self.mask = pygame.mask.from_surface(self.animation_list[0][self.frame_col])
-		self.animation_cooldown = 170
-		self.last_update = pygame.time.get_ticks()
-		self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos-20))
 
-		# Hovering Effects
+		# Sprite animation
+		self.frame_col = 0
+		self.sprite_image=image.convert_alpha()
+		self.animation = Animation(pos, self.sprite_image, [3], (PLAYER_WIDTH,PLAYER_HEIGHT), self.sprite_scale)
+		self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos))
+
+		# Hovering text box
 		self.hoverbox_width = 500
 		self.hoverbox_height = 1000
 		self.hoverbox_surf = pygame.Surface((self.hoverbox_width, self.hoverbox_height))
 		self.hoverbox_surf.fill((255,255,255))
+
+		self.is_active = False
+	
+	def checkForInput(self, position):
+		if self.is_active and position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
+			return True
+		return False
 	
 	def update(self, screen):
-		self.current_time = pygame.time.get_ticks()
-		if self.current_time - self.last_update >= self.animation_cooldown:
-			self.frame_col += 1
-			self.last_update = self.current_time
-			if self.frame_col >= len(self.animation_list[0]):
-				self.frame_col = 0
-		screen.blit(self.animation_list[0][self.frame_col], self.rect)
+
+		# Background
+		if self.surf_img:
+			screen.blit(self.surf_img, self.rect)
+
+		# Animation
+		self.animation.repeat(screen)
 		screen.blit(self.text, self.text_rect)
-		self.mask = pygame.mask.from_surface(self.animation_list[0][self.frame_col])
 
 class StudentCard(PlayerCard):
 	def __init__(self, image, pos, text_input, font, base_color, hovering_color, noise_played=False):
