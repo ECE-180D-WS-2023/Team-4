@@ -187,8 +187,8 @@ def tutorials():
 
     # GameObjects
     player1 = choosePlayer()
-    base1 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4)), (3, 3), 1, img = "assets/base1.png", health = 20, shield = 0)
-    base2 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4)), (3, 3), 2, img = "assets/base2.png", health = 20, shield = 0)
+    base1 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3.5/4)), (3, 3), 1, img = "assets/base5.png", health = 20, shield = 0)
+    base2 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(0.5/4)), (3, 3), 2, img = "assets/base3.png", health = 20, shield = 0)
     slingshot1 = Slingshot((900, 1000), (0, 0), 1)
 
 
@@ -221,7 +221,7 @@ def tutorials():
                                         running_threads, angle_queue])
     image_processor = ImageProcessor()
 
-    TUTORIALS_BG = pygame.image.load("assets/objects_2.5.png").convert_alpha()
+    TUTORIALS_BG = pygame.image.load("assets/river_map1_rail.png").convert_alpha()
     TUTORIALS_BG = pygame.transform.scale(TUTORIALS_BG, (2560, 1600))
 
     # audio_list = ["Eddie"]
@@ -239,6 +239,8 @@ def tutorials():
         v_type = random.choice(veggies_list)
         veggie = v_type((v_x, v_y), (0, 0), 1)
         veggies.add(veggie)
+
+    veggies.add(TestCarrot((10, 10), (10, 10), 0))
 
     instruction_state = 3
     while running:
@@ -319,10 +321,10 @@ def tutorials():
 
             if player1.state == PLAYER_SHOOTING:
                 if instruction_state != 2 and len(player1.backpack) >= 1:
-                    instructions = Instructions('Stay 3ft from the Camera. \n Make sure your nose and right wrist are visible. \n Aim your Slingshot like a gun. \n Press A to fire.')
+                    instructions = Instructions('Stay 3ft from the Camera.\nMake sure your nose and right wrist are visible.\nAim your Slingshot like a gun.\nPress A to fire.')
                     instruction_state = 2
                 elif instruction_state != 3 and len(player1.backpack) < 1:
-                    instructions = Instructions('No ammo. To unmount the slingshot: Hold X. Say Switch. Release X.')
+                    instructions = Instructions('No ammo.\nTo unmount the slingshot:\nHold X.\nSay Switch.\nRelease X.')
                     instruction_state = 3
                 if not is_shooting_music:
                     pygame.mixer.music.load('assets/music/not-afraid.mp3')

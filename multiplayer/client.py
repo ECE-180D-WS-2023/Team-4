@@ -8,7 +8,7 @@ from veggie import *
 
 # Initialize socket
 PORT = 8080
-SERVER = '192.168.0.190'
+SERVER = '172.20.10.2'
 client = ClientSocket(SERVER, PORT)
 
 # Initialize pygame
