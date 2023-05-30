@@ -1,7 +1,7 @@
 import pygame
-from gameobject import *
-from constants import *
-from health_bar import *
+from .gameobject import *
+from ..constants import *
+from ..health_bar import *
 
 class Base(GameObject):
     max_health = 100

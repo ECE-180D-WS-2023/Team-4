@@ -1,5 +1,5 @@
 import pygame
-from gameobject import *
+from .gameobject import *
 
 def blitRotate(surf, image, origin, pivot, angle):
     """ Blit a rotated version of a given surface

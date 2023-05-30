@@ -2,13 +2,13 @@ import pygame
 import random
 import threading
 import time
-from game.constants import *
-from game.network import *
-from game.gameobjects.player import *
-from game.gameobjects.veggie import *
-from game.gameobjects.slingshot import *
-from game.gameobjects.base import *
-from game.gameobjects.weapon import *
+from constants import *
+from network import *
+from gameobjects.player import *
+from gameobjects.veggie import *
+from gameobjects.slingshot import *
+from gameobjects.base import *
+from gameobjects.weapon import *
 
 def game_thread(game_state):
     clock = pygame.time.Clock()

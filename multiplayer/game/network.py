@@ -2,6 +2,17 @@ import pickle
 import json
 import socket
 
+def get_private_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # dummy socket
+    try:
+        s.connect(('192.255.255.255', 1))
+        IP = s.getsockname()[0]
+    except:
+        IP = '127.0.0.1'
+    finally:
+        s.close()
+    return IP
+
 class Socket:
     def __init__(self, host, port, sock):
         self.socket = sock or socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -40,12 +51,14 @@ class Socket:
 class ClientSocket(Socket):
     def __init__(self, host="127.0.0.1", port=8080, sock=None):
         super().__init__(host, port, sock)
+        print("CLIENT:", self.address)
         self.socket.connect(self.address)
         self.id = self.receive()
 
 class ServerSocket(Socket):
     def __init__(self, host="127.0.0.1", port=8080, sock=None):
         super().__init__(host, port, sock)
+        print("SERVER:", self.address)
         self.socket.bind(self.address)
         self.socket.listen()
         print(f"[LISTENING] Server is listening on {self.host}")

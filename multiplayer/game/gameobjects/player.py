@@ -1,10 +1,10 @@
 import pygame
 import math
 import collections
-from gameobject import *
-from constants import *
-from weapon import *
-from veggie import *
+from .gameobject import *
+from .weapon import *
+from .veggie import *
+from ..constants import *
 
 class Player(GameObject):
     def __init__(self, pos, team_num, vel, weapon_class):

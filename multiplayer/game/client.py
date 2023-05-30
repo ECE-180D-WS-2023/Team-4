@@ -3,8 +3,6 @@ import threading
 from constants import *
 from game import *
 from network import *
-from player import *
-from veggie import *
 
 # Initialize socket
 import sys

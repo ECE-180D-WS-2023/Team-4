@@ -4,6 +4,7 @@ import threading
 import queue
 from pygame import mixer
 from button import *
+from test_button import *
 import random
 from Player import *
 from Veggie import *
@@ -12,10 +13,12 @@ from Slingshot import Slingshot
 from constants import *
 from integrations.image_processing import *
 import time
+import socket
 import math
 from integrations.speech_recognition import *
 from Dimmer import *
 from Instructions import *
+from input import *
 
 mixer.init()           # music
 pygame.init()          # Start game
@@ -43,33 +46,118 @@ BG_6 = pygame.image.load("assets/menu/6.png")
 def get_font(size):
     return pygame.font.Font("assets/font.ttf", size)
 
+def get_private_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # dummy socket
+    try:
+        s.connect(('192.255.255.255', 1))
+        IP = s.getsockname()[0]
+    except:
+        IP = '127.0.0.1'
+    finally:
+        s.close()
+    return IP
+
+def host():
+    # input_box_rect = pygame.Rect(1080,200,400,40)
+    # input_text = get_private_ip()
+    # input_active = False
+    #
+    # # Set up the cursor
+    # cursor_active = False
+    # cursor_timer = 0
+    #
+    # # Set up the label
+    # label_text = "Enter IP Address:"
+    # label_surface = get_font(30).render(label_text, True, (0,0,0))
+    # label_rect = label_surface.get_rect()
+    # label_rect.x = input_box_rect.x
+    # label_rect.y = input_box_rect.y - label_rect.height - 5
+    #
+    background = pygame.image.load("assets/menu/static-background.png").convert_alpha()
+    input = InputField((SCREEN_WIDTH/2, 100), 15, label_text="Enter IP:", border_padding=10)
+    menu = ButtonMenu()
+    menu.add_button(TestButton((SCREEN_WIDTH/2, 300), "FRONT"))
+    menu.add_button(TestButton((SCREEN_WIDTH/2, 400), "BACK"))
+    running = True
+    while running:
+        SCREEN.blit(background, (0, 0))
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if menu.check_for_presses(event.pos):
+                    running = False
+                input.process_mousedown(event)
+            elif event.type == KEYDOWN:
+                input.process_keydown(event)
+
+        menu.draw(SCREEN)
+        input.draw(SCREEN)
+        input.update()
+        pygame.display.flip()
+        clock.tick(60)
+
+def join():
+    ...
 
 def play():
-    while True:
-        PLAY_MOUSE_POS = pygame.mouse.get_pos()
+    background_5 = 0
+    background_6 = 0
 
-        SCREEN.fill("black")
+    # Initialize buttons
+    HOST_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png"), pos=(700, 350),
+                         text_input="HOST", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+    JOIN_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png"), pos=(700, 500),
+                            text_input="JOIN", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+    BACK_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png"), pos=(700, 650),
+                            text_input="BACK", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
 
-        PLAY_TEXT = get_font(45).render(
-            "This is the PLAY screen.", True, "White")
-        PLAY_RECT = PLAY_TEXT.get_rect(center=(640, 260))
-        SCREEN.blit(PLAY_TEXT, PLAY_RECT)
+    # Button clicking sound effect
+    clicking_sound = mixer.Sound('assets/music/button_clicked.mp3')
+    clicking_sound.set_volume(1.5)
 
-        PLAY_BACK = Button(image=None, pos=(640, 460),
-                           text_input="BACK", font=get_font(75), base_color="White", hovering_color="Green")
+    running = True
+    while running:
+        SCREEN.blit(STATIC_BACKGROUND, (0, 0))
+        SCREEN.blit(BG_5, (background_5, 0))
+        SCREEN.blit(BG_6, (background_6, 0))
+        background_5 -= 5
+        background_6 -= 30
+        if background_5 <= -BG_5.get_width():
+            background_5 = 0
+        if background_6 <= -BG_6.get_width():
+            background_6 = 0
 
-        PLAY_BACK.changeColor(PLAY_MOUSE_POS)
-        PLAY_BACK.update(SCREEN)
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
 
+        # Initialize main text box
+        MENU_TEXT = get_font(150).render("Veggie Wars", True, "#b68f40")
+        MENU_RECT = MENU_TEXT.get_rect(center=(SCREEN_WIDTH/2, 120))
+
+        SCREEN.blit(MENU_TEXT, MENU_RECT)
+
+        # change color and play noise when hovering
+        for button in [HOST_BUTTON, JOIN_BUTTON, BACK_BUTTON]:
+            button.changeColor(MENU_MOUSE_POS)
+            button.hoverNoise(MENU_MOUSE_POS)
+            button.update(SCREEN)
+
+        # event after clicking
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
-                    main_menu()
+                if HOST_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    clicking_sound.play()
+                    host()
+                if JOIN_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    clicking_sound.play()
+                    # options()
+                if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    clicking_sound.play()
+                    running = False
 
         pygame.display.update()
+        clock.tick(60)
 
 
 def choosePlayer():

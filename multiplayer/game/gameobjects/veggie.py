@@ -1,6 +1,6 @@
 import pygame
-from gameobject import *
-from constants import *
+from .gameobject import *
+from ..constants import *
 
 class Veggie(GameObject):
     def __init__(self, pos=(0, 0), vel=10, direction=(0, 0), damage=1):
