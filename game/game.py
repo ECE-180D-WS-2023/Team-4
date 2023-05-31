@@ -190,6 +190,9 @@ def choosePlayer():
     LEFT_ARROW = Button(image=pygame.image.load("assets/pause-phase/left-arrow.png"), pos=(1592, 675),
                                 text_input=None, font=None, base_color=None, hovering_color=None)
     
+    player_class = Student
+    player_weapon = Cannon
+    
 
     # Phase 2
     CONTINUE_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png"), pos=(1800, 1225),
@@ -250,17 +253,11 @@ def choosePlayer():
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if STUDENT_PLAYERCARD.checkForInput(CHOOSEPLAYER_MOUSE_POS):
-                        player = Student(
-                            (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
-                        return player
+                        player_class = Student
                     elif SOLDIER_PLAYERCARD.checkForInput(CHOOSEPLAYER_MOUSE_POS):
-                        player = Soldier((80, 80), (2.5, 2.5), 1,
-                                        PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
-                        return player
+                        player_class = Soldier
                     elif ENCHANTRESS_PLAYERCARD.checkForInput(CHOOSEPLAYER_MOUSE_POS):
-                        player = Enchantress(
-                            (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
-                        return player
+                        player_class = Enchantress
                     elif RIGHT_ARROW.checkForInput(CHOOSEPLAYER_MOUSE_POS):
                         playercards[playercard_id].is_active = False
                         playercard_id += 1
@@ -313,8 +310,8 @@ def choosePlayer():
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if CONTINUE_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
-                        player = Student(
-                            (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
+                        player = player_class(
+                            pos=(80, 80), vel=(2.5, 2.5), team_num=1, name=input_text, state=PLAYER_WALKING, health=10, weapon=player_weapon)
                         return player
             
             for button in [CONTINUE_BUTTON]:
@@ -425,7 +422,8 @@ def tutorials():
             #     audio_list[0] = "Eddie"
             #     player1.toggle_mount(slingshot1)
             if speech_recognizer.prediction == "switch":
-                player1.toggle_mount(slingshot1)
+                for slingshot in slingshots:
+                    player1.toggle_mount(slingshot)
 
             for event in pygame.event.get():
                 # Quit Game
@@ -453,6 +451,9 @@ def tutorials():
                                 tempEffect = GameObject((PLAYER_WIDTH*3, PLAYER_HEIGHT*3), player1.pos, player1.vel,
                                                         player1.team_num, img="assets/players/soldier-transform-effect.png", animation_steps=[5,5,5,5], scale=1)
                             elif isinstance(player1, Enchantress):
+                                tempEffect = GameObject((PLAYER_WIDTH*3, PLAYER_HEIGHT*3), player1.pos, player1.vel,
+                                                        player1.team_num, img="assets/players/enchantress-transform-effect.png", animation_steps=[5,5,5], scale=1)
+                            elif isinstance(player1, Heroine):
                                 tempEffect = GameObject((PLAYER_WIDTH*3, PLAYER_HEIGHT*3), player1.pos, player1.vel,
                                                         player1.team_num, img="assets/players/enchantress-transform-effect.png", animation_steps=[5,5,5], scale=1)
                             effects.add([tempEffect])
