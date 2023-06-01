@@ -25,7 +25,7 @@ class SpriteSheet():
 
         return image
 
-    def get_animation_list(self, animation_steps, frame_size, scale):
+    def get_animation_list(self, animation_steps, frame_size, scale, color=BLACK):
         '''
         animation_steps: len is number of rows, value of each index is number of col in each row
         '''
@@ -36,14 +36,14 @@ class SpriteSheet():
         for row in range(len(animation_steps)):
             temp_img_list = []
             for col in range(animation_steps[row]): 
-                temp_img_list.append(self.get_image(col, row, frame_size[0], frame_size[1], scale, BLACK))
+                temp_img_list.append(self.get_image(col, row, frame_size[0], frame_size[1], scale, color))
             animation_list.append(temp_img_list)
         
         return animation_list
     
 
 class Animation(SpriteSheet):
-    def __init__(self, pos: Tuple[int, int], image, animation_steps, frame_size: Tuple[int, int], scale, animation_cooldown=170, pause_frame=None, stop_frame=None):
+    def __init__(self, pos: Tuple[int, int], image, animation_steps, frame_size: Tuple[int, int], scale, color=BLACK, animation_cooldown=170, pause_frame=None, stop_frame=None):
         '''
         image: pygame.image object after calling convert_alpha()
         pause_frame: starting from 0, which frames do you want to pause at
@@ -52,7 +52,7 @@ class Animation(SpriteSheet):
         '''
         super().__init__(image)
         self.image = image
-        self.animation_list = self.get_animation_list(animation_steps, frame_size, scale)
+        self.animation_list = self.get_animation_list(animation_steps, frame_size, scale, color)
         self.last_update = pygame.time.get_ticks()
         self.animation_cooldown = animation_cooldown
         self.frame_col = 0

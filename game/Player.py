@@ -238,7 +238,7 @@ class DarthVader(Player):
 
 class Soldier(Player):
     def __init__(self, pos, vel, team_num, name, state=PLAYER_WALKING, health=100, weapon=Newb_Crossbow):
-        super().__init__(pos, vel, team_num, name, img="assets/players/soldier.png", state=PLAYER_WALKING, health=100)
+        super().__init__(pos, vel, team_num, name, img="assets/players/soldier.png", state=PLAYER_WALKING, health=100, weapon=weapon)
         
         self.promoted = False
         self.promoted_img = pygame.image.load("assets/players/darthvader.png").convert_alpha()
@@ -256,7 +256,7 @@ class Soldier(Player):
     
 class Enchantress(Player):
     def __init__(self, pos, vel, team_num, name, state=PLAYER_WALKING, health=100, weapon=Newb_Crossbow):
-        super().__init__(pos, vel, team_num, name, img="assets/players/enchantress.png", state=PLAYER_WALKING, health=100)
+        super().__init__(pos, vel, team_num, name, img="assets/players/enchantress.png", state=PLAYER_WALKING, health=100, weapon=weapon)
         self.promoted = False
         self.promoted_img = pygame.image.load("assets/players/dragonqueen.png").convert_alpha()
 
@@ -272,7 +272,7 @@ class Enchantress(Player):
         
 class Heroine(Player):
     def __init__(self, pos, vel, team_num, name, state=PLAYER_WALKING, health=100, weapon=Newb_Crossbow):
-        super().__init__(pos, vel, team_num, name, img="assets/players/heroine.png", state=PLAYER_WALKING, health=100)
+        super().__init__(pos, vel, team_num, name, img="assets/players/heroine.png", state=PLAYER_WALKING, health=100, weapon=weapon)
         self.promoted = False
         self.promoted_img = pygame.image.load("assets/players/wonderwoman.png").convert_alpha()
 
