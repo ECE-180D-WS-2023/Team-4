@@ -35,10 +35,4 @@ class MainMenuScene(Scene):
         self.menu.draw(screen)
 
     def update(self):
-        self.middleground_x -= self.middleground_speed
-        self.foreground_x -= self.foreground_speed
-        if self.middleground_x < (-self.middleground.get_width() + SCREEN_WIDTH):
-            self.middleground_x = 0
-        if self.foreground_x < (-self.foreground.get_width() + SCREEN_WIDTH):
-            self.foreground_x = 0
-        self.menu.update()
+        ...

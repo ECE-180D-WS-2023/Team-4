@@ -1,7 +1,7 @@
 import pygame
 
 class Button:
-    def __init__(self, pos, text, width=650, height=None, text_color=(123, 103, 65), text_color_hover=(255,255,255), fill_color=(201, 187, 159), fill_color_hover=(150,150,150), show_border=True, border_color=(105, 86, 51), border_thickness=6, border_padding=30, border_radius=(35, 10, 10, 35), font="assets/font.ttf", font_size=35):
+    def __init__(self, pos, text, width=650, height=None, text_color=(123, 103, 65), text_color_hover=(255,255,255), fill_color=(201, 187, 159), fill_color_hover=(150,150,150), show_border=True, border_color=(105, 86, 51), border_thickness=6, border_padding=30, border_radius=(35, 10, 10, 35), font="assets/fonts/font.ttf", font_size=35):
         self.font = pygame.font.Font(font, font_size)
         self.width = width if width else font_size*len(text) + border_padding*2
         self.height = font_size + border_padding*2

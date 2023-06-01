@@ -1,8 +1,8 @@
 import pygame
 
 class Scene:
+    next = None
     def __init__(self):
-        self.next = None
         self.done = False
 
     def startup(self, globals):

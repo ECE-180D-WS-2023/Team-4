@@ -1,22 +1,21 @@
 from game.game import Game
 from game.scenes.main_menu import *
+from game.scenes.splash import *
 from game.scenes.play import *
 from game.scenes.host import *
 from game.scenes.join import *
-from game.scenes.game_host import *
-from game.scenes.game_join import *
+from game.scenes.game import *
 
 def main():
     scenes = {
-        # "splash": SplashScene(),
+        "splash": SplashScene(),
         "main_menu": MainMenuScene(),
         "play": PlayScene(),
         "host": HostScene(),
         "join": JoinScene(),
-        "game_host": GameHostScene(),
-        "game_join": GameJoinScene(),
+        "game": GameScene(),
     }
-    game = Game(scenes, "main_menu")
+    game = Game(scenes, "splash")
     game.run()
 
 if __name__ == "__main__":

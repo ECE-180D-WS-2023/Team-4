@@ -2,7 +2,7 @@ import pygame
 
 class InputField:
     def __init__(self, pos, max_chars=15, default_text="", label_text="", label_padding=-2, show_border=True, border_thickness=3, border_padding=5, color=(0,0,0), font_size=30):
-        self.font = pygame.font.Font("assets/font.ttf", font_size)
+        self.font = pygame.font.Font("assets/fonts/font.ttf", font_size)
         self.max_chars = max_chars
         self.width = font_size*(max_chars+1) + border_padding*2
         self.height = font_size + border_padding*2

@@ -17,6 +17,7 @@ class JoinScene(Scene):
         if event.type == pygame.MOUSEBUTTONDOWN:
             button = self.menu.check_for_presses(event.pos)
             if button == self.start_button:
+                self.globals["address"] = self.input.text
                 self.next = "game"
                 self.done = True
             if button == self.back_button:

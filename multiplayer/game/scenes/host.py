@@ -1,4 +1,6 @@
 import pygame
+import server
+import multiprocessing
 from .scene import *
 from ..constants import *
 from ..network import get_private_ip
@@ -19,7 +21,9 @@ class HostScene(Scene):
             button = self.menu.check_for_presses(event.pos)
             if button == self.start_button:
                 self.globals["address"] = self.input.text
-                self.next = "game_host"
+                self.globals["server"] = multiprocessing.Process(target=server.run, args=(self.globals["address"],))
+                self.globals["server"].start()
+                self.next = "game"
                 self.done = True
             if button == self.back_button:
                 self.next = "play"

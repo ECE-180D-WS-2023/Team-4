@@ -1,24 +1,26 @@
 import pygame
 from collections import defaultdict
-from constants import *
-from spritesheet import *
-from integrations.speech_recognition import *
-from integrations.image_processing import *
+from .scene import *
+from ..constants import *
+from ..spritesheet import *
+from ..integrations.speech_recognition import *
+from ..integrations.image_processing import *
+from ..network import *
 
-class Game:
-    def __init__(self, client_id):
-        self.client_id = client_id
+class GameScene(Scene):
+    def __init__(self):
+        super().__init__()
+        self.background = pygame.image.load("assets/grass.png").convert_alpha()
         self.state = {}
         self.inputs = {}
-        self.running = True
-        self.show_backpack = False
-        self.background = pygame.image.load("assets/grass.png")
+        self.speech_recognizer = SpeechRecognizer()
+        self.image_processor = ImageProcessor()
         self.spritesheets = {
             # Players
             "Engineer": SpriteSheet("assets/players/engineer.png").get_animation_list((PLAYER_WIDTH, PLAYER_HEIGHT), PLAYER_SCALE, [3,3,3,3]),
             "Soldier": SpriteSheet("assets/players/soldier.png").get_animation_list((PLAYER_WIDTH, PLAYER_HEIGHT), PLAYER_SCALE, [3,3,3,3]),
             # Weapons
-            "Cannon": SpriteSheet("assets/players/cannon.png").get_animation_list((67, 150), 1),
+            "Cannon": SpriteSheet("assets/weapons/cannon.png").get_animation_list((67, 150), 1),
             # Veggies
             "Carrot": SpriteSheet("assets/veggies/carrot-big.png").get_animation_list((VEGGIE_WIDTH, VEGGIE_HEIGHT), VEGGIE_SCALE),
             "Mushroom": SpriteSheet("assets/veggies/mushroom.png").get_animation_list((VEGGIE_WIDTH, VEGGIE_HEIGHT), VEGGIE_SCALE),
@@ -30,34 +32,54 @@ class Game:
             # Bases
             "Base": SpriteSheet("assets/base2.png").get_animation_list((BASE_HEIGHT, BASE_HEIGHT), BASE_SCALE),
         }
-        self.speech_recognizer = SpeechRecognizer()
+
+    def startup(self, globals):
+        super().startup(globals)
         self.speech_recognizer.start()
-        self.image_processor = ImageProcessor()
+        # self.server_process = multiprocessing.Process(target=server.run, args=(globals["address"],))
+        # self.server_process.start()
+        while True:
+            try:
+                self.client = ClientSocket(globals["address"])
+                break
+            except:
+                ...
 
-    def handle_inputs(self):
-        self.inputs = defaultdict(list)
-        for event in pygame.event.get():
-            # Quit Game
-            if event.type == pygame.QUIT:
-                pygame.quit()
-            elif event.type == pygame.KEYDOWN:
-                self.inputs["keyboard"].append(event.key)
-            elif event.type == pygame.JOYBUTTONDOWN:
-                if pygame.joystick.Joystick(0).get_button(0):
-                    self.inputs["js_buttondown"].append(0)
-                if pygame.joystick.Joystick(0).get_button(1):
-                    self.inputs["js_buttondown"].append(1)
-                if pygame.joystick.Joystick(0).get_button(3):
-                    self.speech_recognizer.unmute()
-                    print("unmute")
-            elif event.type == pygame.JOYBUTTONUP:
-                if event.button == 3:
-                    self.speech_recognizer.mute()
-                    print("mute")
+    def cleanup(self):
+        self.speech_recognizer.stop()
+        self.image_processor.stop()
 
+    def handle_event(self, event):
+        if event.type == pygame.QUIT:
+            pygame.quit()
+        elif event.type == pygame.KEYDOWN:
+            self.inputs["keyboard"].append(event.key)
+        elif event.type == pygame.JOYBUTTONDOWN:
+            if pygame.joystick.Joystick(0).get_button(0):
+                self.inputs["js_buttondown"].append(0)
+            if pygame.joystick.Joystick(0).get_button(1):
+                self.inputs["js_buttondown"].append(1)
+            if pygame.joystick.Joystick(0).get_button(3):
+                self.speech_recognizer.unmute()
+                print("unmute")
+        elif event.type == pygame.JOYBUTTONUP:
+            if event.button == 3:
+                self.speech_recognizer.mute()
+                print("mute")
+
+    def draw(self, screen):
+        screen.blit(self.background, (0, 0))
+        for group in self.state.values():
+            for team in group:
+                if isinstance(team, dict):
+                    team = list(team.values())
+                for object in team:
+                    object.draw(self.spritesheets, screen)
+
+    def update(self):
         try:
             # NOTE: this finds the team number manually (not extensible)
-            if self.state["players"][self.client_id % 2][self.client_id].state == PLAYER_SHOOTING:
+            if self.state["players"][self.client.id % 2][self.client.id].state == PLAYER_SHOOTING:
                 self.image_processor.start()
                 self.inputs["angle"] = self.image_processor.angle
             else:
@@ -73,12 +95,6 @@ class Game:
         x = round(pygame.joystick.Joystick(0).get_axis(0))
         y = round(pygame.joystick.Joystick(0).get_axis(1))
         self.inputs["js_axis"] = (x, y)
-
-    def draw(self, screen):
-        screen.blit(self.background, (0, 0))
-        for group in self.state.values():
-            for team in group:
-                if isinstance(team, dict):
-                    team = list(team.values())
-                for object in team:
-                    object.draw(self.spritesheets, screen)
+        self.client.send(self.inputs)
+        self.state = self.client.receive()
+        self.inputs = defaultdict(list)

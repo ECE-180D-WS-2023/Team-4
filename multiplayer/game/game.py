@@ -1,4 +1,5 @@
 import pygame
+import multiprocessing
 from .constants import *
 
 pygame.init()
@@ -6,16 +7,17 @@ print("HFKDLSJFSKDL")
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN | pygame.SCALED)
 pygame.display.set_caption("Veggie Wars")
 pygame.joystick.init()
-joysticks = [pygame.joystick.Joystick(x)
-             for x in range(pygame.joystick.get_count())]
+joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
+multiprocessing.set_start_method("fork")
 
 class Game:
     def __init__(self, scenes, first_scene):
         self.screen = screen
         self.clock = pygame.time.Clock()
+        self.globals = {}
         self.scenes = scenes
         self.current_scene = scenes[first_scene]
-        self.globals = {}
+        self.current_scene.startup(self.globals)
 
     def run(self):
         running = True
