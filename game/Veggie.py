@@ -36,14 +36,14 @@ class Veggie(GameObject):
 # class Potato(Veggie):
 #     def __init__(self, pos, vel, team_num: int) -> None:
 #         super().__init__(pos, vel, team_num, img='assets/veggies/potato.png')
-        self.damage = CARROT_DAMAGE
+#         self.damage = CARROT_DAMAGE
 
 # class YellowBellPepper(Veggie):
 #     def __init__(self, pos, vel, team_num: int) -> None:
 #         super().__init__(pos, vel, team_num, img='assets/veggies/yellow-bell-pepper.png')
 #         self.damage = CARROT_DAMAGE
 
-class TestPumpkin(Veggie):
+class Pumpkin(Veggie):
     def __init__(self, pos, vel, team_num: int) -> None:
         super().__init__(pos, vel, team_num, img='assets/veggies/pumpkin-animation.png')
         self.damage = CARROT_DAMAGE
@@ -61,7 +61,7 @@ class TestPumpkin(Veggie):
             or self.rect.bottom >= SCREEN_HEIGHT):
             self.kill()
 
-class TestPotato(Veggie):
+class Potato(Veggie):
     def __init__(self, pos, vel, team_num: int) -> None:
         super().__init__(pos, vel, team_num, img='assets/veggies/potato-sheet.png')
         self.damage = CARROT_DAMAGE
@@ -79,7 +79,7 @@ class TestPotato(Veggie):
             or self.rect.bottom >= SCREEN_HEIGHT):
             self.kill()
 
-class TestCarrot(Veggie):
+class Carrot(Veggie):
     def __init__(self, pos, vel, team_num: int) -> None:
         super().__init__(pos, vel, team_num, img='assets/veggies/carrot-sheet.png')
         self.damage = CARROT_DAMAGE
@@ -97,7 +97,7 @@ class TestCarrot(Veggie):
             or self.rect.bottom >= SCREEN_HEIGHT):
             self.kill()
 
-class TestStrawberry(Veggie):
+class Strawberry(Veggie):
     def __init__(self, pos, vel, team_num: int) -> None:
         super().__init__(pos, vel, team_num, img='assets/veggies/strawberry-sheet.png')
         self.damage = CARROT_DAMAGE
@@ -115,7 +115,7 @@ class TestStrawberry(Veggie):
             or self.rect.bottom >= SCREEN_HEIGHT):
             self.kill()
 
-class TestPeach(Veggie):
+class Peach(Veggie):
     def __init__(self, pos, vel, team_num: int) -> None:
         super().__init__(pos, vel, team_num, img='assets/veggies/peach-sheet.png')
         self.damage = CARROT_DAMAGE

@@ -33,6 +33,8 @@ PLAYER_SHOOTING = 2
 
 WEIGHT_FACTOR = 0.2
 
+INVENTORY_SIZE = 5
+
 # Team
 team_boundaries = {
         0: {
