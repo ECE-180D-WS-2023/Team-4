@@ -360,7 +360,7 @@ def choosePlayer():
                         player = player_class(
                             pos=(80, 80), vel=(2.5, 2.5), team_num=1, name=input_text, 
                             state=PLAYER_WALKING, health=10, weapon=player_weapon)
-                        return player
+                        return player, map_selection
                     elif SKULL_CROSSBOW.checkForInput(CHOOSEPLAYER_MOUSE_POS):
                         player_weapon = Skull_Crossbow
                         WBB_pos = (556, 926)
@@ -425,7 +425,7 @@ def tutorials():
     Timer_on = False
 
     # GameObjects
-    player1 = choosePlayer()
+    player1, map_selected = choosePlayer()
     base1 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3.5/4)), (3, 3), 1, img = "assets/base/green-summer.png", health = 20, shield = 0)
     base2 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(0.5/4)), (3, 3), 2, img = "assets/base/maroon-summer.png", health = 20, shield = 0)
     slingshot1 = Slingshot((1400, 490), TROLLY_VELOCITY, 0)
@@ -461,7 +461,14 @@ def tutorials():
                                         running_threads, angle_queue])
     image_processor = ImageProcessor()
 
-    TUTORIALS_BG = pygame.image.load("assets/fall_map.png").convert_alpha()
+    if map_selected == SPRING:
+        map_file = "assets/maps/summer_map.png"
+    elif map_selected == FALL:
+        map_file = "assets/maps/fall_map.png"
+    elif map_selected == WINTER:
+        map_file = "assets/maps/winter_map.png" 
+
+    TUTORIALS_BG = pygame.image.load(map_file).convert_alpha()
     TUTORIALS_BG = pygame.transform.scale(TUTORIALS_BG, (2560, 1600))
 
     # audio_list = ["Eddie"]
