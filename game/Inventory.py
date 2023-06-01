@@ -21,7 +21,7 @@ class Inventory():
             0: pygame.transform.scale(pygame.image.load("assets/inventory/zero.png").convert_alpha(), (16 * scale, 42 * scale)),
             1: pygame.transform.scale(pygame.image.load("assets/inventory/one.png").convert_alpha(), (16 * scale, 42 * scale)),
             2: pygame.transform.scale(pygame.image.load("assets/inventory/two.png").convert_alpha(), (16 * scale, 42 * scale)),
-            scale: pygame.transform.scale(pygame.image.load("assets/inventory/three.png").convert_alpha(), (16 * scale, 42 * scale)),
+            3: pygame.transform.scale(pygame.image.load("assets/inventory/three.png").convert_alpha(), (16 * scale, 42 * scale)),
             4: pygame.transform.scale(pygame.image.load("assets/inventory/four.png").convert_alpha(), (16 * scale, 42 * scale)),
             5: pygame.transform.scale(pygame.image.load("assets/inventory/five.png").convert_alpha(), (16 * scale, 42 * scale)),
         }
