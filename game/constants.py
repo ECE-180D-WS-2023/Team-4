@@ -33,6 +33,8 @@ PLAYER_SHOOTING = 2
 
 WEIGHT_FACTOR = 0.2
 
+INVENTORY_SIZE = 5
+
 # Team
 team_boundaries = {
         0: {
@@ -46,8 +48,8 @@ team_boundaries = {
     }
 
 # Veggies
-VEGGIE_WIDTH = 32
-VEGGIE_HEIGHT = 32
+VEGGIE_WIDTH = 18
+VEGGIE_HEIGHT = 20
 VEGGIE_SCALE = 1
 
 MAX_VEGGIES = 5
@@ -66,7 +68,10 @@ WEAPON_HEIGHT = 32
 WEAPON_WIDTH = 32
 WEAPON_SCALE = 1
 
-
+# Maps
+SPRING = 0
+FALL = 1
+WINTER = 2
 
 # Shots
 SHOT_WIDTH = 32

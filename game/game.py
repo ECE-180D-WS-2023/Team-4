@@ -163,14 +163,17 @@ def play():
 def choosePlayer():
 
     # blit an universal background
-    background = pygame.image.load("assets/pause-phase/choose-player.png")
+    # background = pygame.image.load("assets/pause-phase/choose-playert.png")
 
-    book_animation = Animation((SCREEN_WIDTH/2,SCREEN_HEIGHT/2), pygame.image.load("assets/pause-phase/choose-player.png").convert_alpha(), 
-                                [6], (2560, 1600), 1, pause_frame=[0,5])
+    # Animations 
+    book_animation = Animation((SCREEN_WIDTH/2,SCREEN_HEIGHT/2), pygame.image.load("assets/pause-phase/choose-player-old.png").convert_alpha(), 
+                                [7], (2560, 1600), 1, pause_frame=[0,5], color=None)
     
     # text_appear_animation = Animation((SCREEN_WIDTH/2, SCREEN_HEIGHT/2), pygame.image.load("assets/pause-phase/reveal-message.png").convert_alpha(),
                                  # [13], (SCREEN_WIDTH, SCREEN_HEIGHT), 1, pause_frame=[0, 12], animation_cooldown=90)
 
+    phase2_text_appear = Animation((SCREEN_WIDTH/2, SCREEN_HEIGHT/2), pygame.image.load("assets/pause-phase/phase2-text-appear.png").convert_alpha(),
+                                  [13], (SCREEN_WIDTH, SCREEN_HEIGHT), 1, pause_frame=[0], animation_cooldown=90)
     # Phase 1
     STUDENT_PLAYERCARD = StudentCard(image=pygame.image.load("assets/players/student.png"), pos=(1785, 677),
                              text_input="STUDENT", font=get_font(30), base_color="#d7fcd4", hovering_color="White")
@@ -190,10 +193,47 @@ def choosePlayer():
     LEFT_ARROW = Button(image=pygame.image.load("assets/pause-phase/left-arrow.png"), pos=(1592, 675),
                                 text_input=None, font=None, base_color=None, hovering_color=None)
     
+    player_class = Student
+    player_weapon = Newb_Crossbow
+    map_selection = SPRING
+    
 
     # Phase 2
     CONTINUE_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png"), pos=(1800, 1225),
                                text_input="FIGHT!", font=get_font(13), base_color="#d7fcd4", hovering_color="White")
+    
+    SKULL_CROSSBOW = Button(image=pygame.image.load("assets/pause-phase/skull-crossbow-button.png"), pos=(556, 926),
+                               text_input=None, font=None, base_color=None, hovering_color="White")
+    
+    DEMONIC_CROSSBOW = Button(image=pygame.image.load("assets/pause-phase/demonic-crossbow-button.png"), pos=(697, 926),
+                               text_input=None, font=None, base_color=None, hovering_color="White")
+    
+    FIRE_CROSSBOW = Button(image=pygame.image.load("assets/pause-phase/fire-crossbow-button.png"), pos=(838, 926),
+                               text_input=None, font=None, base_color=None, hovering_color="White")
+    
+    VENOM_CROSSBOW = Button(image=pygame.image.load("assets/pause-phase/venom-crossbow-button.png"), pos=(976, 926),
+                               text_input=None, font=None, base_color=None, hovering_color="White")
+    
+    DIVINE_CROSSBOW = Button(image=pygame.image.load("assets/pause-phase/divine-crossbow-button.png"), pos=(1117, 926),
+                               text_input=None, font=None, base_color=None, hovering_color="White")
+    
+    SPRING_MAP = Button(image=pygame.image.load("assets/pause-phase/map-button.png"), pos=(1764, 630),
+                               text_input=None, font=None, base_color=None, hovering_color="White")
+    
+    FALL_MAP = Button(image=pygame.image.load("assets/pause-phase/map-button.png"), pos=(1764, 850),
+                               text_input=None, font=None, base_color=None, hovering_color="White")
+    
+    WINTER_MAP = Button(image=pygame.image.load("assets/pause-phase/map-button.png"), pos=(1764, 1079),
+                               text_input=None, font=None, base_color=None, hovering_color="White")
+    
+    WEAPON_BOUNDING_BOX = pygame.image.load("assets/pause-phase/weapon-selection-outline.png")
+    WBB_size = (80, 80)
+    WBB_pos = None
+
+    MAP_BOUNDING_BOX = pygame.image.load("assets/pause-phase/map-selection-outline.png")
+    MBB_size = (630, 230)
+    MBB_pos = None
+
 
     input_box_rect = pygame.Rect(1690,1114,200,50)
     input_text = ""
@@ -215,10 +255,13 @@ def choosePlayer():
     playercards = [STUDENT_PLAYERCARD, SOLDIER_PLAYERCARD, ENCHANTRESS_PLAYERCARD]
 
     phase1 = True
+    phase1_5 = False
     phase2 = False
     book_resume_signal = False
+    phase2_resume_signal = False
 
     running = True
+
     while running:
         CHOOSEPLAYER_MOUSE_POS = pygame.mouse.get_pos()
 
@@ -250,17 +293,11 @@ def choosePlayer():
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if STUDENT_PLAYERCARD.checkForInput(CHOOSEPLAYER_MOUSE_POS):
-                        player = Student(
-                            (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
-                        return player
+                        player_class = Student
                     elif SOLDIER_PLAYERCARD.checkForInput(CHOOSEPLAYER_MOUSE_POS):
-                        player = Soldier((80, 80), (2.5, 2.5), 1,
-                                        PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
-                        return player
+                        player_class = Soldier
                     elif ENCHANTRESS_PLAYERCARD.checkForInput(CHOOSEPLAYER_MOUSE_POS):
-                        player = Enchantress(
-                            (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
-                        return player
+                        player_class = Enchantress
                     elif RIGHT_ARROW.checkForInput(CHOOSEPLAYER_MOUSE_POS):
                         playercards[playercard_id].is_active = False
                         playercard_id += 1
@@ -274,7 +311,7 @@ def choosePlayer():
                     elif IMREADY_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
                         book_resume_signal = True
                         phase1 = False
-                        phase2 = True
+                        phase1_5= True
                     elif input_box_rect.collidepoint(event.pos):
                         input_active = True
                         cursor_active = True
@@ -307,20 +344,62 @@ def choosePlayer():
                     cursor_rect.x = input_box_rect.x + 50 + input_surface.get_width()
                     cursor_rect.y = input_box_rect.y + 5
                     SCREEN.blit(cursor_surface, cursor_rect)
-
+        # Phase 1.5
+        elif phase1_5:
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    book_resume_signal = True
+                    phase2_resume_signal = True
+                    phase1_5 = False
+                    phase2 = True
         # Phase 2
         elif phase2:
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if CONTINUE_BUTTON.checkForInput(CHOOSEPLAYER_MOUSE_POS):
-                        player = Student(
-                            (80, 80), (2.5, 2.5), 1, PLAYER_ENGINEER, input_text, PLAYER_WALKING, 10)
-                        return player
-            
+                        player = player_class(
+                            pos=(80, 80), vel=(2.5, 2.5), team_num=1, name=input_text, 
+                            state=PLAYER_WALKING, health=10, weapon=player_weapon)
+                        return player, map_selection
+                    elif SKULL_CROSSBOW.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                        player_weapon = Skull_Crossbow
+                        WBB_pos = (556, 926)
+                    elif DEMONIC_CROSSBOW.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                        player_weapon = Demonic_Crossbow
+                        WBB_pos = (697, 926)
+                    elif FIRE_CROSSBOW.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                        player_weapon = Fire_Crossbow
+                        WBB_pos = (838, 926)
+                    elif VENOM_CROSSBOW.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                        player_weapon = Venom_Crossbow
+                        WBB_pos = (976, 926)
+                    elif DIVINE_CROSSBOW.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                        player_weapon = Divine_Crossbow
+                        WBB_pos = (1117, 926)
+                    elif SPRING_MAP.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                        map_selection = SPRING
+                        MBB_pos = (1764, 630)
+                    elif FALL_MAP.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                        map_selection = FALL
+                        MBB_pos = (1764, 850)
+                    elif WINTER_MAP.checkForInput(CHOOSEPLAYER_MOUSE_POS):
+                        map_selection = WINTER
+                        MBB_pos = (1764, 1079)
+                    
+            # Buttons
             for button in [CONTINUE_BUTTON]:
                 button.changeColor(CHOOSEPLAYER_MOUSE_POS)
                 button.hoverNoise(CHOOSEPLAYER_MOUSE_POS)
                 button.update(SCREEN)
+
+            # Weapon bounding box
+            if WBB_pos:
+                SCREEN.blit(WEAPON_BOUNDING_BOX, (WBB_pos[0]-WBB_size[0]/2, WBB_pos[1]-WBB_size[1]/2))
+            # Map bounding box
+            if MBB_pos:
+                SCREEN.blit(MAP_BOUNDING_BOX, (MBB_pos[0]-MBB_size[0]/2, MBB_pos[1]-MBB_size[1]/2))
+
+            phase2_text_appear.update_norepeat(SCREEN, resume_signal=phase2_resume_signal)
 
         pygame.display.update()
         clock.tick(60)
@@ -346,9 +425,9 @@ def tutorials():
     Timer_on = False
 
     # GameObjects
-    player1 = choosePlayer()
-    base1 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4)), (3, 3), 1, img = "assets/base1.png", health = 20, shield = 0)
-    base2 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4)), (3, 3), 2, img = "assets/base2.png", health = 20, shield = 0)
+    player1, map_selected = choosePlayer()
+    base1 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3.5/4)), (3, 3), 1, img = "assets/base/green-summer.png", health = 20, shield = 0)
+    base2 = Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(0.5/4)), (3, 3), 2, img = "assets/base/maroon-summer.png", health = 20, shield = 0)
     slingshot1 = Slingshot((1400, 490), TROLLY_VELOCITY, 0)
     slingshot2 = Slingshot((750, 1090), TROLLY_VELOCITY, 1)
 
@@ -382,7 +461,14 @@ def tutorials():
                                         running_threads, angle_queue])
     image_processor = ImageProcessor()
 
-    TUTORIALS_BG = pygame.image.load("assets/river_map1_rail.png").convert_alpha()
+    if map_selected == SPRING:
+        map_file = "assets/maps/summer_map.png"
+    elif map_selected == FALL:
+        map_file = "assets/maps/fall_map.png"
+    elif map_selected == WINTER:
+        map_file = "assets/maps/winter_map.png" 
+
+    TUTORIALS_BG = pygame.image.load(map_file).convert_alpha()
     TUTORIALS_BG = pygame.transform.scale(TUTORIALS_BG, (2560, 1600))
 
     # audio_list = ["Eddie"]
@@ -410,11 +496,11 @@ def tutorials():
 
             pressed_keys = pygame.key.get_pressed()   # Keyboard input
             if (player1.state != PLAYER_SHOOTING):
-                if len(player1.backpack) < 1 and instruction_state != 0:
+                if len(player1.inventory) < 1 and instruction_state != 0:
                     instructions = Instructions('Walk to a Veggie and Press B to Harvest.')
                     instruction_state = 0
-                elif len(player1.backpack) >= 1 and instruction_state != 1:
-                    instructions = Instructions('Walk to the Rock, hold X, say Switch, release X')
+                elif len(player1.inventory) >= 1 and instruction_state != 1:
+                    instructions = Instructions('Walk to the Trolly, hold X, say Switch, release X')
                     instruction_state = 1
 
             # Audio Input
@@ -423,7 +509,8 @@ def tutorials():
             #     audio_list[0] = "Eddie"
             #     player1.toggle_mount(slingshot1)
             if speech_recognizer.prediction == "switch":
-                player1.toggle_mount(slingshot1)
+                for slingshot in slingshots:
+                    player1.toggle_mount(slingshot)
 
             for event in pygame.event.get():
                 # Quit Game
@@ -451,6 +538,9 @@ def tutorials():
                                 tempEffect = GameObject((PLAYER_WIDTH*3, PLAYER_HEIGHT*3), player1.pos, player1.vel,
                                                         player1.team_num, img="assets/players/soldier-transform-effect.png", animation_steps=[5,5,5,5], scale=1)
                             elif isinstance(player1, Enchantress):
+                                tempEffect = GameObject((PLAYER_WIDTH*3, PLAYER_HEIGHT*3), player1.pos, player1.vel,
+                                                        player1.team_num, img="assets/players/enchantress-transform-effect.png", animation_steps=[5,5,5], scale=1)
+                            elif isinstance(player1, Heroine):
                                 tempEffect = GameObject((PLAYER_WIDTH*3, PLAYER_HEIGHT*3), player1.pos, player1.vel,
                                                         player1.team_num, img="assets/players/enchantress-transform-effect.png", animation_steps=[5,5,5], scale=1)
                             effects.add([tempEffect])
@@ -484,11 +574,11 @@ def tutorials():
                 veggies.add(veggie)
 
             if player1.state == PLAYER_SHOOTING:
-                if instruction_state != 2 and len(player1.backpack) >= 1:
-                    instructions = Instructions('Stay 3ft from the Camera. \n Make sure your nose and right wrist are visible. \n Aim your Slingshot like a gun. \n Press A to fire.')
+                if instruction_state != 2 and len(player1.inventory) >= 1:
+                    instructions = Instructions('Stay 3ft from the Camera.\nMake sure your nose and right wrist are visible.\nAim your Slingshot like a gun.\nPress A to fire.')
                     instruction_state = 2
-                elif instruction_state != 3 and len(player1.backpack) < 1:
-                    instructions = Instructions('No ammo. To unmount the slingshot: Hold X. Say Switch. Release X.')
+                elif instruction_state != 3 and len(player1.inventory) < 1:
+                    instructions = Instructions('No ammo.\nTo unmount the slingshot:\nHold X.\nSay Switch.\nRelease X.')
                     instruction_state = 3
                 if not is_shooting_music:
                     pygame.mixer.music.load('assets/music/not-afraid.mp3')

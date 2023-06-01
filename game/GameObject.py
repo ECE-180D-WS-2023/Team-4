@@ -57,7 +57,6 @@ class GameObject(pygame.sprite.Sprite):
         if action != None:
             self.frame_row = action
 
-            # Update frame
             self.current_time = pygame.time.get_ticks()
             if self.current_time - self.last_update >= self.animation_cooldown:
                 self.frame_col += 1

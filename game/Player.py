@@ -7,10 +7,9 @@ import collections
 from typing import List, Set, Dict, Tuple
 import pygame
 from pygame import mixer
+from Inventory import *
 
 mixer.init()
-walking_sound = pygame.mixer.Sound('assets/music/walking.mp3')
-walking_sound.set_volume(1.5)
 shooting_sound = pygame.mixer.Sound('assets/music/shotgun-firing.mp3')
 student_transformation_sound = pygame.mixer.Sound("assets/music/Transformation-sound/student-transformation-sound.mp3")
 student_transformation_sound.set_volume(2)
@@ -20,18 +19,16 @@ enchantress_transformation_sound = pygame.mixer.Sound("assets/music/Transformati
 enchantress_transformation_sound.set_volume(2)
 class Player(GameObject):
     # TODO: remove role attribute in favor of subclasses
-    def __init__(self, pos, vel, team_num, role, name, img, state=PLAYER_WALKING, health=100):
+    def __init__(self, pos, vel, team_num, name, img, state=PLAYER_WALKING, health=100, weapon=Newb_Crossbow):
         super().__init__((PLAYER_WIDTH, PLAYER_HEIGHT), pos, vel, team_num, img, animation_steps=[3,3,3,3], scale=PLAYER_SCALE)
-        self.role = role
         self.state = state
-        self.backpack = collections.deque()
-        self.weight = role
+        self.inventory = Inventory()
         font = pygame.font.Font("assets/fonts/font.ttf", 15)
         self.name = name
         self.name_surface = font.render(self.name, True, (255, 255, 255))
         self.health = health
         self.mounted = False
-        self.weapon = Newb_Crossbow(pos=pos, team_num=team_num)
+        self.weapon = weapon(pos=pos, team_num=team_num)
     
     
 
@@ -50,10 +47,10 @@ class Player(GameObject):
 
         # self.backpack[veggie_class.__name__] -= 1
 
-        if len(self.backpack) == 0:
-            return
+        veggie_class = self.inventory.get()
 
-        veggie_class = self.backpack.popleft()
+        if not veggie_class:
+            return
 
         x_vel = math.sin(math.radians(angle%360)) * VEGGIE_VELOCITY
         y_vel = math.cos(math.radians(angle%360)) * VEGGIE_VELOCITY
@@ -65,14 +62,13 @@ class Player(GameObject):
     def harvest(self, veggies_group):
         if self.state == PLAYER_SHOOTING:
             return
-
-        veggie = pygame.sprite.spritecollideany(self, veggies_group)
-        if veggie:
-            if pygame.sprite.spritecollideany(self, veggies_group, pygame.sprite.collide_mask):
-                # self.backpack[veggie.__class__.__name__] = self.backpack.get(veggie.__class__.__name__, 0) + 1
-                walking_sound.play()
-                self.backpack.append(veggie.__class__)
-                veggie.kill()
+        if len(self.inventory) < INVENTORY_SIZE:
+            veggie = pygame.sprite.spritecollideany(self, veggies_group)
+            if veggie:
+                if pygame.sprite.spritecollideany(self, veggies_group, pygame.sprite.collide_mask):
+                    # self.backpack[veggie.__class__.__name__] = self.backpack.get(veggie.__class__.__name__, 0) + 1
+                    self.inventory.add(veggie.__class__)
+                    veggie.kill()
 
     def toggle_mount(self, slingshot):
         self.slingshot = slingshot
@@ -94,6 +90,8 @@ class Player(GameObject):
         name_x = self.rect.centerx - self.name_surface.get_width() // 2
         name_y = self.rect.top - self.name_surface.get_height()
         screen.blit(self.name_surface, (name_x, name_y))
+
+        self.inventory.draw(screen)
 
         x_action, y_action = js_action
         if self.state == PLAYER_WALKING:
@@ -220,8 +218,8 @@ class Player(GameObject):
             print("Shooting!")
 
 class Student(Player):
-    def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
-        super().__init__(pos, vel, team_num, role, name, img="assets/players/student.png", state=PLAYER_WALKING, health=100)
+    def __init__(self, pos, vel, team_num, name, state=PLAYER_WALKING, health=100, weapon=Newb_Crossbow):
+        super().__init__(pos, vel, team_num, name, img="assets/players/student.png", state=PLAYER_WALKING, health=100, weapon=weapon)
         self.promoted = False
         self.promoted_img = pygame.image.load("assets/players/engineer.png").convert_alpha()
     def promote(self):
@@ -235,12 +233,12 @@ class Student(Player):
         return
 
 class DarthVader(Player):
-    def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
-        super().__init__(pos, vel, team_num, role, name, img="assets/players/darthvader.png", state=PLAYER_WALKING, health=100)
+    def __init__(self, pos, vel, team_num, name, state=PLAYER_WALKING, health=100, weapon=Newb_Crossbow):
+        super().__init__(pos, vel, team_num, name, img="assets/players/darthvader.png", state=PLAYER_WALKING, health=100)
 
 class Soldier(Player):
-    def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
-        super().__init__(pos, vel, team_num, role, name, img="assets/players/soldier.png", state=PLAYER_WALKING, health=100)
+    def __init__(self, pos, vel, team_num, name, state=PLAYER_WALKING, health=100, weapon=Newb_Crossbow):
+        super().__init__(pos, vel, team_num, name, img="assets/players/soldier.png", state=PLAYER_WALKING, health=100, weapon=weapon)
         
         self.promoted = False
         self.promoted_img = pygame.image.load("assets/players/darthvader.png").convert_alpha()
@@ -257,8 +255,8 @@ class Soldier(Player):
         return
     
 class Enchantress(Player):
-    def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
-        super().__init__(pos, vel, team_num, role, name, img="assets/players/enchantress.png", state=PLAYER_WALKING, health=100)
+    def __init__(self, pos, vel, team_num, name, state=PLAYER_WALKING, health=100, weapon=Newb_Crossbow):
+        super().__init__(pos, vel, team_num, name, img="assets/players/enchantress.png", state=PLAYER_WALKING, health=100, weapon=weapon)
         self.promoted = False
         self.promoted_img = pygame.image.load("assets/players/dragonqueen.png").convert_alpha()
 
@@ -272,6 +270,18 @@ class Enchantress(Player):
         self.animation_list = SpriteSheet(self.promoted_img).get_animation_list(self.animation_steps, self.shape, self.scale)
         return
         
-class Farmer(Player):
-    def __init__(self, pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100):
-        super().__init__(pos, vel, team_num, role, name, state=PLAYER_WALKING, health=100)
+class Heroine(Player):
+    def __init__(self, pos, vel, team_num, name, state=PLAYER_WALKING, health=100, weapon=Newb_Crossbow):
+        super().__init__(pos, vel, team_num, name, img="assets/players/heroine.png", state=PLAYER_WALKING, health=100, weapon=weapon)
+        self.promoted = False
+        self.promoted_img = pygame.image.load("assets/players/wonderwoman.png").convert_alpha()
+
+    def promote(self):
+        self.promoted = True
+        enchantress_transformation_sound.play()
+        pygame.mixer.music.load("assets/music/DragonQueen_bgm.mp3")
+        pygame.mixer.music.set_volume(2)
+        pygame.mixer.music.play(-1)
+        self.state = PLAYER_TRANSFORMING
+        self.animation_list = SpriteSheet(self.promoted_img).get_animation_list(self.animation_steps, self.shape, self.scale)
+        return

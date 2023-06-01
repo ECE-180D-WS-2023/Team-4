@@ -62,7 +62,41 @@ class Newb_Crossbow(Weapon):
     def __init__(self, pos, team_num, vel=(0,0)):
         super().__init__(pos=pos, vel=vel, team_num=team_num, img="assets/weapons/newb_crossbow.png")
         self.pivot = (32, 69)
+        self.power = 5
+        self.strength = 5
+        self.weight = 5
+
+class Venom_Crossbow(Weapon):
+    def __init__(self, pos, team_num, vel=(0,0)):
+        super().__init__(pos=pos, vel=vel, team_num=team_num, img="assets/weapons/venom_crossbow.png")
+        self.pivot = (32, 69)
         self.power = 10
         self.strength = 20
 
-        
+class Demonic_Crossbow(Weapon):
+    def __init__(self, pos, team_num, vel=(0,0)):
+        super().__init__(pos=pos, vel=vel, team_num=team_num, img="assets/weapons/demonic_crossbow.png")
+        self.pivot = (32, 69)
+        self.power = 10
+        self.strength = 20
+
+class Divine_Crossbow(Weapon):
+    def __init__(self, pos, team_num, vel=(0,0)):
+        super().__init__(pos=pos, vel=vel, team_num=team_num, img="assets/weapons/divine_crossbow.png")
+        self.pivot = (32, 69)
+        self.power = 10
+        self.strength = 20
+
+class Skull_Crossbow(Weapon):
+    def __init__(self, pos, team_num, vel=(0,0)):
+        super().__init__(pos=pos, vel=vel, team_num=team_num, img="assets/weapons/skull_crossbow.png")
+        self.pivot = (32, 69)
+        self.power = 10
+        self.strength = 20
+
+class Fire_Crossbow(Weapon):
+    def __init__(self, pos, team_num, vel=(0,0)):
+        super().__init__(pos=pos, vel=vel, team_num=team_num, img="assets/weapons/fire_crossbow.png")
+        self.pivot = (32, 69)
+        self.power = 10
+        self.strength = 20
