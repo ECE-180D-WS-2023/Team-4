@@ -39,9 +39,9 @@ SCREEN = pygame.display.set_mode(
 pygame.display.set_caption("Veggie Wars")
 
 
-STATIC_BACKGROUND = pygame.image.load("assets/menu/static-background.png")
-BG_5 = pygame.image.load("assets/menu/5.png")
-BG_6 = pygame.image.load("assets/menu/6.png")
+STATIC_BACKGROUND = pygame.image.load("assets/menu/static-background.png").convert_alpha()
+BG_5 = pygame.image.load("assets/menu/5.png").convert_alpha()
+BG_6 = pygame.image.load("assets/menu/6.png").convert_alpha()
 
 def get_font(size, font="assets/fonts/font.ttf"):
     return pygame.font.Font(font, size)
@@ -103,11 +103,11 @@ def play():
     background_6 = 0
 
     # Initialize buttons
-    HOST_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png"), pos=(700, 350),
+    HOST_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png").convert_alpha(), pos=(700, 350),
                          text_input="HOST", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
-    JOIN_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png"), pos=(700, 500),
+    JOIN_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png").convert_alpha(), pos=(700, 500),
                             text_input="JOIN", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
-    BACK_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png"), pos=(700, 650),
+    BACK_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png").convert_alpha(), pos=(700, 650),
                             text_input="BACK", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
 
     # Button clicking sound effect
@@ -175,22 +175,22 @@ def choosePlayer():
     phase2_text_appear = Animation((SCREEN_WIDTH/2, SCREEN_HEIGHT/2), pygame.image.load("assets/pause-phase/phase2-text-appear.png").convert_alpha(),
                                   [13], (SCREEN_WIDTH, SCREEN_HEIGHT), 1, pause_frame=[0], animation_cooldown=90)
     # Phase 1
-    STUDENT_PLAYERCARD = StudentCard(image=pygame.image.load("assets/players/student.png"), pos=(1785, 677),
+    STUDENT_PLAYERCARD = StudentCard(image=pygame.image.load("assets/players/student.png").convert_alpha(), pos=(1785, 677),
                              text_input="STUDENT", font=get_font(30), base_color="#d7fcd4", hovering_color="White")
 
-    SOLDIER_PLAYERCARD = SoldierCard(image=pygame.image.load("assets/players/soldier.png"), pos=(1785, 677),
+    SOLDIER_PLAYERCARD = SoldierCard(image=pygame.image.load("assets/players/soldier.png").convert_alpha(), pos=(1785, 677),
                             text_input="SOLDIER", font=get_font(30), base_color="#d7fcd4", hovering_color="White")
 
-    ENCHANTRESS_PLAYERCARD = EnchantressCard(image=pygame.image.load("assets/players/enchantress.png"), pos=(1785, 677),
+    ENCHANTRESS_PLAYERCARD = EnchantressCard(image=pygame.image.load("assets/players/enchantress.png").convert_alpha(), pos=(1785, 677),
                                text_input="ENCHANTRESS", font=get_font(30), base_color="#d7fcd4", hovering_color="White")
 
-    IMREADY_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png"), pos=(1800, 1225),
+    IMREADY_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png").convert_alpha(), pos=(1800, 1225),
                                text_input="I'M READY", font=get_font(13), base_color="#d7fcd4", hovering_color="White")
 
-    RIGHT_ARROW = Button(image=pygame.image.load("assets/pause-phase/right-arrow.png"), pos=(1985, 675),
+    RIGHT_ARROW = Button(image=pygame.image.load("assets/pause-phase/right-arrow.png").convert_alpha(), pos=(1985, 675),
                                 text_input=None, font=None, base_color=None, hovering_color=None)
 
-    LEFT_ARROW = Button(image=pygame.image.load("assets/pause-phase/left-arrow.png"), pos=(1592, 675),
+    LEFT_ARROW = Button(image=pygame.image.load("assets/pause-phase/left-arrow.png").convert_alpha(), pos=(1592, 675),
                                 text_input=None, font=None, base_color=None, hovering_color=None)
     
     player_class = Student
@@ -199,31 +199,31 @@ def choosePlayer():
     
 
     # Phase 2
-    CONTINUE_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png"), pos=(1800, 1225),
+    CONTINUE_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png").convert_alpha(), pos=(1800, 1225),
                                text_input="FIGHT!", font=get_font(13), base_color="#d7fcd4", hovering_color="White")
     
-    SKULL_CROSSBOW = Button(image=pygame.image.load("assets/pause-phase/skull-crossbow-button.png"), pos=(556, 926),
+    SKULL_CROSSBOW = Button(image=pygame.image.load("assets/pause-phase/skull-crossbow-button.png").convert_alpha(), pos=(556, 926),
                                text_input=None, font=None, base_color=None, hovering_color="White")
     
-    DEMONIC_CROSSBOW = Button(image=pygame.image.load("assets/pause-phase/demonic-crossbow-button.png"), pos=(697, 926),
+    DEMONIC_CROSSBOW = Button(image=pygame.image.load("assets/pause-phase/demonic-crossbow-button.png").convert_alpha(), pos=(697, 926),
                                text_input=None, font=None, base_color=None, hovering_color="White")
     
-    FIRE_CROSSBOW = Button(image=pygame.image.load("assets/pause-phase/fire-crossbow-button.png"), pos=(838, 926),
+    FIRE_CROSSBOW = Button(image=pygame.image.load("assets/pause-phase/fire-crossbow-button.png").convert_alpha(), pos=(838, 926),
                                text_input=None, font=None, base_color=None, hovering_color="White")
     
-    VENOM_CROSSBOW = Button(image=pygame.image.load("assets/pause-phase/venom-crossbow-button.png"), pos=(976, 926),
+    VENOM_CROSSBOW = Button(image=pygame.image.load("assets/pause-phase/venom-crossbow-button.png").convert_alpha(), pos=(976, 926),
                                text_input=None, font=None, base_color=None, hovering_color="White")
     
-    DIVINE_CROSSBOW = Button(image=pygame.image.load("assets/pause-phase/divine-crossbow-button.png"), pos=(1117, 926),
+    DIVINE_CROSSBOW = Button(image=pygame.image.load("assets/pause-phase/divine-crossbow-button.png").convert_alpha(), pos=(1117, 926),
                                text_input=None, font=None, base_color=None, hovering_color="White")
     
-    SPRING_MAP = Button(image=pygame.image.load("assets/pause-phase/map-button.png"), pos=(1764, 630),
+    SPRING_MAP = Button(image=pygame.image.load("assets/pause-phase/map-button.png").convert_alpha(), pos=(1764, 630),
                                text_input=None, font=None, base_color=None, hovering_color="White")
     
-    FALL_MAP = Button(image=pygame.image.load("assets/pause-phase/map-button.png"), pos=(1764, 850),
+    FALL_MAP = Button(image=pygame.image.load("assets/pause-phase/map-button.png").convert_alpha(), pos=(1764, 850),
                                text_input=None, font=None, base_color=None, hovering_color="White")
     
-    WINTER_MAP = Button(image=pygame.image.load("assets/pause-phase/map-button.png"), pos=(1764, 1079),
+    WINTER_MAP = Button(image=pygame.image.load("assets/pause-phase/map-button.png").convert_alpha(), pos=(1764, 1079),
                                text_input=None, font=None, base_color=None, hovering_color="White")
     
     WEAPON_BOUNDING_BOX = pygame.image.load("assets/pause-phase/weapon-selection-outline.png")
@@ -668,10 +668,10 @@ def gameover():
 
     # Initialize buttons
 
-    MAIN_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(SCREEN_WIDTH/2, 650),
+    MAIN_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png").convert_alpha(), pos=(SCREEN_WIDTH/2, 650),
                               text_input="MAIN MENU", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
 
-    EXIT_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png"), pos=(SCREEN_WIDTH/2, 800),
+    EXIT_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png").convert_alpha(), pos=(SCREEN_WIDTH/2, 800),
                                text_input="EXIT", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
 
     # Button clicking sound effect
@@ -747,16 +747,16 @@ def sub_menu():
 
     # Initialize buttons
 
-    RESUME_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png"), pos=(1730, 58),
+    RESUME_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png").convert_alpha(), pos=(1730, 58),
                              text_input="RESUME", font=get_font(15), base_color="#d7fcd4", hovering_color="White")
 
-    OPTIONS_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png"), pos=(1900, 58),
+    OPTIONS_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png").convert_alpha(), pos=(1900, 58),
                             text_input="OPTIONS", font=get_font(15), base_color="#d7fcd4", hovering_color="White")
 
-    MAIN_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png"), pos=(2070, 58),
+    MAIN_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png").convert_alpha(), pos=(2070, 58),
                               text_input="MAIN MENU", font=get_font(12), base_color="#d7fcd4", hovering_color="White")
 
-    QUIT_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png"), pos=(2240, 58),
+    QUIT_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png").convert_alpha(), pos=(2240, 58),
                                text_input="QUIT", font=get_font(15), base_color="#d7fcd4", hovering_color="White")
 
     # Button clicking sound effect
@@ -812,13 +812,13 @@ def main_menu():
     background_6 = 0
 
     # Initialize buttons
-    PLAY_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png"), pos=(700, 350),
+    PLAY_BUTTON = Button(image=pygame.image.load("assets/menu/Play Rect.png").convert_alpha(), pos=(700, 350),
                          text_input="PLAY", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
-    OPTIONS_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(700, 500),
+    OPTIONS_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png").convert_alpha(), pos=(700, 500),
                             text_input="OPTIONS", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
-    TUTORIALS_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png"), pos=(700, 650),
+    TUTORIALS_BUTTON = Button(image=pygame.image.load("assets/menu/Options Rect.png").convert_alpha(), pos=(700, 650),
                               text_input="TUTORIALS", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
-    QUIT_BUTTON = Button(image=pygame.image.load("assets/menu/Quit Rect.png"), pos=(700, 800),
+    QUIT_BUTTON = Button(image=pygame.image.load("assets/menu/Quit Rect.png").convert_alpha(), pos=(700, 800),
                          text_input="QUIT", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
 
     # Button clicking sound effect
@@ -931,7 +931,7 @@ def main_menu():
 
         pygame.display.update()
 
-        clock.tick(100)
+        clock.tick(120)
 
 def introduction():
 
@@ -939,8 +939,11 @@ def introduction():
     background = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
     background.fill((0, 0, 0))
 
-    fade_in_duration = 2000  # in milliseconds
-    fade_out_duration = 2000  # in milliseconds
+    logo_sound = mixer.Sound('assets/music/logo_sound.mp3')
+    logo_sound.set_volume(1.5)
+
+    fade_in_duration = 3000  # in milliseconds
+    fade_out_duration = 3000  # in milliseconds
 
     logo_alpha_start = 0
     logo_alpha_end = 255
@@ -956,6 +959,7 @@ def introduction():
                                      ,[8], (480, 320), 1, animation_cooldown=500)
     
     stop_flag = False
+    logo_sound.play()
 
     while not stop_flag:
 
