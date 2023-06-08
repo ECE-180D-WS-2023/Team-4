@@ -488,19 +488,28 @@ def tutorials():
         veggies.add(veggie)
 
     instruction_state = 3
+    intro = True
 
     while running:
         try:
             TUTORIALS_MOUSE_POS = pygame.mouse.get_pos()
             SCREEN.blit(TUTORIALS_BG, (0, 0))
+    
+            objective_font = pygame.font.Font("assets/fonts/instruction.ttf", 50)
+            objective = objective_font.render("MISSION POSSIBLE: Take down the opponent's base with Veggie Shots!", True, 'white')
+            inventory_guide = objective_font.render("<- last column reveals your Next Veggie to launch and Total Veggies", True, 'white')
+            pause_guide = objective_font.render("Press P on the keyboard to Pause", True, 'white')
+            SCREEN.blit(objective, (500, 20))
+            SCREEN.blit(inventory_guide, (400, 1500))
+            SCREEN.blit(pause_guide, (800, 750))
 
             pressed_keys = pygame.key.get_pressed()   # Keyboard input
             if (player1.state != PLAYER_SHOOTING):
                 if len(player1.inventory) < 1 and instruction_state != 0:
-                    instructions = Instructions('Walk to a Veggie and Press B to Harvest.')
+                    instructions = Instructions('Press B to Harvest a Veggie.\nInventory Limit: 5 Veggies.\nVeggies in inventory: Weakest to Strongest.')
                     instruction_state = 0
                 elif len(player1.inventory) >= 1 and instruction_state != 1:
-                    instructions = Instructions('Walk to the Trolly, hold X, say Switch, release X')
+                    instructions = Instructions('Now Mount your Weapon!\nWalk to the Trolly on the rail, hold X, say Switch, release X')
                     instruction_state = 1
 
             # Audio Input
@@ -584,10 +593,10 @@ def tutorials():
 
             if player1.state == PLAYER_SHOOTING:
                 if instruction_state != 2 and len(player1.inventory) >= 1:
-                    instructions = Instructions('Stay 3ft from the Camera.\nMake sure your nose and right wrist are visible.\nAim your Slingshot like a gun.\nPress A to fire.')
+                    instructions = Instructions('Stay 3ft from the Camera.\nMake sure your nose and right wrist are visible.\nControl the shooting angle using your Right Hand(Wrist).\nPress A to fire.')
                     instruction_state = 2
                 elif instruction_state != 3 and len(player1.inventory) < 1:
-                    instructions = Instructions('No ammo.\nTo unmount the slingshot:\nHold X.\nSay Switch.\nRelease X.')
+                    instructions = Instructions('Out of ammo.\nTo unmount the weapon:\nHold X.\nSay Switch.\nRelease X.')
                     instruction_state = 3
                 if not is_shooting_music:
                     pygame.mixer.music.load('assets/music/not-afraid.mp3')
@@ -634,6 +643,7 @@ def tutorials():
             for shot in shots:
                 shot.update(SCREEN)
             instructions.update(SCREEN)
+            # objective.update(SCREEN)
 
             # show mask
             # for sprite in all_sprites:
@@ -662,7 +672,7 @@ def tutorials():
             running = False
 
 def gameover():
-    background = pygame.image.load("assets/grass.png")
+    background = pygame.image.load("assets/pause-phase/pause-background.png")
     dimmer = Dimmer(keepalive=True)
     running = True
 
@@ -685,7 +695,7 @@ def gameover():
         dimmer.dim(darken_factor=200, color_filter=(0, 0, 0))
 
         # Initialize main text box
-        MENU_TEXT = get_font(150).render("Game Over", True, "#b68f40")
+        MENU_TEXT = get_font(150).render("You did It!", True, "#b68f40")
         MENU_RECT = MENU_TEXT.get_rect(center=(SCREEN_WIDTH/2, 120))
 
         SCREEN.blit(MENU_TEXT, MENU_RECT)
@@ -741,23 +751,23 @@ def options():
 
 def sub_menu():
 
-    background = pygame.image.load("assets/pause-phase/book_background.png")
+    background = pygame.image.load("assets/pause-phase/pause-background.png")
     # dimmer = Dimmer(keepalive=True)
     running = True
 
     # Initialize buttons
 
-    RESUME_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png").convert_alpha(), pos=(1730, 58),
-                             text_input="RESUME", font=get_font(15), base_color="#d7fcd4", hovering_color="White")
+    RESUME_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button-large.png").convert_alpha(), pos=(800, 600),
+                             text_input="RESUME", font=get_font(30), base_color="#d7fcd4", hovering_color="White")
 
-    OPTIONS_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png").convert_alpha(), pos=(1900, 58),
-                            text_input="OPTIONS", font=get_font(15), base_color="#d7fcd4", hovering_color="White")
+    OPTIONS_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button-large.png").convert_alpha(), pos=(800, 800),
+                            text_input="OPTIONS", font=get_font(30), base_color="#d7fcd4", hovering_color="White")
 
-    MAIN_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png").convert_alpha(), pos=(2070, 58),
-                              text_input="MAIN MENU", font=get_font(12), base_color="#d7fcd4", hovering_color="White")
+    MAIN_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button-large.png").convert_alpha(), pos=(800, 1000),
+                              text_input="MAIN MENU", font=get_font(30), base_color="#d7fcd4", hovering_color="White")
 
-    QUIT_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png").convert_alpha(), pos=(2240, 58),
-                               text_input="QUIT", font=get_font(15), base_color="#d7fcd4", hovering_color="White")
+    QUIT_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button-large.png").convert_alpha(), pos=(800, 1200),
+                               text_input="QUIT", font=get_font(30), base_color="#d7fcd4", hovering_color="White")
 
     # Button clicking sound effect
     clicking_sound = mixer.Sound('assets/music/button_clicked.mp3')
