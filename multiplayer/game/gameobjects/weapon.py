@@ -36,3 +36,38 @@ class Cannon(Weapon):
     pivot = (34, 170)
     strength = 20
     power = 10
+
+class VenomCrossbow(Weapon):
+    frame_width, frame_height = 64, 64
+    animation_steps = [1]
+    pivot = (32, 69)
+    power = 10
+    strength = 20
+
+class DemonicCrossbow(Weapon):
+    frame_width, frame_height = 64, 64
+    animation_steps = [1]
+    pivot = (32, 69)
+    power = 10
+    strength = 20
+
+class DivineCrossbow(Weapon):
+    frame_width, frame_height = 64, 64
+    animation_steps = [1]
+    pivot = (32, 69)
+    power = 10
+    strength = 20
+
+class SkullCrossbow(Weapon):
+    frame_width, frame_height = 64, 64
+    animation_steps = [1]
+    pivot = (32, 69)
+    power = 10
+    strength = 20
+
+class FireCrossbow(Weapon):
+    frame_width, frame_height = 64, 64
+    animation_steps = [1]
+    pivot = (32, 69)
+    power = 10
+    strength = 20

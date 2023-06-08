@@ -15,6 +15,7 @@ class GameObject:
         self.last_animation_update = pygame.time.get_ticks()
         self.animation_cooldown = animation_cooldown
         self.animate = animate
+        self.actions = []
 
     @property
     def pos(self):
@@ -28,6 +29,10 @@ class GameObject:
         screen.blit(pygame.transform.scale_by(spritesheets[self.__class__.__name__][self.frame_row][self.frame_col], self.scale), self.rect)
         if debug:
             pygame.draw.rect(screen, (255, 255, 255), self.rect, 2)
+
+    def play_sounds(self, sounds):
+        for action in self.actions:
+            sounds[action].play()
 
     def update(self):
         self.rect.center += self.vel * self.direction

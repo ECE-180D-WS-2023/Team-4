@@ -15,7 +15,7 @@ class PlayerSelectionScene(Scene):
         self.buttons = ButtonGroup()
         self.right_button = self.buttons.add_button(ImageButton((1985, 675), GFX["assets/graphics/pause-phase/right-arrow.png"]))
         self.left_button = self.buttons.add_button(ImageButton((1592, 675), GFX["assets/graphics/pause-phase/left-arrow.png"], text=""))
-        self.continue_button = self.buttons.add_button(ImageButton((1700, 1225), GFX["assets/graphics/pause-phase/pause-button.png"], text="CONTINUE"))
+        self.continue_button = self.buttons.add_button(ImageButton((1800, 1210), pygame.transform.scale_by(GFX["assets/graphics/pause-phase/pause-button.png"], 1.5), text="CONTINUE", font_size=20, text_color=(150,150,150), text_color_hover=(200,200,200)))
         self.player = random.choice(Player.__subclasses__())((1785, 677), scale=4, animate=True)
         player_list = Player.__subclasses__()
         self.player_dict = {}

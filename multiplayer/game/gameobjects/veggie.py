@@ -44,3 +44,8 @@ class Tomato(Veggie):
     frame_width, frame_height = 18, 20
     animation_steps = [4]
     damage = 5
+
+class Pumpkin(Veggie):
+    frame_width, frame_height = 18, 20
+    animation_steps = [4]
+    damage = 5

@@ -20,10 +20,15 @@ class GameScene(Scene):
         super().startup(globals)
         self.background = pygame.transform.scale(self.globals["map"], (2560, 1600))
         self.speech_recognizer.start()
+        pygame.mixer.music.load('assets/music/on-a-clear-day.mp3')
+        pygame.mixer.music.play(-1)
         # Keep trying to connect to server until its up
         while True:
             try:
-                self.client = ClientSocket(globals["address"])
+                self.client = ClientSocket(globals["address"], initial_msg={
+                    "player_class": globals["player_class"],
+                    "weapon_class": globals["weapon_class"],
+                })
                 break
             except:
                 pygame.event.pump()
@@ -61,7 +66,19 @@ class GameScene(Scene):
                 for object in team:
                     object.draw(self.globals["spritesheets"], screen)
 
+        # Draw client's inventory
+        self.state["players"][self.client.id % 2][self.client.id].inventory.draw(self.globals["spritesheets"], screen)
+
+    def _play_sounds(self):
+        for group in self.state.values():
+            for team in group:
+                if isinstance(team, dict):
+                    team = list(team.values())
+                for object in team:
+                    object.play_sounds(self.globals["SFX"])
+
     def update(self):
+        self._play_sounds()
         try:
             # NOTE: this finds the team number manually (not extensible)
             if self.state["players"][self.client.id % 2][self.client.id].state == PLAYER_SHOOTING:

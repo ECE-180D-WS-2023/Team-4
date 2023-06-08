@@ -18,7 +18,7 @@ class MapSelectionScene(Scene):
         self.summer_map_button = self.buttons.add_button(TransparentButton((1760, 631), width=580, height=190))
         self.fall_map_button = self.buttons.add_button(TransparentButton((1760, 855), width=580, height=190))
         self.winter_map_button = self.buttons.add_button(TransparentButton((1760, 1080), width=580, height=190))
-        self.continue_button = self.buttons.add_button(ImageButton((1800, 1225), GFX["assets/graphics/pause-phase/pause-button.png"], text="CONTINUE"))
+        self.ready_button = self.buttons.add_button(ImageButton((1750, 1250), pygame.transform.scale_by(GFX["assets/graphics/pause-phase/pause-button.png"], 1.5), text="READY", font_size=20, text_color=(150,150,150), text_color_hover=(200,200,200)))
         self.page_flip_sound = pygame.mixer.Sound('assets/sounds/book_flip.mp3')
 
     def startup(self, globals):
@@ -35,7 +35,7 @@ class MapSelectionScene(Scene):
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             button = self.buttons.check_for_presses(event.pos)
-            if button == self.continue_button:
+            if button == self.ready_button:
                 if self.selected_weapon_class and self.selected_map:
                     self.globals["weapon_class"] = self.selected_weapon_class
                     self.globals["map"] = self.selected_map
@@ -44,15 +44,15 @@ class MapSelectionScene(Scene):
                     # Notify user to select map/weapon
                     ...
             elif button == self.skull_crossbow_button:
-                self.selected_weapon_class = Cannon
+                self.selected_weapon_class = SkullCrossbow
             elif button == self.demonic_crossbow_button:
-                self.selected_weapon_class = Cannon
+                self.selected_weapon_class = DemonicCrossbow
             elif button == self.fire_crossbow_button:
-                self.selected_weapon_class = Cannon
+                self.selected_weapon_class = FireCrossbow
             elif button == self.venom_crossbow_button:
-                self.selected_weapon_class = Cannon
+                self.selected_weapon_class = VenomCrossbow
             elif button == self.divine_crossbow_button:
-                self.selected_weapon_class = Cannon
+                self.selected_weapon_class = DivineCrossbow
             elif button == self.summer_map_button:
                 self.selected_map = GFX["assets/graphics/maps/summer_rails.png"]
             elif button == self.fall_map_button:
