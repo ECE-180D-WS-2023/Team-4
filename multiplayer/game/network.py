@@ -50,11 +50,12 @@ class Socket:
         return pickle.loads(message)
 
 class ClientSocket(Socket):
-    def __init__(self, host="127.0.0.1", port=8080, sock=None):
+    def __init__(self, host="127.0.0.1", port=8080, sock=None, initial_msg={}):
         super().__init__(host, port, sock)
         print("CLIENT:", self.address)
         self.socket.connect(self.address)
         self.id = self.receive()
+        self.send(initial_msg)
 
 class ServerSocket(Socket):
     def __init__(self, host="127.0.0.1", port=8080, sock=None):

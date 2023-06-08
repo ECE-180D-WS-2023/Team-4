@@ -1,9 +1,9 @@
 import pygame
 import math
-import collections
 from .gameobject import *
 from .weapon import *
 from .veggie import *
+from .attachments.inventory import *
 from ..constants import *
 
 class Player(GameObject):
@@ -13,22 +13,27 @@ class Player(GameObject):
         super().__init__(pos, vel, direction, scale=scale, animate=animate)
         self.team_num = team_num
         self.state = PLAYER_WALKING
-        self.backpack = collections.deque()
+        self.inventory = Inventory()
         self.weapon = weapon_class(pos)
 
     def shoot(self, shots):
         if self.state != PLAYER_SHOOTING:
             return
-        if len(self.backpack) == 0:
+
+        veggie_class = self.inventory.get()
+        if not veggie_class:
             return
 
-        veggie_class = self.backpack.popleft()
         shots.append(veggie_class(self.pos, vel=self.power+self.weapon.power, direction=(math.cos(math.radians(self.weapon.angle-90)), math.sin(math.radians(self.weapon.angle-90))), scale=1.5, damage=self.strength+self.weapon.strength))
 
     def harvest(self, veggies):
+        if len(self.inventory) == INVENTORY_SIZE:
+            return
+
         veggie = self.rect.collideobjects(veggies, key=lambda o: o.rect)
         if veggie:
-            self.backpack.append(veggie.__class__)
+            self.actions.append("harvest")
+            self.inventory.add(veggie.__class__)
             veggies.remove(veggie)
 
     def toggle_mount(self, slingshot):
@@ -46,6 +51,7 @@ class Player(GameObject):
 
     def draw(self, spritesheets, screen):
         super().draw(spritesheets, screen)
+        # self.inventory.draw(spritesheets, screen)
         if self.state == PLAYER_SHOOTING:
             self.weapon.draw(spritesheets, screen)
 
@@ -92,10 +98,26 @@ class Engineer(Player):
     def __init__(self, pos, vel=7, direction=(0, 0), scale=PLAYER_SCALE, weapon_class=Cannon, team_num=-1, animate=False):
         super().__init__(pos, vel, direction, scale, weapon_class, team_num, animate)
 
+class Student(Player):
+    frame_width, frame_height = 32, 32
+    animation_steps = [3, 3, 3, 3]
+    strength = 7
+    power = 7
+    def __init__(self, pos, vel=3, direction=(0, 0), scale=PLAYER_SCALE, weapon_class=Cannon, team_num=-1, animate=False):
+        super().__init__(pos, vel, direction, scale, weapon_class, team_num, animate)
+
 class Soldier(Player):
     frame_width, frame_height = 32, 32
     animation_steps = [3, 3, 3, 3]
     strength = 10
     power = 10
+    def __init__(self, pos, vel=3, direction=(0, 0), scale=PLAYER_SCALE, weapon_class=Cannon, team_num=-1, animate=False):
+        super().__init__(pos, vel, direction, scale, weapon_class, team_num, animate)
+
+class Enchantress(Player):
+    frame_width, frame_height = 32, 32
+    animation_steps = [3, 3, 3, 3]
+    strength = 7
+    power = 7
     def __init__(self, pos, vel=3, direction=(0, 0), scale=PLAYER_SCALE, weapon_class=Cannon, team_num=-1, animate=False):
         super().__init__(pos, vel, direction, scale, weapon_class, team_num, animate)

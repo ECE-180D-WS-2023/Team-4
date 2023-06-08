@@ -8,8 +8,10 @@ class _Button:
         self.text_surf_hover = self.font.render(text, True, text_color_hover)
         self.text_rect = self.text_surf.get_rect(center=pos)
         self.hover_sound = pygame.mixer.Sound('assets/sounds/button_hovering.mp3')
+        self.hover_sound.set_volume(0.1)
         self.hover_sound_played = False
         self.press_sound = pygame.mixer.Sound('assets/sounds/button_clicked.mp3')
+        self.hover_sound.set_volume(0.7)
         self.pressed = False
 
     @property
@@ -39,8 +41,8 @@ class _Button:
             self.hover_sound_played = False
 
 class ImageButton(_Button):
-    def __init__(self, pos, image, hover_image=None, pressed_image=None, text=""):
-        super().__init__(pos, text)
+    def __init__(self, pos, image, hover_image=None, pressed_image=None, text="", font_size=30, text_color=(100,100,100), text_color_hover=(150,150,150)):
+        super().__init__(pos, text, font_size=font_size, text_color=text_color, text_color_hover=text_color_hover)
         self.image = image
         self.hover_image = hover_image or image
         self.pressed_image = pressed_image or image

@@ -1,6 +1,6 @@
 import pygame
 import random
-from .initialize import screen, GFX, spritesheets
+from .initialize import screen, GFX, spritesheets, SFX
 from .constants import *
 from .gameobjects.player import *
 
@@ -10,6 +10,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.globals = {
             "GFX": GFX,
+            "SFX": SFX,
             "spritesheets": spritesheets,
             "background": GFX["assets/graphics/misc/sky.png"],
             "middleground": GFX["assets/graphics/misc/tree_foreground.png"],

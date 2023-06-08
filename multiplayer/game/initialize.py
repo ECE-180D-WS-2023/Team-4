@@ -32,7 +32,9 @@ for dir, _, filenames in os.walk('assets/graphics'):
 #     spritesheets[gameobject.__name__] = Spritesheet(gameobject.image_path).get_animation_list((gamobject.frame_width, gameobject.frame_height))
 spritesheets = {
     "Engineer": SpriteSheet(GFX["assets/graphics/players/engineer.png"]).get_animation_list((Engineer.frame_width, Engineer.frame_height), Engineer.animation_steps),
+    "Student": SpriteSheet(GFX["assets/graphics/players/student.png"]).get_animation_list((Student.frame_width, Student.frame_height), Student.animation_steps),
     "Soldier": SpriteSheet(GFX["assets/graphics/players/soldier.png"]).get_animation_list((Soldier.frame_width, Soldier.frame_height), Soldier.animation_steps),
+    "Enchantress": SpriteSheet(GFX["assets/graphics/players/enchantress.png"]).get_animation_list((Enchantress.frame_width, Enchantress.frame_height), Enchantress.animation_steps),
 
     "Cannon": SpriteSheet(GFX["assets/graphics/weapons/cannon.png"]).get_animation_list((Cannon.frame_width, Cannon.frame_height), Cannon.animation_steps),
 
@@ -40,7 +42,25 @@ spritesheets = {
     "Potato": SpriteSheet(GFX["assets/graphics/veggies/potato-sheet.png"]).get_animation_list((Potato.frame_width, Potato.frame_height), Potato.animation_steps),
     "Tomato": SpriteSheet(GFX["assets/graphics/veggies/tomato-sheet.png"]).get_animation_list((Tomato.frame_width, Tomato.frame_height), Tomato.animation_steps),
     "Peach": SpriteSheet(GFX["assets/graphics/veggies/peach-sheet.png"]).get_animation_list((Peach.frame_width, Peach.frame_height), Peach.animation_steps),
+    "Pumpkin": SpriteSheet(GFX["assets/graphics/veggies/pumpkin-sheet.png"]).get_animation_list((Pumpkin.frame_width, Pumpkin.frame_height), Pumpkin.animation_steps),
 
     "Trolley": SpriteSheet(GFX["assets/graphics/slingshots/trolley_static.png"]).get_animation_list((Trolley.frame_width, Trolley.frame_height), Trolley.animation_steps),
     "Base": SpriteSheet(GFX["assets/graphics/bases/base2.png"]).get_animation_list((Base.frame_width, Base.frame_height), Base.animation_steps),
+
+    "Inventory": pygame.image.load("assets/graphics/inventory/inventory-display.png"),
+    "InventoryCarrot": pygame.image.load("assets/graphics/inventory/carrot-inventory.png").convert_alpha(),
+    "InventoryPotato": pygame.image.load("assets/graphics/inventory/potato-inventory.png").convert_alpha(),
+    "InventoryPumpkin": pygame.image.load("assets/graphics/inventory/pumpkin-inventory.png").convert_alpha(),
+    "InventoryTomato": pygame.image.load("assets/graphics/inventory/tomato-inventory.png").convert_alpha(),
+    "InventoryPeach": pygame.image.load("assets/graphics/inventory/peach-inventory.png").convert_alpha(),
+    "Inventory0": pygame.image.load("assets/graphics/inventory/zero.png").convert_alpha(),
+    "Inventory1": pygame.image.load("assets/graphics/inventory/one.png").convert_alpha(),
+    "Inventory2": pygame.image.load("assets/graphics/inventory/two.png").convert_alpha(),
+    "Inventory3": pygame.image.load("assets/graphics/inventory/three.png").convert_alpha(),
+    "Inventory4": pygame.image.load("assets/graphics/inventory/four.png").convert_alpha(),
+    "Inventory5": pygame.image.load("assets/graphics/inventory/five.png").convert_alpha(),
+}
+
+SFX = {
+    "harvest": pygame.mixer.Sound('assets/sounds/harvest.mp3')
 }

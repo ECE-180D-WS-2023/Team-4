@@ -50,9 +50,12 @@ def client_thread(conn, id, game_state):
     # Send client id
     conn.send(id)
 
+    # Receive initial message
+    init = conn.receive()
+
     # Initialize player
     my_team_num = id % 2
-    game_state["players"][my_team_num][id] = Engineer(TEAM0_SPAWN if my_team_num == 0 else TEAM1_SPAWN, team_num = my_team_num, weapon_class=Cannon)
+    game_state["players"][my_team_num][id] = init["player_class"](TEAM0_SPAWN if my_team_num == 0 else TEAM1_SPAWN, team_num = my_team_num, weapon_class=init["weapon_class"])
     my_player = game_state["players"][my_team_num][id]
 
     while True:
@@ -112,6 +115,11 @@ def client_thread(conn, id, game_state):
             shot.check_collision(game_state["bases"][(my_team_num + 1) % 2])
 
         conn.send(game_state)
+
+        # Reset actions to avoid client constantly playing sounds
+        # TODO: do this somewhere else; alter logic to play sounds
+        my_player.actions = []
+
         clock.tick(60)
 
     conn.close()
@@ -159,7 +167,7 @@ def run(address="192.168.0.190", port=8080):
         thread = threading.Thread(target=client_thread, args=(conn, id, game_state))
         thread.start()
         id += 1
-        print(f"[NEW CONNECTION #{threading.active_count() - 1}] {addr} connected")
+        print(f"[CLIENT CONNECTED: ID=#{threading.active_count() - 1}], ADDR={addr}")
 
 if __name__ == "__main__":
     import sys
