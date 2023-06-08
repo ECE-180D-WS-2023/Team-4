@@ -13,16 +13,16 @@ from game.gameobjects.weapon import *
 def game_thread(game_state):
     clock = pygame.time.Clock()
 
-    team_boundaries = {
-        0: {
-            "top": 0,
-            "bottom": SCREEN_HEIGHT / 2
-        },
-        1: {
-            "top": SCREEN_HEIGHT / 2,
-            "bottom": SCREEN_HEIGHT
-        }
-    }
+    # team_boundaries = {
+    #     0: {
+    #         "top": 0,
+    #         "bottom": SCREEN_HEIGHT / 2
+    #     },
+    #     1: {
+    #         "top": SCREEN_HEIGHT / 2,
+    #         "bottom": SCREEN_HEIGHT
+    #     }
+    # }
     spawn_times = {
         0: [],
         1: []
@@ -36,10 +36,10 @@ def game_thread(game_state):
             # Add new veggies if past their spawn time
             for spawn_time in list(spawn_times[team]):
                 if time.time() > spawn_time:
-                    v_x = random.randint(0, SCREEN_WIDTH - VEGGIE_WIDTH)
-                    v_y = random.randint(team_boundaries[team]["top"], team_boundaries[team]["bottom"])
+                    v_x = random.randint(0, SCREEN_WIDTH)
+                    v_y = random.randint(TEAM_BOUNDARIES[team]["top"], TEAM_BOUNDARIES[team]["bottom"])
                     v_type = random.choice(veggies_list)
-                    game_state["veggies"][team].append(v_type((v_x, v_y)))
+                    game_state["veggies"][team].append(v_type((v_x, v_y), animate=True))
                     spawn_times[team].remove(spawn_time)
 
         clock.tick(20)
@@ -52,7 +52,7 @@ def client_thread(conn, id, game_state):
 
     # Initialize player
     my_team_num = id % 2
-    game_state["players"][my_team_num][id] = Engineer(TEAM0_SPAWN if my_team_num == 0 else TEAM1_SPAWN, team_num=my_team_num, weapon_class=Cannon)
+    game_state["players"][my_team_num][id] = Engineer(TEAM0_SPAWN if my_team_num == 0 else TEAM1_SPAWN, team_num = my_team_num, weapon_class=Cannon)
     my_player = game_state["players"][my_team_num][id]
 
     while True:
@@ -138,12 +138,12 @@ def run(address="192.168.0.190", port=8080):
             [], # team 1
         ],
         "slingshots": [
-            [Slingshot((SCREEN_WIDTH/2 + 200, SCREEN_HEIGHT*(1/4)))],
-            [Slingshot((SCREEN_WIDTH/2 - 200, SCREEN_HEIGHT*(3/4)))],
+            [Trolley((1590, 492))],
+            [Trolley((962, 1088))],
         ],
         "bases": [
-            [Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/4)))],
-            [Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(3/4)))],
+            [Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(1/8)))],
+            [Base((SCREEN_WIDTH/2, SCREEN_HEIGHT*(7/8)))],
         ],
     }
 

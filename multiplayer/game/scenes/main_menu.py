@@ -1,24 +1,37 @@
 import pygame
+import random
 from .scene import *
 from ..constants import *
 from ..ui.button import *
+from ..ui.text import *
+from ..gameobjects.player import *
+from ..spritesheet import *
 
 class MainMenuScene(Scene):
     def __init__(self):
         super().__init__()
-        self.background = pygame.image.load("assets/menu/static-background.png").convert_alpha()
-        self.middleground = pygame.image.load("assets/menu/5.png").convert_alpha()
-        self.foreground = pygame.image.load("assets/menu/6.png").convert_alpha()
-        self.middleground_x, self.foreground_x = 0, 0
-        self.middleground_speed, self.foreground_speed = 1.5, 6
-        self.menu = ButtonMenu()
-        self.play_button = self.menu.add_button(Button((700, 350), "PLAY"))
-        self.tutorials_button = self.menu.add_button(Button((700, 500), "TUTORIALS"))
-        self.quit_button = self.menu.add_button(Button((700, 650), "QUIT"))
+        self.buttons = ButtonGroup()
+        # self.play_button = self.buttons.add_button(RectButton((700, 450), "PLAY"))
+        # self.tutorials_button = self.buttons.add_button(RectButton((700, 600), "TUTORIALS"))
+        # self.quit_button = self.buttons.add_button(RectButton((700, 750), "QUIT"))
+        normal = pygame.transform.scale_by(GFX["assets/graphics/buttons/individual_frames/silver/normal.png"], 7)
+        hover = pygame.transform.scale_by(GFX["assets/graphics/buttons/individual_frames/silver/hover.png"], 7)
+        self.play_button = self.buttons.add_button(ImageButton((SCREEN_WIDTH/2, 500), normal, hover, text="PLAY"))
+        self.tutorials_button = self.buttons.add_button(ImageButton((SCREEN_WIDTH/2, 650), normal, hover, text="TUTORIALS"))
+        self.quit_button = self.buttons.add_button(ImageButton((SCREEN_WIDTH/2, 800), normal, hover, text="QUIT"))
+
+    def startup(self, globals):
+        super().startup(globals)
+        if not pygame.mixer.music.get_busy():
+            pygame.mixer.music.load('assets/music/another-sunny-day.mp3')
+            pygame.mixer.music.play(-1)
+        self.title = Text((SCREEN_WIDTH/2, 200), "Veggie Wars", font="assets/fonts/fibberish.ttf", font_size=200, shadow=True, shadow_offset=5)
+        # self.title = TypewriterText((SCREEN_WIDTH/2, 75), "Veggie Wars", font="assets/fonts/bongo.ttf", font_size=150, slowness=7)
 
     def handle_event(self, event):
+        super().handle_event(event)
         if event.type == pygame.MOUSEBUTTONDOWN:
-            button = self.menu.check_for_presses(event.pos)
+            button = self.buttons.check_for_presses(event.pos)
             if button == self.play_button:
                 self.next = "play"
                 self.done = True
@@ -26,19 +39,14 @@ class MainMenuScene(Scene):
                 self.next = "tutorial"
                 self.done = True
             if button == self.quit_button:
-                self.done = True
+                # Quit scene?
+                pygame.quit()
 
     def draw(self, screen):
-        screen.blit(self.background, (0, 0))
-        screen.blit(self.middleground, (self.middleground_x, 0))
-        screen.blit(self.foreground, (self.foreground_x, 0))
-        self.menu.draw(screen)
+        super().draw(screen)
+        self.buttons.draw(screen)
+        self.title.draw(screen)
 
     def update(self):
-        self.middleground_x -= self.middleground_speed
-        self.foreground_x -= self.foreground_speed
-        if self.middleground_x < (-self.middleground.get_width() + SCREEN_WIDTH):
-            self.middleground_x = 0
-        if self.foreground_x < (-self.foreground.get_width() + SCREEN_WIDTH):
-            self.foreground_x = 0
-        self.menu.update()
+        super().update()
+        self.buttons.update()

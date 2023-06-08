@@ -3,8 +3,8 @@ from .gameobject import *
 from ..constants import *
 
 class Veggie(GameObject):
-    def __init__(self, pos=(0, 0), vel=10, direction=(0, 0), damage=1):
-        super().__init__(pos, vel, direction)
+    def __init__(self, pos, vel=10, direction=(0, 0), scale=VEGGIE_SCALE, damage=1, animate=False):
+        super().__init__(pos, vel, direction, scale, animate=animate)
         self.damage = damage
 
     def check_collision(self, objects):
@@ -26,16 +26,21 @@ class Veggie(GameObject):
             self.kill = True
 
 class Carrot(Veggie):
-    ...
+    frame_width, frame_height = 18, 20
+    animation_steps = [4]
+    damage = 5
 
-class Mushroom(Veggie):
-    ...
-
-class Cabbage(Veggie):
-    ...
+class Peach(Veggie):
+    frame_width, frame_height = 18, 20
+    animation_steps = [4]
+    damage = 5
 
 class Potato(Veggie):
-    ...
+    frame_width, frame_height = 18, 20
+    animation_steps = [4]
+    damage = 5
 
-class YellowBellPepper(Veggie):
-    ...
+class Tomato(Veggie):
+    frame_width, frame_height = 18, 20
+    animation_steps = [4]
+    damage = 5

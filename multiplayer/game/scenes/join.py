@@ -7,15 +7,15 @@ from ..ui.input import *
 class JoinScene(Scene):
     def __init__(self):
         super().__init__()
-        self.background = pygame.image.load("assets/menu/static-background.png").convert_alpha()
+        self.background = GFX["assets/graphics/misc/sky.png"]
         self.input = InputField((SCREEN_WIDTH/2, 300), label_text="Enter Server IP:", font_size=40)
-        self.menu = ButtonMenu()
-        self.start_button = self.menu.add_button(Button((SCREEN_WIDTH/2, 450), "START"))
-        self.back_button = self.menu.add_button(Button((SCREEN_WIDTH/2, 600), "BACK"))
+        self.buttons = ButtonGroup()
+        self.start_button = self.buttons.add_button(RectButton((SCREEN_WIDTH/2, 450), "START"))
+        self.back_button = self.buttons.add_button(RectButton((SCREEN_WIDTH/2, 600), "BACK"))
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
-            button = self.menu.check_for_presses(event.pos)
+            button = self.buttons.check_for_presses(event.pos)
             if button == self.start_button:
                 self.globals["address"] = self.input.text
                 self.next = "game"
@@ -28,9 +28,9 @@ class JoinScene(Scene):
 
     def draw(self, screen):
         screen.blit(self.background, (0, 0))
-        self.menu.draw(screen)
+        self.buttons.draw(screen)
         self.input.draw(screen)
 
     def update(self):
-        self.menu.update()
+        self.buttons.update()
         self.input.update()

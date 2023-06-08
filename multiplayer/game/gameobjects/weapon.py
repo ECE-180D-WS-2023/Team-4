@@ -20,16 +20,19 @@ def blitRotate(surf, image, origin, pivot, angle):
     surf.blit(rotated_image, rotated_image_rect)
 
 class Weapon(GameObject):
-    def __init__(self, pos, vel, direction):
-        super().__init__(pos, vel, direction)
+    pivot: tuple
+    strength: int
+    power: int
+    def __init__(self, pos, vel=0, direction=(0, 0), scale=1):
+        super().__init__(pos, vel, direction, scale)
         self.angle = 0
 
     def draw(self, spritesheets, screen):
-        blitRotate(screen, spritesheets[self.__class__.__name__][self.frame[0]][self.frame[1]], self.pos, self.pivot, self.angle)
+        blitRotate(screen, spritesheets[self.__class__.__name__][self.frame_row][self.frame_col], self.pos, self.pivot, self.angle)
 
 class Cannon(Weapon):
+    frame_width, frame_height = 67, 150
+    animation_steps = [1]
     pivot = (34, 170)
-    power = 10
     strength = 20
-    def __init__(self, pos, vel=0, direction=(0, 0)):
-        super().__init__(pos, vel, direction)
+    power = 10

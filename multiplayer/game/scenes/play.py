@@ -7,15 +7,14 @@ from ..ui.input import *
 class PlayScene(Scene):
     def __init__(self):
         super().__init__()
-        self.background = pygame.image.load("assets/menu/static-background.png").convert_alpha()
-        self.menu = ButtonMenu()
-        self.host_button = self.menu.add_button(Button((700, 350), "HOST"))
-        self.join_button = self.menu.add_button(Button((700, 500), "JOIN"))
-        self.back_button = self.menu.add_button(Button((700, 650), "BACK"))
+        self.buttons = ButtonGroup()
+        self.host_button = self.buttons.add_button(RectButton((700, 350), "HOST"))
+        self.join_button = self.buttons.add_button(RectButton((700, 500), "JOIN"))
+        self.back_button = self.buttons.add_button(RectButton((700, 650), "BACK"))
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
-            button = self.menu.check_for_presses(event.pos)
+            button = self.buttons.check_for_presses(event.pos)
             if button == self.host_button:
                 self.next = "host"
                 self.done = True
@@ -27,8 +26,9 @@ class PlayScene(Scene):
                 self.done = True
 
     def draw(self, screen):
-        screen.blit(self.background, (0, 0))
-        self.menu.draw(screen)
+        super().draw(screen)
+        self.buttons.draw(screen)
 
     def update(self):
-        self.menu.update()
+        super().update()
+        self.buttons.update()

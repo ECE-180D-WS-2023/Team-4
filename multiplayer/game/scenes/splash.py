@@ -3,10 +3,10 @@ from .scene import *
 from ..constants import *
 
 class SplashScene(Scene):
-    next = "main_menu"
+    next = "loading"
     def __init__(self):
         super().__init__()
-        self.logo = pygame.image.load("assets/menu/puzzle.png").convert_alpha()
+        self.logo = GFX["assets/graphics/misc/puzzle.png"]
         self.label = pygame.font.Font("assets/fonts/introduction_font.ttf", 40).render("Veggie Wars Gaming", True, (255, 255, 255))
         self.background = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.background.fill((0, 0, 0))
@@ -14,11 +14,13 @@ class SplashScene(Scene):
         self.alpha_end = 255
         self.fade_in_duration = 2000  # in milliseconds
         self.fade_out_duration = 2000  # in milliseconds
+        self.sound = pygame.mixer.Sound("assets/sounds/logo_sound.mp3")
         # self.next = "main_menu"
 
     def startup(self, globals):
         super().startup(globals)
         self.start_time = pygame.time.get_ticks()
+        self.sound.play()
 
     def draw(self, screen):
         screen.blit(self.background, (0, 0))

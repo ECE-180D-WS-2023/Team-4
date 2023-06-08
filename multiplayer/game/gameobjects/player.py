@@ -7,12 +7,13 @@ from .veggie import *
 from ..constants import *
 
 class Player(GameObject):
-    def __init__(self, pos, team_num, vel, weapon_class):
-        super().__init__(pos, vel, scale=PLAYER_SCALE)
+    strength: int
+    power: int
+    def __init__(self, pos, vel, direction, scale, weapon_class, team_num, animate):
+        super().__init__(pos, vel, direction, scale=scale, animate=animate)
         self.team_num = team_num
         self.state = PLAYER_WALKING
         self.backpack = collections.deque()
-        self.mounted = False
         self.weapon = weapon_class(pos)
 
     def shoot(self, shots):
@@ -22,7 +23,7 @@ class Player(GameObject):
             return
 
         veggie_class = self.backpack.popleft()
-        shots.append(veggie_class(self.pos, self.strength + self.weapon.strength, (math.cos(math.radians(self.weapon.angle-90)), math.sin(math.radians(self.weapon.angle-90)))))
+        shots.append(veggie_class(self.pos, vel=self.power+self.weapon.power, direction=(math.cos(math.radians(self.weapon.angle-90)), math.sin(math.radians(self.weapon.angle-90))), scale=1.5, damage=self.strength+self.weapon.strength))
 
     def harvest(self, veggies):
         veggie = self.rect.collideobjects(veggies, key=lambda o: o.rect)
@@ -31,18 +32,17 @@ class Player(GameObject):
             veggies.remove(veggie)
 
     def toggle_mount(self, slingshot):
-        if self.mounted:
+        if self.state == PLAYER_SHOOTING:
             print("unmount")
-            self.mounted = False
+            slingshot.unmount()
             self.state = PLAYER_WALKING
-            # self._toggle_weapon()
         elif self.rect.colliderect(slingshot.rect):
             print("mount")
-            self.mounted = True
-            self.pos = slingshot.pos
+            slingshot.mount()
+            self.slingshot = slingshot
+            self.pos = slingshot.mount_pos
             self.weapon.pos = self.pos
             self.state = PLAYER_SHOOTING
-            # self._toggle_weapon()
 
     def draw(self, spritesheets, screen):
         super().draw(spritesheets, screen)
@@ -51,25 +51,51 @@ class Player(GameObject):
 
     def update(self):
         if self.state == PLAYER_WALKING:
-            self.rect.center += self.direction * self.vel
+            super().update()
+        elif self.state == PLAYER_SHOOTING:
+            self.pos = self.slingshot.mount_pos
+            self.weapon.pos = self.pos
 
-        if self.rect.left < 0:
-            self.rect.left = 0
-        if self.rect.right > SCREEN_WIDTH:
-            self.rect.right = SCREEN_WIDTH
-        if self.rect.top < 0:
-            self.rect.top = 0
-        if self.rect.bottom > SCREEN_HEIGHT:
-            self.rect.bottom = SCREEN_HEIGHT
+        # Negative team number for player objects not in game (e.g. in main menu)
+        if self.team_num >= 0:
+            # Animation update
+            if self.direction.x == -1:
+                self.frame_row = 1
+                self.animate = True
+            elif self.direction.x == 1:
+                self.frame_row = 2
+                self.animate = True
+            elif self.direction.y == 1:
+                self.frame_row = 0
+                self.animate = True
+            elif self.direction.y == -1:
+                self.frame_row = 3
+                self.animate = True
+            else:
+                self.animate = False
+
+            # Borders
+            if self.rect.left < 0:
+                self.rect.left = 0
+            if self.rect.right > SCREEN_WIDTH:
+                self.rect.right = SCREEN_WIDTH
+            if self.rect.top < TEAM_BOUNDARIES[self.team_num]["top"]:
+                self.rect.top = TEAM_BOUNDARIES[self.team_num]["top"]
+            if self.rect.bottom > TEAM_BOUNDARIES[self.team_num]["bottom"]:
+                self.rect.bottom = TEAM_BOUNDARIES[self.team_num]["bottom"]
 
 class Engineer(Player):
-    power = 5
+    frame_width, frame_height = 32, 32
+    animation_steps = [3, 3, 3, 3]
     strength = 5
-    def __init__(self, pos, weapon_class, team_num=0, vel=7):
-        super().__init__(pos, team_num, vel, weapon_class)
+    power = 5
+    def __init__(self, pos, vel=7, direction=(0, 0), scale=PLAYER_SCALE, weapon_class=Cannon, team_num=-1, animate=False):
+        super().__init__(pos, vel, direction, scale, weapon_class, team_num, animate)
 
 class Soldier(Player):
-    power = 10
+    frame_width, frame_height = 32, 32
+    animation_steps = [3, 3, 3, 3]
     strength = 10
-    def __init__(self, pos, weapon_class, team_num=0, vel=3):
-        super().__init__(pos, team_num, vel, weapon_class)
+    power = 10
+    def __init__(self, pos, vel=3, direction=(0, 0), scale=PLAYER_SCALE, weapon_class=Cannon, team_num=-1, animate=False):
+        super().__init__(pos, vel, direction, scale, weapon_class, team_num, animate)

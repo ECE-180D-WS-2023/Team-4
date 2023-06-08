@@ -74,7 +74,6 @@ class ImageProcessor:
                 args=[self.angle_queue]
             )
             self._thread.start()
-            print("meow")
 
     def stop(self):
         if self._thread.is_alive():

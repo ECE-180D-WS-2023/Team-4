@@ -1,4 +1,5 @@
 import pygame
+import time
 from collections import defaultdict
 from .scene import *
 from ..constants import *
@@ -10,40 +11,24 @@ from ..network import *
 class GameScene(Scene):
     def __init__(self):
         super().__init__()
-        self.background = pygame.image.load("assets/grass.png").convert_alpha()
         self.state = {}
         self.inputs = {}
         self.speech_recognizer = SpeechRecognizer()
         self.image_processor = ImageProcessor()
-        self.spritesheets = {
-            # Players
-            "Engineer": SpriteSheet("assets/players/engineer.png").get_animation_list((PLAYER_WIDTH, PLAYER_HEIGHT), PLAYER_SCALE, [3,3,3,3]),
-            "Soldier": SpriteSheet("assets/players/soldier.png").get_animation_list((PLAYER_WIDTH, PLAYER_HEIGHT), PLAYER_SCALE, [3,3,3,3]),
-            # Weapons
-            "Cannon": SpriteSheet("assets/weapons/cannon.png").get_animation_list((67, 150), 1),
-            # Veggies
-            "Carrot": SpriteSheet("assets/veggies/carrot-big.png").get_animation_list((VEGGIE_WIDTH, VEGGIE_HEIGHT), VEGGIE_SCALE),
-            "Mushroom": SpriteSheet("assets/veggies/mushroom.png").get_animation_list((VEGGIE_WIDTH, VEGGIE_HEIGHT), VEGGIE_SCALE),
-            "Cabbage": SpriteSheet("assets/veggies/cabbage.png").get_animation_list((VEGGIE_WIDTH, VEGGIE_HEIGHT), VEGGIE_SCALE),
-            "Potato": SpriteSheet("assets/veggies/potato.png").get_animation_list((VEGGIE_WIDTH, VEGGIE_HEIGHT), VEGGIE_SCALE),
-            "YellowBellPepper": SpriteSheet("assets/veggies/yellow-bell-pepper.png").get_animation_list((VEGGIE_WIDTH, VEGGIE_HEIGHT), VEGGIE_SCALE),
-            # Slingshots
-            "Slingshot": SpriteSheet("assets/slingshot_station.png").get_animation_list((SLINGSHOT_WIDTH, SLINGSHOT_HEIGHT), SLINGSHOT_SCALE),
-            # Bases
-            "Base": SpriteSheet("assets/base2.png").get_animation_list((BASE_HEIGHT, BASE_HEIGHT), BASE_SCALE),
-        }
 
     def startup(self, globals):
         super().startup(globals)
+        self.background = pygame.transform.scale(self.globals["map"], (2560, 1600))
         self.speech_recognizer.start()
-        # self.server_process = multiprocessing.Process(target=server.run, args=(globals["address"],))
-        # self.server_process.start()
+        # Keep trying to connect to server until its up
         while True:
             try:
                 self.client = ClientSocket(globals["address"])
                 break
             except:
-                ...
+                pygame.event.pump()
+                print("Attempting connection to server...")
+                time.sleep(1)
 
     def cleanup(self):
         self.speech_recognizer.stop()
@@ -74,7 +59,7 @@ class GameScene(Scene):
                 if isinstance(team, dict):
                     team = list(team.values())
                 for object in team:
-                    object.draw(self.spritesheets, screen)
+                    object.draw(self.globals["spritesheets"], screen)
 
     def update(self):
         try:
@@ -97,4 +82,4 @@ class GameScene(Scene):
         self.inputs["js_axis"] = (x, y)
         self.client.send(self.inputs)
         self.state = self.client.receive()
-        self.inputs = defaultdict(list)
+        self.inputs = defaultdict(list)  # reset self.inputs for next frame

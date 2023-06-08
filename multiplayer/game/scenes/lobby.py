@@ -2,37 +2,42 @@ import pygame
 from .scene import *
 from ..constants import *
 from ..ui.button import *
+from ..ui.text import *
 
-class MainMenuScene(Scene):
+class LobbyScene(Scene):
     def __init__(self):
         super().__init__()
-        self.background = pygame.image.load("assets/menu/static-background.png").convert_alpha()
-        self.middleground = pygame.image.load("assets/menu/5.png").convert_alpha()
-        self.foreground = pygame.image.load("assets/menu/6.png").convert_alpha()
-        self.middleground_x, self.foreground_x = 0, 0
-        self.middleground_speed, self.foreground_speed = 1.5, 6
-        self.menu = ButtonMenu()
-        self.play_button = self.menu.add_button(Button((700, 350), "PLAY"))
-        self.tutorials_button = self.menu.add_button(Button((700, 500), "TUTORIALS"))
-        self.quit_button = self.menu.add_button(Button((700, 650), "QUIT"))
+        self.background = GFX["assets/graphics/misc/sky.png"]
+        self.buttons = ButtonGroup()
+        self.start_button = self.buttons.add_button(RectButton((SCREEN_WIDTH/2, 450), "START"))
+        self.back_button = self.buttons.add_button(RectButton((SCREEN_WIDTH/2, 600), "BACK"))
+
+    def startup(self, globals):
+        super().startup(globals)
+        self.hosting_message = Text((SCREEN_WIDTH/2, 110), f"Server hosted on {self.globals['address']}", font_size=95, shadow=True)
+        self.waiting_message = TypewriterText((SCREEN_WIDTH/2, 225), "Waiting for players", font_size=75, slowness=5)
+        self.ellipsis = TypewriterText((SCREEN_WIDTH/2 + 365, 225), "....", font_size=75, slowness=30, align="left")
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
-            button = self.menu.check_for_presses(event.pos)
-            if button == self.play_button:
-                self.next = "play"
+            button = self.buttons.check_for_presses(event.pos)
+            if button == self.start_button:
+                self.next = "player_selection"
                 self.done = True
-            if button == self.tutorials_button:
-                self.next = "tutorial"
-                self.done = True
-            if button == self.quit_button:
+            if button == self.back_button:
+                self.next = "host"
+                # stop server
                 self.done = True
 
     def draw(self, screen):
         screen.blit(self.background, (0, 0))
-        screen.blit(self.middleground, (self.middleground_x, 0))
-        screen.blit(self.foreground, (self.foreground_x, 0))
-        self.menu.draw(screen)
+        self.buttons.draw(screen)
+        self.hosting_message.draw(screen)
+        self.waiting_message.update(screen)
+        if self.waiting_message.done:
+            self.ellipsis.update(screen)
+        if self.ellipsis.done:
+            self.ellipsis.counter = 0
 
     def update(self):
-        ...
+        self.buttons.update()

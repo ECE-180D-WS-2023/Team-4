@@ -1,20 +1,26 @@
 import pygame
-import multiprocessing
+import random
+from .initialize import screen, GFX, spritesheets
 from .constants import *
-
-pygame.init()
-print("HFKDLSJFSKDL")
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN | pygame.SCALED)
-pygame.display.set_caption("Veggie Wars")
-pygame.joystick.init()
-joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
-multiprocessing.set_start_method("fork")
+from .gameobjects.player import *
 
 class Game:
     def __init__(self, scenes, first_scene):
         self.screen = screen
         self.clock = pygame.time.Clock()
-        self.globals = {}
+        self.globals = {
+            "GFX": GFX,
+            "spritesheets": spritesheets,
+            "background": GFX["assets/graphics/misc/sky.png"],
+            "middleground": GFX["assets/graphics/misc/tree_foreground.png"],
+            "foreground": GFX["assets/graphics/misc/railway.png"],
+            "middleground_x": 0,
+            "foreground_x": 0,
+            "middleground_speed": 1.5,
+            "foreground_speed": 6,
+            "player": random.choice(Player.__subclasses__())((525, 1175), vel=0, direction=(0, -1), scale=6, animate=True),
+        }
+        self.globals["player"].frame_row = 2
         self.scenes = scenes
         self.current_scene = scenes[first_scene]
         self.current_scene.startup(self.globals)
@@ -33,6 +39,8 @@ class Game:
 
     def loop(self):
         for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                print(event.pos)
             self.current_scene.handle_event(event)
 
     def draw(self):

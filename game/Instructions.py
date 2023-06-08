@@ -10,7 +10,6 @@ class Instructions:
         self.slowness = slowness
         self.line_y_dist = font_size + line_padding
 
-
     def update(self, screen):
         if self.counter < self.slowness * self.total_length:
             self.counter += 1
