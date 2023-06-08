@@ -44,15 +44,15 @@ class MapSelectionScene(Scene):
                     # Notify user to select map/weapon
                     ...
             elif button == self.skull_crossbow_button:
-                self.selected_weapon_class = Cannon
+                self.selected_weapon_class = SkullCrossbow
             elif button == self.demonic_crossbow_button:
-                self.selected_weapon_class = Cannon
+                self.selected_weapon_class = DemonicCrossbow
             elif button == self.fire_crossbow_button:
-                self.selected_weapon_class = Cannon
+                self.selected_weapon_class = FireCrossbow
             elif button == self.venom_crossbow_button:
-                self.selected_weapon_class = Cannon
+                self.selected_weapon_class = VenomCrossbow
             elif button == self.divine_crossbow_button:
-                self.selected_weapon_class = Cannon
+                self.selected_weapon_class = DivineCrossbow
             elif button == self.summer_map_button:
                 self.selected_map = GFX["assets/graphics/maps/summer_rails.png"]
             elif button == self.fall_map_button:

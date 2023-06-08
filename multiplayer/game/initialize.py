@@ -37,6 +37,11 @@ spritesheets = {
     "Enchantress": SpriteSheet(GFX["assets/graphics/players/enchantress.png"]).get_animation_list((Enchantress.frame_width, Enchantress.frame_height), Enchantress.animation_steps),
 
     "Cannon": SpriteSheet(GFX["assets/graphics/weapons/cannon.png"]).get_animation_list((Cannon.frame_width, Cannon.frame_height), Cannon.animation_steps),
+    "VenomCrossbow": SpriteSheet(GFX["assets/graphics/weapons/venom_crossbow.png"]).get_animation_list((VenomCrossbow.frame_width, VenomCrossbow.frame_height), VenomCrossbow.animation_steps),
+    "DemonicCrossbow": SpriteSheet(GFX["assets/graphics/weapons/demonic_crossbow.png"]).get_animation_list((DemonicCrossbow.frame_width, DemonicCrossbow.frame_height), DemonicCrossbow.animation_steps),
+    "DivineCrossbow": SpriteSheet(GFX["assets/graphics/weapons/divine_crossbow.png"]).get_animation_list((DivineCrossbow.frame_width, DivineCrossbow.frame_height), DivineCrossbow.animation_steps),
+    "FireCrossbow": SpriteSheet(GFX["assets/graphics/weapons/fire_crossbow.png"]).get_animation_list((FireCrossbow.frame_width, FireCrossbow.frame_height), FireCrossbow.animation_steps),
+    "SkullCrossbow": SpriteSheet(GFX["assets/graphics/weapons/skull_crossbow.png"]).get_animation_list((SkullCrossbow.frame_width, SkullCrossbow.frame_height), SkullCrossbow.animation_steps),
 
     "Carrot": SpriteSheet(GFX["assets/graphics/veggies/carrot-sheet.png"]).get_animation_list((Carrot.frame_width, Carrot.frame_height), Carrot.animation_steps),
     "Potato": SpriteSheet(GFX["assets/graphics/veggies/potato-sheet.png"]).get_animation_list((Potato.frame_width, Potato.frame_height), Potato.animation_steps),
@@ -62,5 +67,7 @@ spritesheets = {
 }
 
 SFX = {
-    "harvest": pygame.mixer.Sound('assets/sounds/harvest.mp3')
+    "harvest": pygame.mixer.Sound('assets/sounds/harvest.mp3'),
+    "shoot": pygame.mixer.Sound('assets/sounds/shotgun-firing.mp3'),
+    "hit": pygame.mixer.Sound('assets/sounds/collision.mp3'),
 }
