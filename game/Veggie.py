@@ -46,7 +46,7 @@ class Veggie(GameObject):
 class Pumpkin(Veggie):
     def __init__(self, pos, vel, team_num: int) -> None:
         super().__init__(pos, vel, team_num, img='assets/veggies/pumpkin-animation.png')
-        self.damage = CARROT_DAMAGE
+        self.damage = PUMPKIN_DAMAGE
 
     def update(self, screen, action=0):
         self.pos_x -= self.vel_x
@@ -64,7 +64,7 @@ class Pumpkin(Veggie):
 class Potato(Veggie):
     def __init__(self, pos, vel, team_num: int) -> None:
         super().__init__(pos, vel, team_num, img='assets/veggies/potato-sheet.png')
-        self.damage = CARROT_DAMAGE
+        self.damage = POTATO_DAMAGE
 
     def update(self, screen, action=0):
         self.pos_x -= self.vel_x
@@ -97,10 +97,10 @@ class Carrot(Veggie):
             or self.rect.bottom >= SCREEN_HEIGHT):
             self.kill()
 
-class Strawberry(Veggie):
+class Tomato(Veggie):
     def __init__(self, pos, vel, team_num: int) -> None:
-        super().__init__(pos, vel, team_num, img='assets/veggies/strawberry-sheet.png')
-        self.damage = CARROT_DAMAGE
+        super().__init__(pos, vel, team_num, img='assets/veggies/tomato-sheet.png')
+        self.damage = TOMATO_DAMAGE
 
     def update(self, screen, action=0):
         self.pos_x -= self.vel_x
@@ -118,7 +118,7 @@ class Strawberry(Veggie):
 class Peach(Veggie):
     def __init__(self, pos, vel, team_num: int) -> None:
         super().__init__(pos, vel, team_num, img='assets/veggies/peach-sheet.png')
-        self.damage = CARROT_DAMAGE
+        self.damage = PEACH_DAMAGE
 
     def update(self, screen, action=0):
         self.pos_x -= self.vel_x
@@ -132,3 +132,38 @@ class Peach(Veggie):
             or self.rect.top <= 0
             or self.rect.bottom >= SCREEN_HEIGHT):
             self.kill()
+
+class Ruby(Veggie):
+    def __init__(self, pos, vel, team_num: int) -> None:
+        super().__init__(pos, vel, team_num, img='assets/veggies/ruby-sheet.png')
+
+    def update(self, screen, action=0):
+        self.pos_x -= self.vel_x
+        self.pos_y -= self.vel_y
+        self.rect.center = (self.pos_x, self.pos_y)
+        # self.frame_col = (self.frame_col + 1) % 4
+        self.draw(screen, action)
+
+        if (self.rect.left < 0 
+            or self.rect.right > SCREEN_WIDTH 
+            or self.rect.top <= 0
+            or self.rect.bottom >= SCREEN_HEIGHT):
+            self.kill()
+
+class Milk(Veggie):
+    def __init__(self, pos, vel, team_num: int) -> None:
+        super().__init__(pos, vel, team_num, img='assets/veggies/milk-sheet.png')
+
+    def update(self, screen, action=0):
+        self.pos_x -= self.vel_x
+        self.pos_y -= self.vel_y
+        self.rect.center = (self.pos_x, self.pos_y)
+        # self.frame_col = (self.frame_col + 1) % 4
+        self.draw(screen, action)
+
+        if (self.rect.left < 0 
+            or self.rect.right > SCREEN_WIDTH 
+            or self.rect.top <= 0
+            or self.rect.bottom >= SCREEN_HEIGHT):
+            self.kill()
+

@@ -14,7 +14,7 @@ class Inventory():
             "Carrot": pygame.image.load("assets/inventory/carrot-inventory.png").convert_alpha(),
             "Potato": pygame.image.load("assets/inventory/potato-inventory.png").convert_alpha(),
             "Pumpkin": pygame.image.load("assets/inventory/pumpkin-inventory.png").convert_alpha(),
-            "Strawberry": pygame.image.load("assets/inventory/strawberry-inventory.png").convert_alpha(),
+            "Tomato": pygame.image.load("assets/inventory/tomato-inventory.png").convert_alpha(),
             "Peach": pygame.image.load("assets/inventory/peach-inventory.png").convert_alpha(),
         }
         self.digit_images = { #numbers are 16x42 pixels
@@ -33,11 +33,11 @@ class Inventory():
             veggie_image = pygame.transform.scale(veggie_image, (veggie_image.get_width() * scale, veggie_image.get_height() * scale))
             screen.blit(veggie_image, (90 * scale, SCREEN_HEIGHT - self.inventory_display.get_height() + 5 * scale)) # 90 is the start of the placeholder of "next shooting type"
 
-        screen.blit(self.digit_images[self.item_counts["Carrot"]], (5 * scale, SCREEN_HEIGHT - self.inventory_display.get_height()))
-        screen.blit(self.digit_images[self.item_counts["Potato"]], (5 * scale + 48, SCREEN_HEIGHT - self.inventory_display.get_height())) #48 comes from 16 * scale
-        screen.blit(self.digit_images[self.item_counts["Pumpkin"]], (5 * scale + 48*2, SCREEN_HEIGHT - self.inventory_display.get_height()))
-        screen.blit(self.digit_images[self.item_counts["Strawberry"]], (5 * scale + 48*3, SCREEN_HEIGHT - self.inventory_display.get_height()))
-        screen.blit(self.digit_images[self.item_counts["Peach"]], (5 * scale + 48*4, SCREEN_HEIGHT - self.inventory_display.get_height()))
+        screen.blit(self.digit_images[self.item_counts["Tomato"]], (5 * scale, SCREEN_HEIGHT - self.inventory_display.get_height()))
+        screen.blit(self.digit_images[self.item_counts["Peach"]], (5 * scale + 48, SCREEN_HEIGHT - self.inventory_display.get_height())) #48 comes from 16 * scale
+        screen.blit(self.digit_images[self.item_counts["Carrot"]], (5 * scale + 48*2, SCREEN_HEIGHT - self.inventory_display.get_height()))
+        screen.blit(self.digit_images[self.item_counts["Potato"]], (5 * scale + 48*3, SCREEN_HEIGHT - self.inventory_display.get_height()))
+        screen.blit(self.digit_images[self.item_counts["Pumpkin"]], (5 * scale + 48*4, SCREEN_HEIGHT - self.inventory_display.get_height()))
         screen.blit(self.digit_images[len(self.queue)], (90*scale, SCREEN_HEIGHT - self.inventory_display.get_height()))
 
     def add(self, veggie):
