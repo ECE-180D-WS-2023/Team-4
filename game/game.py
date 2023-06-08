@@ -554,7 +554,16 @@ def tutorials():
                     if pygame.joystick.Joystick(0).get_button(1):
                         player1.attack(angle, (shots, all_sprites))
                     if pygame.joystick.Joystick(0).get_button(0):
+                        harvested_veggie = pygame.sprite.spritecollideany(player1, veggies)
                         player1.harvest(veggies)
+                        if harvested_veggie:
+                            if harvested_veggie.__class__.__name__ == "Ruby":
+                                base1.health += RUBY_POWER
+                                print(base1.health)
+                            elif harvested_veggie.__class__.__name__ == "Milk":
+                                player1.vel_x += 1
+                                player1.vel_y += 1
+                            harvested_veggie.kill()
 
                     # if pygame.joystick.Joystick(0).get_button(3):
                     #     player1.toggle_mount(slingshot1)

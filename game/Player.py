@@ -67,8 +67,26 @@ class Player(GameObject):
             if veggie:
                 if pygame.sprite.spritecollideany(self, veggies_group, pygame.sprite.collide_mask):
                     # self.backpack[veggie.__class__.__name__] = self.backpack.get(veggie.__class__.__name__, 0) + 1
-                    self.inventory.add(veggie.__class__)
+                    # if veggie.__class__.__name__ == "Milk": #if harvest carrot increase speed
+                    #     self.vel_x += MILK_POWER
+                    #     self.vel_y += MILK_POWER
+                    # elif veggie.__class__.__name__ == "Ruby":
+                    #     veggie.kill()
+                    if veggie.__class__.__name__ != "Milk" and veggie.__class__.__name__ != "Ruby":
+                        self.inventory.add(veggie.__class__)
                     veggie.kill()
+        # veggie = pygame.sprite.spritecollideany(self, veggies_group)
+        # if veggie:
+        #     if pygame.sprite.spritecollideany(self, veggies_group, pygame.sprite.collide_mask):
+        #         if veggie.__class__.__name__ == "Milk": #if harvest carrot increase speed
+        #             self.vel_x += MILK_POWER
+        #             self.vel_y += MILK_POWER
+        #         elif veggie.__class__.__name__ == "Ruby":
+        #             veggie.kill()
+        #         else:
+        #             if len(self.inventory) < INVENTORY_SIZE:
+        #                 self.inventory.add(veggie.__class__)
+        #         veggie.kill()
 
     def toggle_mount(self, slingshot):
         self.slingshot = slingshot
