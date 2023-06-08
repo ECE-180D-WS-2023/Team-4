@@ -61,6 +61,12 @@ def client_thread(conn, id, game_state):
     while True:
         client_inputs = conn.receive()
 
+        # Handle disconnect
+        if not client_inputs:
+            print(f"Client {id} disconnected")
+            game_state["players"][my_team_num].remove(my_player)
+            break
+
         # Joystick dpad
         js_axis = client_inputs.get("js_axis", (0, 0))
         my_player.direction.x = js_axis[0]
@@ -114,6 +120,17 @@ def client_thread(conn, id, game_state):
         for shot in game_state["shots"][my_team_num]:
             shot.check_collision(game_state["bases"][(my_team_num + 1) % 2])
 
+        if len(game_state["bases"][0]) == 0:
+            print("Team 1 Won")
+            game_state = "game_over"
+            conn.send(game_state)
+            break
+        elif len(game_state["bases"][1]) == 0:
+            print("Team 0 Won")
+            game_state = "game_over"
+            conn.send(game_state)
+            break
+
         conn.send(game_state)
 
         # Reset actions to avoid client constantly playing sounds
@@ -122,7 +139,7 @@ def client_thread(conn, id, game_state):
 
         clock.tick(60)
 
-    conn.close()
+    # conn.close()
 
 def run(address="192.168.0.190", port=8080):
     pygame.init()

@@ -9,6 +9,7 @@ from game.scenes.join import *
 from game.scenes.lobby import *
 from game.scenes.loading import *
 from game.scenes.game import *
+from game.scenes.game_over import *
 
 def main():
     scenes = {
@@ -22,6 +23,7 @@ def main():
         "lobby": LobbyScene(),
         "loading": LoadingScene(),
         "game": GameScene(),
+        "game_over": GameOverScene(),
     }
     game = Game(scenes, "splash")
     game.run()

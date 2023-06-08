@@ -58,16 +58,17 @@ class GameScene(Scene):
                 print("mute")
 
     def draw(self, screen):
-        screen.blit(self.background, (0, 0))
-        for group in self.state.values():
-            for team in group:
-                if isinstance(team, dict):
-                    team = list(team.values())
-                for object in team:
-                    object.draw(self.globals["spritesheets"], screen)
+        if self.state != "game_over":
+            screen.blit(self.background, (0, 0))
+            for group in self.state.values():
+                for team in group:
+                    if isinstance(team, dict):
+                        team = list(team.values())
+                    for object in team:
+                        object.draw(self.globals["spritesheets"], screen)
 
-        # Draw client's inventory
-        self.state["players"][self.client.id % 2][self.client.id].inventory.draw(self.globals["spritesheets"], screen)
+            # Draw client's inventory
+            self.state["players"][self.client.id % 2][self.client.id].inventory.draw(self.globals["spritesheets"], screen)
 
     def _play_sounds(self):
         for group in self.state.values():
@@ -94,9 +95,15 @@ class GameScene(Scene):
             print("[SPEECH]:", speech_prediction)
             self.inputs["speech"] = speech_prediction
 
-        x = round(pygame.joystick.Joystick(0).get_axis(0))
-        y = round(pygame.joystick.Joystick(0).get_axis(1))
+        x = -round(pygame.joystick.Joystick(0).get_axis(1))
+        y = round(pygame.joystick.Joystick(0).get_axis(0))
+
         self.inputs["js_axis"] = (x, y)
         self.client.send(self.inputs)
         self.state = self.client.receive()
+
+        if self.state == "game_over":
+            self.next = "game_over"
+            self.done = True
+
         self.inputs = defaultdict(list)  # reset self.inputs for next frame
