@@ -184,8 +184,8 @@ def choosePlayer():
     ENCHANTRESS_PLAYERCARD = EnchantressCard(image=pygame.image.load("assets/players/enchantress.png").convert_alpha(), pos=(1785, 677),
                                text_input="ENCHANTRESS", font=get_font(30), base_color="#d7fcd4", hovering_color="White")
 
-    IMREADY_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png").convert_alpha(), pos=(1800, 1225),
-                               text_input="I'M READY", font=get_font(13), base_color="#d7fcd4", hovering_color="White")
+    IMREADY_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button-large.png").convert_alpha(), pos=(1800, 1225),
+                               text_input="I'M READY", font=get_font(30), base_color="#d7fcd4", hovering_color="White")
 
     RIGHT_ARROW = Button(image=pygame.image.load("assets/pause-phase/right-arrow.png").convert_alpha(), pos=(1985, 675),
                                 text_input=None, font=None, base_color=None, hovering_color=None)
@@ -199,8 +199,8 @@ def choosePlayer():
     
 
     # Phase 2
-    CONTINUE_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button.png").convert_alpha(), pos=(1800, 1225),
-                               text_input="FIGHT!", font=get_font(13), base_color="#d7fcd4", hovering_color="White")
+    CONTINUE_BUTTON = Button(image=pygame.image.load("assets/pause-phase/pause-button-large.png").convert_alpha(), pos=(1800, 1225),
+                               text_input="FIGHT!", font=get_font(30), base_color="#d7fcd4", hovering_color="White")
     
     SKULL_CROSSBOW = Button(image=pygame.image.load("assets/pause-phase/skull-crossbow-button.png").convert_alpha(), pos=(556, 926),
                                text_input=None, font=None, base_color=None, hovering_color="White")
@@ -506,7 +506,7 @@ def tutorials():
             pressed_keys = pygame.key.get_pressed()   # Keyboard input
             if (player1.state != PLAYER_SHOOTING):
                 if len(player1.inventory) < 1 and instruction_state != 0:
-                    instructions = Instructions('Press B to Harvest a Veggie.\nInventory Limit: 5 Veggies.\nVeggies in inventory: Weakest to Strongest.')
+                    instructions = Instructions('Press A to Harvest a Veggie.\nInventory Limit: 5 Veggies\nVeggies in inventory: Weakest to Strongest')
                     instruction_state = 0
                 elif len(player1.inventory) >= 1 and instruction_state != 1:
                     instructions = Instructions('Now Mount your Weapon!\nWalk to the Trolly on the rail, hold X, say Switch, release X')
@@ -560,9 +560,9 @@ def tutorials():
                     print(TUTORIALS_MOUSE_POS)
                 # Attack
                 elif event.type == pygame.JOYBUTTONDOWN:
-                    if pygame.joystick.Joystick(0).get_button(1):
-                        player1.attack(angle, (shots, all_sprites))
                     if pygame.joystick.Joystick(0).get_button(0):
+                        player1.attack(angle, (shots, all_sprites))
+                    if pygame.joystick.Joystick(0).get_button(1):
                         harvested_veggie = pygame.sprite.spritecollideany(player1, veggies)
                         player1.harvest(veggies)
                         if harvested_veggie:
@@ -593,7 +593,7 @@ def tutorials():
 
             if player1.state == PLAYER_SHOOTING:
                 if instruction_state != 2 and len(player1.inventory) >= 1:
-                    instructions = Instructions('Stay 3ft from the Camera.\nMake sure your nose and right wrist are visible.\nControl the shooting angle using your Right Hand(Wrist).\nPress A to fire.')
+                    instructions = Instructions('Stay 3ft from the Camera.\nMake sure your nose and right wrist are visible.\nControl the shooting angle using your Right Hand(Wrist).\nPress B to fire.')
                     instruction_state = 2
                 elif instruction_state != 3 and len(player1.inventory) < 1:
                     instructions = Instructions('Out of ammo.\nTo unmount the weapon:\nHold X.\nSay Switch.\nRelease X.')
@@ -617,8 +617,8 @@ def tutorials():
                 image_processor.stop()
 
             try:
-                x_speed = round(pygame.joystick.Joystick(0).get_axis(0))
-                y_speed = round(pygame.joystick.Joystick(0).get_axis(1))
+                x_speed = -round(pygame.joystick.Joystick(0).get_axis(1))
+                y_speed = round(pygame.joystick.Joystick(0).get_axis(0))
             except:
                 x_speed = 0
                 y_speed = 0
