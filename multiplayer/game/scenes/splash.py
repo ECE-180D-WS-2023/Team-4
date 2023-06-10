@@ -6,8 +6,8 @@ class SplashScene(Scene):
     next = "loading"
     def __init__(self):
         super().__init__()
-        self.logo = GFX["assets/graphics/misc/puzzle.png"]
-        self.label = pygame.font.Font("assets/fonts/introduction_font.ttf", 40).render("Veggie Wars Gaming", True, (255, 255, 255))
+        self.logo = pygame.transform.scale_by(GFX["assets/graphics/misc/tomato.png"], 10)
+        self.label = pygame.font.Font("assets/fonts/bongo.ttf", 25).render("Happy Tomato Productions", True, (255, 255, 255))
         self.background = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.background.fill((0, 0, 0))
         self.alpha_start = 0
@@ -24,8 +24,8 @@ class SplashScene(Scene):
 
     def draw(self, screen):
         screen.blit(self.background, (0, 0))
-        screen.blit(self.logo, (SCREEN_WIDTH // 2 - self.logo.get_width() // 2, SCREEN_HEIGHT // 2 - self.logo.get_height() // 2))
-        screen.blit(self.label, (SCREEN_WIDTH // 2 - self.label.get_width() // 2, SCREEN_HEIGHT // 2 + self.logo.get_height() // 2))
+        screen.blit(self.logo, (SCREEN_WIDTH//2 - self.logo.get_width()//2, SCREEN_HEIGHT//2 - self.logo.get_height()//2))
+        screen.blit(self.label, (SCREEN_WIDTH//2 - self.label.get_width()//2, SCREEN_HEIGHT//2 + self.logo.get_height()//2 + 40))
 
     def update(self):
         elapsed_time = pygame.time.get_ticks() - self.start_time
