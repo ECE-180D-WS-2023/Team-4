@@ -13,16 +13,16 @@ class MainMenuScene(Scene):
         self.buttons = ButtonGroup()
         normal_button = pygame.transform.scale_by(GFX["assets/graphics/buttons/individual_frames/silver/normal.png"], 7)
         hover_button = pygame.transform.scale_by(GFX["assets/graphics/buttons/individual_frames/silver/hover.png"], 7)
-        self.play_button = self.buttons.add_button(ImageButton((SCREEN_WIDTH/2, 500), normal_button, hover_button, text="PLAY"))
-        self.tutorials_button = self.buttons.add_button(ImageButton((SCREEN_WIDTH/2, 650), normal_button, hover_button, text="TUTORIALS"))
-        self.quit_button = self.buttons.add_button(ImageButton((SCREEN_WIDTH/2, 800), normal_button, hover_button, text="QUIT"))
+        self.play_button = self.buttons.add_button(ImageButton((SCREEN_WIDTH/2, 550), normal_button, hover_button, text="PLAY"))
+        # self.tutorials_button = self.buttons.add_button(ImageButton((SCREEN_WIDTH/2, 650), normal_button, hover_button, text="TUTORIALS"))
+        # self.quit_button = self.buttons.add_button(ImageButton((SCREEN_WIDTH/2, 800), normal_button, hover_button, text="QUIT"))
+        self.show_button = True
 
     def startup(self, globals):
         super().startup(globals)
         if not pygame.mixer.music.get_busy():
             pygame.mixer.music.load('assets/music/another-sunny-day.mp3')
             pygame.mixer.music.play(-1)
-        # self.title = Text((SCREEN_WIDTH/2, 200), "Veggie Wars", font="assets/fonts/fibberish.ttf", font_size=200, shadow=True, shadow_offset=5)
         self.title = TypewriterText((SCREEN_WIDTH/2, 150), "Veggie Wars", font="assets/fonts/fibberish.ttf", font_size=200, slowness=5, shadow=True, shadow_offset=5)
 
     def handle_event(self, event):
@@ -30,20 +30,25 @@ class MainMenuScene(Scene):
         if event.type == pygame.MOUSEBUTTONDOWN:
             button = self.buttons.check_for_presses(event.pos)
             if button == self.play_button:
-                self.next = "play"
-                self.done = True
-            if button == self.tutorials_button:
-                self.next = "tutorial"
-                self.done = True
-            if button == self.quit_button:
-                # Quit scene?
-                pygame.quit()
+                self.globals["player"].vel = 10
+                self.globals["player"].direction = pygame.Vector2((1, 0))
+                self.show_button = False
+                # self.next = "play"
+                # self.done = True
+            # if button == self.tutorials_button:
+            #     self.next = "tutorial"
+            #     self.done = True
+            # if button == self.quit_button:
+            #     # Quit scene?
+            #     pygame.quit()
 
     def draw(self, screen):
         super().draw(screen)
-        self.buttons.draw(screen)
         self.title.draw(screen)
+        if self.show_button:
+            self.buttons.draw(screen)
 
     def update(self):
         super().update()
-        self.buttons.update()
+        if self.show_button:
+            self.buttons.update()
