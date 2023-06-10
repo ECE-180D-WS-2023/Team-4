@@ -13,9 +13,9 @@ class MainMenuScene(Scene):
         self.buttons = ButtonGroup()
         normal_button = pygame.transform.scale_by(GFX["assets/graphics/buttons/individual_frames/silver/normal.png"], 7)
         hover_button = pygame.transform.scale_by(GFX["assets/graphics/buttons/individual_frames/silver/hover.png"], 7)
-        self.play_button = self.buttons.add_button(ImageButton((SCREEN_WIDTH/2, 550), normal_button, hover_button, text="PLAY"))
-        # self.tutorials_button = self.buttons.add_button(ImageButton((SCREEN_WIDTH/2, 650), normal_button, hover_button, text="TUTORIALS"))
-        # self.quit_button = self.buttons.add_button(ImageButton((SCREEN_WIDTH/2, 800), normal_button, hover_button, text="QUIT"))
+        self.play_button = self.buttons.add_button(ImageButton((SCREEN_WIDTH/2, 500), normal_button, hover_button, text="PLAY"))
+        self.tutorials_button = self.buttons.add_button(ImageButton((SCREEN_WIDTH/2, 650), normal_button, hover_button, text="TUTORIALS"))
+        self.quit_button = self.buttons.add_button(ImageButton((SCREEN_WIDTH/2, 800), normal_button, hover_button, text="QUIT"))
         self.show_button = True
 
     def startup(self, globals):
@@ -35,12 +35,12 @@ class MainMenuScene(Scene):
                 self.show_button = False
                 # self.next = "play"
                 # self.done = True
-            # if button == self.tutorials_button:
-            #     self.next = "tutorial"
-            #     self.done = True
-            # if button == self.quit_button:
-            #     # Quit scene?
-            #     pygame.quit()
+            if button == self.tutorials_button:
+                self.next = "tutorial"
+                self.done = True
+            if button == self.quit_button:
+                # Quit scene?
+                pygame.quit()
 
     def draw(self, screen):
         super().draw(screen)
