@@ -17,6 +17,10 @@ pygame.joystick.init()
 joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
 multiprocessing.set_start_method("fork")
 
+cursor_surf = pygame.image.load("assets/graphics/veggies/carrot-small.png").convert_alpha()
+cursor = pygame.cursors.Cursor((0,0), pygame.transform.rotate(cursor_surf, -90))
+pygame.mouse.set_cursor(cursor)
+
 # Load all images (key: path/to/image, value: pygame surface)
 GFX = {}
 for dir, _, filenames in os.walk('assets/graphics'):
