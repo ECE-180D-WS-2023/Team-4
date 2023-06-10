@@ -945,7 +945,7 @@ def main_menu():
 
 def introduction():
 
-    logo = pygame.image.load("assets/menu/puzzle.png").convert_alpha()
+    logo = pygame.image.load("assets/menu/logo.png").convert_alpha()
     background = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
     background.fill((0, 0, 0))
 
@@ -991,7 +991,7 @@ def introduction():
 
         label = pygame.font.Font("assets/fonts/introduction_font.ttf", 40).render("Veggie Wars Gaming", True, (255, 255, 255))
         label.set_alpha(label_alpha)
-        label_rect = label.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + logo.get_height() // 2 + 20))
+        label_rect = label.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + logo.get_height() // 2 - 10))
         SCREEN.blit(label, label_rect)
 
         # pygame.event.pump()
