@@ -103,6 +103,8 @@ class GameScene(Scene):
         self.state = self.client.receive()
 
         if self.state == "game_over":
+            pygame.mixer.music.load('assets/music/dandy_guy.mp3')
+            pygame.mixer.music.play(-1)
             self.next = "game_over"
             self.done = True
 
