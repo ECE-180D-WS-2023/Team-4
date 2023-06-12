@@ -54,7 +54,7 @@ def client_thread(conn, id, game_state):
     init = conn.receive()
 
     # Initialize player
-    my_team_num = id % 2
+    my_team_num = (id + 1) % 2
     game_state["players"][my_team_num][id] = init["player_class"](TEAM0_SPAWN if my_team_num == 0 else TEAM1_SPAWN, team_num = my_team_num, weapon_class=init["weapon_class"])
     my_player = game_state["players"][my_team_num][id]
 

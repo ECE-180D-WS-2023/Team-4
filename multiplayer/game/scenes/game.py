@@ -68,7 +68,7 @@ class GameScene(Scene):
                         object.draw(self.globals["spritesheets"], screen)
 
             # Draw client's inventory
-            self.state["players"][self.client.id % 2][self.client.id].inventory.draw(self.globals["spritesheets"], screen)
+            self.state["players"][(self.client.id + 1) % 2][self.client.id].inventory.draw(self.globals["spritesheets"], screen)
 
     def _play_sounds(self):
         for group in self.state.values():
@@ -82,7 +82,7 @@ class GameScene(Scene):
         self._play_sounds()
         try:
             # NOTE: this finds the team number manually (not extensible)
-            if self.state["players"][self.client.id % 2][self.client.id].state == PLAYER_SHOOTING:
+            if self.state["players"][(self.client.id + 1) % 2][self.client.id].state == PLAYER_SHOOTING:
                 self.image_processor.start()
                 self.inputs["angle"] = self.image_processor.angle
             else:
