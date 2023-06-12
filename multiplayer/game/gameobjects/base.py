@@ -6,7 +6,7 @@ from ..constants import *
 class Base(GameObject):
     frame_width, frame_height = 80, 80
     animation_steps = [1]
-    max_health = 200
+    max_health = 500
     def __init__(self, pos, vel=0, direction=(0, 0), scale=BASE_SCALE):
         super().__init__(pos, vel, direction, scale)
         self.health = self.max_health
