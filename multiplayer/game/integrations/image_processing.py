@@ -25,7 +25,7 @@ class ImageProcessor:
         self._angle = 0
         self.angle_queue = queue.Queue(maxsize=5)
         self._thread = threading.Thread(target=self._image_processing_thread_func, args=[self.angle_queue])
-        self.running = threading.Event()
+        self.running = False
 
     @property
     def angle(self):
@@ -41,7 +41,7 @@ class ImageProcessor:
         camera = cv.VideoCapture(0)
         assert camera.isOpened()
 
-        while self.running.is_set():
+        while self.running:
             (ret, frame) = camera.read()
             if not ret:
                 break
@@ -63,12 +63,12 @@ class ImageProcessor:
                 angle_queue.put(angle, block=False)
             except queue.Full:
                 # print("Angle queue full!")
-                oldest_item = angle_queue.get()
+                _ = angle_queue.get()
                 angle_queue.put_nowait(angle)
 
     def start(self):
         if not self._thread.is_alive():
-            self.running.set()
+            self.running = True
             self._thread = threading.Thread(
                 target=self._image_processing_thread_func,
                 args=[self.angle_queue]
@@ -77,5 +77,5 @@ class ImageProcessor:
 
     def stop(self):
         if self._thread.is_alive():
-            self.running.clear()
+            self.running = False
             self._thread.join()
