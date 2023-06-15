@@ -47,18 +47,18 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
             angle = calculate_angle((nose.x, nose.y), anchor, (right_wrist.x, right_wrist.y))
 
             # visualize angle
-            # cv.putText(image, "x", tuple(np.multiply(anchor, [width, height]).astype(int)), cv.FONT_HERSHEY_SIMPLEX, 3, (0,255,0), 3, cv.LINE_AA)
+            cv.putText(image, "x", tuple(np.multiply(anchor, [width, height]).astype(int)), cv.FONT_HERSHEY_SIMPLEX, 3, (0,255,0), 3, cv.LINE_AA)
             # cv.putText(image, "o", tuple(np.multiply([nose.x, nose.y], [width, height]).astype(int)), cv.FONT_HERSHEY_SIMPLEX, 3, (255,0,0), 3, cv.LINE_AA)
-            cv.line(image, tuple(np.multiply([nose.x, nose.y], [width, height]).astype(int)), tuple(np.multiply(anchor, [width, height]).astype(int)), (150,150,150), 3)
-            cv.line(image, tuple(np.multiply([right_wrist.x, right_wrist.y], [width, height]).astype(int)), tuple(np.multiply(anchor, [width, height]).astype(int)), (150,150,150), 3)
-            cv.putText(image, str(angle), (960,540), cv.FONT_HERSHEY_SIMPLEX, 2, (200,200,200), 2, cv.LINE_AA)
+            cv.line(image, tuple(np.multiply([nose.x, nose.y], [width, height]).astype(int)), tuple(np.multiply(anchor, [width, height]).astype(int)), (255,255,0), 3)
+            cv.line(image, tuple(np.multiply([right_wrist.x, right_wrist.y], [width, height]).astype(int)), tuple(np.multiply(anchor, [width, height]).astype(int)), (255,255,0), 3)
+            cv.putText(image, str(angle), (960,540), cv.FONT_HERSHEY_SIMPLEX, 2, (0,255,0), 2, cv.LINE_AA)
         except Exception as e:
             print(e)
 
         # Render mediapipe landmarks
         mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
-                                mp_drawing.DrawingSpec(color=(46, 125, 209), thickness=1, circle_radius=2),
-                                mp_drawing.DrawingSpec(color=(100,0,0), thickness=3, circle_radius=2))
+                                mp_drawing.DrawingSpec(color=(0, 255, 255), thickness=1, circle_radius=5),
+                                mp_drawing.DrawingSpec(color=(233, 74, 247), thickness=3, circle_radius=2))
 
         cv.imshow('Mediapipe Feed', image) # (1920x1080)
 
